@@ -133,6 +133,8 @@ class TestSQLiteBackend:
 
     def test_sqlite_foreign_keys_enabled(self):
         """Test that foreign keys are enabled in SQLite."""
+        from sqlalchemy import text
+
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             db_url = f"sqlite:///{db_path}"
@@ -141,13 +143,14 @@ class TestSQLiteBackend:
 
             # Check foreign keys are enabled
             with engine.connect() as conn:
-                result = conn.execute("PRAGMA foreign_keys").fetchone()
+                result = conn.execute(text("PRAGMA foreign_keys")).fetchone()
                 # Result should be (1,) if enabled
                 assert result[0] == 1
 
     def test_sqlite_concurrent_access(self):
         """Test SQLite handles concurrent access with check_same_thread=False."""
         import threading
+        from sqlalchemy import text
 
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
@@ -159,7 +162,7 @@ class TestSQLiteBackend:
             def access_db():
                 engine = create_database_engine(db_url)
                 with engine.connect() as conn:
-                    conn.execute("SELECT 1")
+                    conn.execute(text("SELECT 1"))
 
             thread = threading.Thread(target=access_db)
             thread.start()
