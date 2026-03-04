@@ -5,9 +5,12 @@
 Before installing AAP Bridge, ensure you have:
 
 - **Python 3.12** or higher
-- **PostgreSQL** database (for state management)
 - **uv** package manager (recommended) or pip
 - Network access to source and target AAP instances
+
+!!! note "Database"
+    SQLite is used by default for state management - no database setup required!
+    PostgreSQL is optional for enterprise-scale migrations (100,000+ resources).
 
 ### Hardware Requirements
 
@@ -69,21 +72,30 @@ This installs all development dependencies including testing and linting tools.
 
 ## Database Setup
 
-AAP Bridge requires a PostgreSQL database for state management:
+AAP Bridge uses SQLite by default - **no setup required!** The database file is created automatically on first run.
 
-```bash
-# Create database and user
-psql -c "CREATE DATABASE aap_migration;"
-psql -c "CREATE USER aap_migration_user WITH PASSWORD 'your_secure_password';"
-psql -c "GRANT ALL PRIVILEGES ON DATABASE aap_migration TO aap_migration_user;"
+!!! tip "SQLite Default (Recommended)"
+    - Zero configuration required
+    - Handles migrations with 80,000+ hosts
+    - Database file: `migration_state.db`
+    - Perfect for 95% of migrations
 
-# For PostgreSQL 15+, grant schema permissions
-psql -d aap_migration -c "GRANT ALL ON SCHEMA public TO aap_migration_user;"
+!!! info "PostgreSQL (Optional - Enterprise Scale)"
+    Only needed for 100,000+ resources or distributed setups:
+    ```bash
+    # Create database and user
+    psql -c "CREATE DATABASE aap_migration;"
+    psql -c "CREATE USER aap_migration_user WITH PASSWORD 'your_secure_password';"
+    psql -c "GRANT ALL PRIVILEGES ON DATABASE aap_migration TO aap_migration_user;"
 
-```
+    # For PostgreSQL 15+, grant schema permissions
+    psql -d aap_migration -c "GRANT ALL ON SCHEMA public TO aap_migration_user;"
+    ```
 
-!!! note
-    The tool automatically creates the necessary tables on first run.
+    Then update `.env`:
+    ```bash
+    MIGRATION_STATE_DB_PATH=postgresql://aap_migration_user:password@localhost:5432/aap_migration
+    ```
 
 ## Verify Installation
 

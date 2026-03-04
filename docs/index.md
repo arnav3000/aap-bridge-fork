@@ -7,8 +7,7 @@ migrations (e.g., 80,000+ hosts).
 ## Key Features
 
 - **Bulk Operations** - Leverages AAP bulk APIs for high-performance migrations
-- **State Management** - PostgreSQL-backed state tracking with checkpoint/resume
-  capability
+- **State Management** - SQLite (default) or PostgreSQL state tracking with checkpoint/resume capability
 - **Idempotency** - Safely resume interrupted migrations without creating
   duplicates
 - **Professional Progress Display** - Rich-based live progress with real-time
@@ -48,7 +47,7 @@ AAP Bridge follows an ETL (Export, Transform, Load) architecture:
 graph LR
     A[Source AAP<br/>2.3/2.4] -->|Export| B[AAP Bridge<br/>ETL Engine]
     B -->|Load| C[Target AAP<br/>2.6+]
-    B <-->|State<br/>Management| D[(PostgreSQL<br/>State Database)]
+    B <-->|State<br/>Management| D[(SQLite/PostgreSQL<br/>State Database)]
 
     style A fill:#e1f5ff,stroke:#01579b,stroke-width:2px
     style B fill:#fff9c4,stroke:#f57f17,stroke-width:3px

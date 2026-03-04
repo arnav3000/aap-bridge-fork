@@ -21,7 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - RBAC role assignment migration
   - Bulk API operations for high-performance host and inventory imports
 - **State Management**
-  - PostgreSQL-backed state tracking with checkpoint/resume capability
+  - SQLite (default) or PostgreSQL state tracking with checkpoint/resume capability
   - ID mapping persistence for cross-system resource references
   - Idempotent operations to prevent duplicate creation
 - **Export/Import Operations**
