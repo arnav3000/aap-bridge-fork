@@ -16,21 +16,21 @@ performance:
     credentials: 50
     credential_types: 50
     execution_environments: 50
-    projects: 100
-    job_templates: 100
-    workflow_job_templates: 50
-    inventories: 200 # Maximum API page size for optimal performance
-    inventory_groups: 100
-    inventory_sources: 50
-    hosts: 200 # Maximum API page size (required for bulk operations)
+    projects: 50
+    job_templates: 50
+    workflow_job_templates: 25
+    inventories: 100 # Reduced to prevent timeouts
+    inventory_groups: 50
+    inventory_sources: 25
+    hosts: 100 # Reduced to prevent timeouts
     workflow_nodes: 100
     schedules: 100
     rbac_assignments: 100
 
   # Concurrency settings - optimized for large-scale export
-  max_concurrent: 20 # Higher concurrency for faster export
-  rate_limit: 25 # Increased for better throughput
-  max_concurrent_pages: 10 # Parallel page fetching (Phase 2 optimization)
+  max_concurrent: 5 # Reduced to prevent timeouts
+  rate_limit: 10 # Reduced for stability
+  max_concurrent_pages: 3 # Reduced parallel page fetching
 
   # Parallel resource type export (Phase 3 optimization - EXPERIMENTAL)
   # Enable to export multiple resource types concurrently
@@ -176,9 +176,9 @@ advanced:
 # Export Configuration
 # ============================================================================
 export:
-  skip_dynamic_hosts: true # DEFAULT: Skip hosts with inventory sources (filter: inventory_sources__isnull=true)
-  skip_smart_inventories: true # DEFAULT: Skip inventories with sources or pending deletion (filter: inventory_sources__isnull=true&not__pending_deletion=true)
+  skip_dynamic_hosts: false # CHANGED: Include hosts with inventory sources
+  skip_smart_inventories: false # CHANGED: Include inventories with sources
   skip_inventory_sources: []
   skip_pending_deletion_inventories: true
-  skip_hosts_with_inventory_sources: true
+  skip_hosts_with_inventory_sources: false # CHANGED: Include hosts with inventory sources
   records_per_file: 1000
