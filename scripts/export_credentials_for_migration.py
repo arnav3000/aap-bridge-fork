@@ -130,9 +130,8 @@ def generate_credential_playbook(credentials, credential_types, organizations, o
         if task_inputs:
             task["awx.awx.credential"]["inputs"] = task_inputs
 
-        # Add comment about secrets
-        if secret_placeholders:
-            task["# SECRETS_NEEDED"] = f"Fill in: {', '.join(secret_placeholders)}"
+        # Note: Secret placeholders are marked as REPLACE_WITH_ACTUAL_* in the inputs
+        # The # SECRETS_NEEDED comment is removed as it causes invalid Ansible YAML
 
         playbook_tasks.append(task)
 
