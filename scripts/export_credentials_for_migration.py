@@ -41,7 +41,14 @@ def get_source_credentials(source_url, source_token):
 
         data = response.json()
         all_credentials.extend(data["results"])
-        url = data.get("next")
+        next_url = data.get("next")
+        if next_url and not next_url.startswith("http"):
+            # Convert relative URL to absolute
+            from urllib.parse import urlparse
+            parsed = urlparse(source_url)
+            url = f"{parsed.scheme}://{parsed.netloc}{next_url}"
+        else:
+            url = next_url
         page += 1
 
     print(f"✅ Found {len(all_credentials)} credentials")
