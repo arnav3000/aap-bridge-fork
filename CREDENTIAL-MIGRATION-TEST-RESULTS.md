@@ -24,10 +24,10 @@ Successfully migrated **32 credentials** from source AAP 2.4 to target AAP 2.6 u
 
 ### Success Rate
 
-- **Created/Updated:** 32 credentials
+- **Created/Updated:** 32 credentials (structure migrated, secrets require manual update)
 - **Already Existed:** ~4 credentials (duplicates skipped)
 - **Failed:** 0 credentials
-- **Success Rate:** 100%
+- **Success Rate:** Structure migrated successfully
 
 ---
 
@@ -241,15 +241,15 @@ curl -sk -H "Authorization: Bearer $TARGET__TOKEN" \
 
 ## Conclusion
 
-**The zero-loss credential migration approach is PROVEN and WORKING!**
+**The credential migration approach is PROVEN and WORKING!**
 
-✅ **100% success rate** - All credentials migrated without loss
+✅ **Structure migration successful** - All credential metadata migrated (secrets require manual update)
 ✅ **Zero database load** - API-only approach validated
 ✅ **Platform Gateway compatible** - Direct API workaround successful
 ✅ **Idempotent** - Safe to re-run
 ✅ **Fast** - ~2 minutes for 36 credentials
 
-The migration process successfully achieved the goal of **0% credential loss** during AAP 2.4 → 2.6 migration!
+⚠️ **Important:** Secret values (passwords, tokens, keys) return as `$encrypted$` from the API and must be manually updated in the target AAP after migration.
 
 ---
 

@@ -195,8 +195,10 @@ The improved migration script (`generate_direct_api_playbook_v2.py`) successfull
 
 ### Production Readiness: ✅ READY
 
-**For credentials with valid type names:** 100% success rate
+**For credentials with valid type names:** Structure migration successful
 **For credentials with missing type names:** Requires export script fix
+
+⚠️ **Important:** Secret values (passwords, tokens, keys) must be manually updated after migration as AAP API returns `$encrypted$` for all secret fields.
 
 ### Recommendation
 

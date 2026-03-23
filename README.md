@@ -19,9 +19,11 @@ The tool automatically detects AAP versions and validates compatibility before m
 
 ## Features
 
+- **🔐 Credential-First Migration**: Ensures credentials are checked, compared, and migrated BEFORE all other resources
 - **Bulk Operations**: Leverages AAP bulk APIs for high-performance migrations
 - **State Management**: SQLite or PostgreSQL-backed state tracking with checkpoint/resume capability
 - **Idempotency**: Safely resume interrupted migrations without creating duplicates
+- **Automatic Credential Comparison**: Pre-flight checks to identify missing credentials with detailed reports
 - **Dynamic Inventories**: Full support for migrating dynamic inventories including:
   - Inventory containers
   - Inventory sources (SCM configuration)
@@ -39,6 +41,83 @@ The tool automatically detects AAP versions and validates compatibility before m
   environment variable support
 - **RBAC Migration**: Separate script for migrating role-based access control assignments
 
+## 🔐 Credential-First Migration Workflow
+
+AAP Bridge implements a **credential-first migration approach** that ensures credentials are properly handled before any dependent resources are migrated. This prevents common migration failures and provides complete visibility into credential status.
+
+### How It Works
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    CREDENTIAL-FIRST WORKFLOW                        │
+└─────────────────────────────────────────────────────────────────────┘
+
+Step 1: PRE-MIGRATION CREDENTIAL CHECK (Automatic)
+   ┌──────────────────────────────────────────────┐
+   │  • Fetch all credentials from source AAP     │
+   │  • Fetch all credentials from target AAP     │
+   │  • Compare by (name, type, organization)     │
+   │  • Generate detailed diff report             │
+   │  • Display summary in console                │
+   └──────────────────────────────────────────────┘
+                       ↓
+Step 2: MIGRATION PHASE 1 - Organizations
+   ┌──────────────────────────────────────────────┐
+   │  • Migrate organizations (credential deps)   │
+   │  • Store ID mappings                         │
+   └──────────────────────────────────────────────┘
+                       ↓
+Step 3: MIGRATION PHASE 2 - Credentials (CRITICAL)
+   ┌──────────────────────────────────────────────┐
+   │  • Migrate credential types                  │
+   │  • Migrate ALL credentials                   │
+   │  • 100% completion before proceeding         │
+   │  • Store ID mappings                         │
+   └──────────────────────────────────────────────┘
+                       ↓
+Step 4: MIGRATION PHASES 3+ - All Other Resources
+   ┌──────────────────────────────────────────────┐
+   │  • Credential Input Sources                  │
+   │  • Users, Teams, Labels                      │
+   │  • Execution Environments                    │
+   │  • Projects (can use credentials)            │
+   │  • Inventories (can use credentials)         │
+   │  • Job Templates (require credentials)       │
+   │  • Workflows                                 │
+   └──────────────────────────────────────────────┘
+```
+
+### Key Benefits
+
+✅ **No Dependency Failures**: Credentials exist before resources that need them
+✅ **Full Visibility**: Know exactly what credentials are missing before migration
+✅ **Detailed Reports**: Generated automatically with credential details
+✅ **Structure Migration**: Credential definitions migrated (secrets require manual update)
+✅ **Idempotent**: Safe to re-run, already-migrated credentials are skipped
+
+### Important Limitation
+
+⚠️ **Secret values cannot be migrated** - AAP API returns `$encrypted$` for all secret fields. After migration, you must manually update passwords, tokens, and keys in the target AAP via the Web UI or API.
+
+### Quick Start with Credential-First
+
+```bash
+# Option 1: Check credentials before full migration
+aap-bridge credentials compare
+# Review: ./reports/credential-comparison.md
+
+# Option 2: Migrate only credentials
+aap-bridge credentials migrate
+
+# Option 3: Full migration (credentials checked automatically)
+aap-bridge migrate full
+```
+
+**📚 Documentation:**
+- **[CREDENTIAL-FIRST-WORKFLOW.md](CREDENTIAL-FIRST-WORKFLOW.md)** - Complete user guide
+- **[MIGRATION-WORKFLOW-DIAGRAM.md](MIGRATION-WORKFLOW-DIAGRAM.md)** - Visual diagrams and flowcharts
+- **[QUICK-START-CREDENTIALS.md](QUICK-START-CREDENTIALS.md)** - Quick reference guide
+
 ## Architecture
 
 The tool is organized into several key components:
@@ -47,6 +126,7 @@ The tool is organized into several key components:
   with retry logic and rate limiting
 - **Migration Layer**: ETL pipeline with exporters, transformers, and importers
   for all AAP resource types
+- **Credential Comparator**: Dedicated module for credential diff and validation
 - **State Management**: Database-backed progress tracking, checkpoint creation,
   and ID mapping
 - **CLI**: User-friendly command-line interface for all operations
@@ -184,14 +264,56 @@ Review and adjust `config/config.yaml` for your environment:
 
 ### Usage
 
-#### Basic Commands
+#### Recommended Workflow
+
+The recommended approach is to check credentials first, then run the full migration:
 
 ```bash
+# Step 1: Check what credentials are missing
+aap-bridge credentials compare
 
-# Menu Based CLI
+# Step 2: Review the credential comparison report
+cat ./reports/credential-comparison.md
+
+# Step 3: Run full migration (credentials will be migrated first automatically)
+aap-bridge migrate full
+
+# Step 4: Validate migration
+aap-bridge validate all --sample-size 4000
+
+# Step 5: Migrate RBAC role assignments (after main migration)
+python rbac_migration.py
+```
+
+#### Credential Management Commands
+
+New in v0.2.0 - Dedicated credential management:
+
+```bash
+# Compare credentials between source and target
+aap-bridge credentials compare [--output ./reports/creds.md]
+
+# Migrate only credentials (and their dependencies)
+aap-bridge credentials migrate [--dry-run] [--report-dir ./reports]
+
+# Generate credential status report
+aap-bridge credentials report [--output ./reports/status.md]
+```
+
+**What happens during credential migration:**
+1. ✅ Compares credentials to find missing ones
+2. ✅ Migrates organizations (dependency)
+3. ✅ Migrates credential types (dependency)
+4. ✅ Migrates credentials
+5. ✅ Generates detailed migration report
+
+#### Basic Migration Commands
+
+```bash
+# Menu-based CLI (interactive)
 aap-bridge
 
-# Migrate full AAP
+# Full migration with automatic credential-first workflow
 aap-bridge migrate full --config config/config.yaml
 
 # Export from source AAP only
@@ -208,7 +330,6 @@ aap-bridge report summary
 
 # Migrate RBAC role assignments (separate script)
 python rbac_migration.py
-
 ```
 
 **Note:** RBAC role assignments are migrated using a separate Python script (`rbac_migration.py`) after the main migration completes. This ensures all resources exist before assigning roles. See [USER-GUIDE.md](USER-GUIDE.md) for detailed RBAC migration instructions.
@@ -375,13 +496,14 @@ export:
 
 **Post-Migration:** You can manually trigger inventory source syncs or wait for scheduled syncs to update hosts from external sources.
 
-### Zero-Loss Credential Migration
+### Credential Metadata Migration
 
-A specialized tool achieves 100% credential migration without database load or encryption issues:
+A specialized tool migrates credential structure and metadata without database load:
 
 **The Problem:**
 - Source and Target AAP use different encryption keys (SECRET_KEY)
 - Direct database copy won't work (target can't decrypt)
+- Secret values return as `$encrypted$` from the API
 - Manual recreation is time-consuming and error-prone
 
 **The Solution:**
@@ -398,11 +520,13 @@ ansible-playbook credential_migration/migrate_credentials.yml
 ```
 
 **Benefits:**
-- ✅ 100% credential migration success
+- ✅ Credential structure migration successful
 - ✅ Zero database load (uses API only - 3 calls total)
 - ✅ Proper encryption (fresh credentials in target)
 - ✅ Automated playbook generation
 - ✅ 15-30 minutes for 20+ credentials
+
+⚠️ **Important:** Secrets (passwords, tokens, keys) must be manually filled as AAP API doesn't export them.
 
 **Documentation:** See [ZERO-LOSS-CREDENTIAL-MIGRATION.md](ZERO-LOSS-CREDENTIAL-MIGRATION.md) for complete guide.
 
@@ -551,9 +675,76 @@ The tool migrates all AAP resources in the correct dependency order:
 
 For detailed information on what's included and what requires manual steps, see [USER-GUIDE.md](USER-GUIDE.md).
 
+## 📚 Complete Documentation
+
+### User Guides
+
+- **[USER-GUIDE.md](USER-GUIDE.md)** - Complete user manual with all features and workflows
+- **[CREDENTIAL-FIRST-WORKFLOW.md](CREDENTIAL-FIRST-WORKFLOW.md)** - Detailed guide to credential-first migration
+- **[QUICK-START-CREDENTIALS.md](QUICK-START-CREDENTIALS.md)** - Quick reference for credential operations
+- **[MIGRATION-WORKFLOW-DIAGRAM.md](MIGRATION-WORKFLOW-DIAGRAM.md)** - Visual diagrams and flowcharts
+
+### Technical Documentation
+
+- **[CLAUDE.md](CLAUDE.md)** - Project overview and development guide (for contributors)
+- **[CREDENTIAL-FIRST-IMPLEMENTATION-SUMMARY.md](CREDENTIAL-FIRST-IMPLEMENTATION-SUMMARY.md)** - Technical implementation details
+- **[IMPLEMENTATION-COMPLETE.md](IMPLEMENTATION-COMPLETE.md)** - Complete implementation summary
+
+### Test Results & Validation
+
+- **[REGRESSION-TEST-RESULTS.md](REGRESSION-TEST-RESULTS.md)** - Individual credential migration test results
+- **[FULL-MIGRATION-TEST-RESULTS.md](FULL-MIGRATION-TEST-RESULTS.md)** - Full migration workflow validation
+- Both tests validated credential structure migration (secrets require manual update) ✅
+
+### Configuration & Examples
+
+- **[.env.example](.env.example)** - Environment variable template
+- **[config/config.yaml](config/config.yaml)** - Application configuration
+- **[config/mappings.yaml.example](config/mappings.yaml.example)** - Resource name mapping examples
+
+### Migration Reports
+
+After running a migration, find detailed reports in `./reports/`:
+- `credential-comparison.md` - Pre-migration credential diff
+- `migration-report.md` - Complete migration summary
+- `migration-report.json` - Machine-readable migration data
+- `migration-report.html` - HTML visualization
+
+### Getting Help
+
+**Quick References:**
+```bash
+# Show all available commands
+aap-bridge --help
+
+# Show credential commands
+aap-bridge credentials --help
+
+# Show migration options
+aap-bridge migrate --help
+
+# View migration logs
+tail -f logs/migration.log
+```
+
+**Common Questions:**
+- How do I check which credentials are missing? → Run `aap-bridge credentials compare`
+- Can I migrate only credentials? → Yes, run `aap-bridge credentials migrate`
+- What if credentials fail to migrate? → Check `./reports/credential-comparison.md` and logs
+- Why do secrets show as `$encrypted$`? → AAP API security - update secrets manually after migration
+- Can I test without making changes? → Yes, use `--dry-run` flag
+
 ## Project Status
 
-**Current Version**: 0.1.0 - Initial Release
+**Current Version**: 0.2.0 - Credential-First Release
+
+**What's New in v0.2.0:**
+- ✨ Credential-first migration workflow
+- ✨ Automatic credential comparison before migration
+- ✨ New CLI commands: `aap-bridge credentials`
+- ✨ Detailed credential comparison reports
+- ✨ Validated with regression and full migration tests
+- 🐛 Fixed method name: `store_id_mapping` → `save_id_mapping`
 
 See [CHANGELOG.md](CHANGELOG.md) for version history.
 

@@ -364,11 +364,13 @@ For now, use the `scripts/debug_galaxy_credentials.sh` script to manually create
 
 ## Final Result
 
-✅ **100% Success Rate Achieved**
-- All 36 source credentials now exist in target AAP 2.6
+✅ **All Credential Structures Migrated Successfully**
+- All 36 source credentials now exist in target AAP 2.6 (structure migrated, secrets require manual update)
 - 32 migrated automatically via playbook
 - 4 required manual intervention (playbook bug identified)
 - Total in target: 37 (36 migrated + 1 test credential)
+
+⚠️ **Important:** Secret values (passwords, tokens, keys) must be manually updated in the target AAP.
 
 **Status:** Migration COMPLETE with manual fixes
 **Next Steps:** Fix playbook generator to prevent future failures
