@@ -201,8 +201,8 @@ python scripts/fill_secrets_interactive.py
 
 ## Success Criteria
 
-- ✅ All credentials migrated (100%)
-- ✅ All secrets working (100%)
+- ✅ All credential structures migrated
+- ⚠️ Secrets require manual filling (API limitation)
 - ✅ Zero database impact
 - ✅ Zero encryption issues
 - ✅ < 30 minutes total time

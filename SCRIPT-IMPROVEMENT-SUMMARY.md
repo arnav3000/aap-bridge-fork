@@ -335,25 +335,28 @@ payload['organization'] = 6  # Actual number in YAML!
 
 ## Success Metrics
 
-✅ **100% automated credential migration**
-✅ **Zero manual intervention required**
-✅ **All 36 credentials migrated successfully**
+✅ **Automated credential structure migration**
+✅ **Metadata migration fully automated**
+⚠️ **Secrets require manual filling (API limitation)**
+✅ **All 36 credentials migrated successfully (structure)**
 ✅ **All credential types handled correctly**
 ✅ **All organization mappings resolved**
-✅ **Zero data loss**
-✅ **Full encryption preserved**
+✅ **Metadata preserved**
+✅ **Fresh encryption in target**
 
 ---
 
 ## Conclusion
 
-The improved script (`generate_direct_api_playbook_v2.py`) achieves **100% automated credential migration** by:
+The improved script (`generate_direct_api_playbook_v2.py`) achieves **automated credential structure migration** by:
 
 1. Resolving all IDs at generation time (not runtime)
 2. Using actual numeric values in playbooks (not Jinja2)
 3. Always including required fields for AAP 2.6
 4. Better error handling and debugging
 
-**Result:** Zero-loss credential migration with zero manual steps!
+**Result:** Credential metadata migration fully automated! Secrets require manual filling due to API limitations.
+
+⚠️ **Important:** Secret values (passwords, tokens, keys) must be manually filled as AAP API returns `$encrypted$` for all secret fields.
 
 **Status:** ✅ Production Ready

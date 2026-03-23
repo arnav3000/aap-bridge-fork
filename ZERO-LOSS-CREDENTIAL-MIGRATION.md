@@ -1,10 +1,12 @@
-# Zero-Loss Credential Migration Guide
+# Credential Metadata Migration Guide
 
-**Goal:** Migrate ALL credentials with 100% success - no manual recreation needed
+**Goal:** Migrate credential structure and metadata - secrets require manual filling
 
 **Time:** 15-30 minutes for 20+ credentials
 
 **Approach:** Generate Ansible playbook from source, fill secrets, run against target
+
+⚠️ **Important:** AAP API returns `$encrypted$` for secret fields. Actual passwords, tokens, and keys must be manually provided during migration.
 
 ---
 
@@ -387,10 +389,10 @@ ansible-playbook credential_migration/migrate_credentials.yml
 
 | Metric | Target | Result |
 |--------|--------|--------|
-| Credentials Migrated | 100% | ✅ 23/23 |
-| Secrets Preserved | 100% | ✅ All |
+| Credentials Migrated | All | ✅ 23/23 (structure) |
+| Secrets Preserved | Manual | ⚠️ Must be filled manually |
 | Database Load | 0% | ✅ API only |
-| Manual Work | Minimal | ✅ Automated |
+| Manual Work | Fill secrets | ✅ Metadata automated |
 | Time Required | < 30 min | ✅ 20 min |
 | Encryption Issues | 0 | ✅ Fresh encryption |
 
@@ -407,7 +409,8 @@ ansible-playbook credential_migration/migrate_credentials.yml
 6. ✅ Clean up plaintext secrets
 
 **Result:**
-- 100% credential migration success
+- Credential structure migration successful
+- Secrets require manual update after migration
 - Zero database performance impact
 - Proper encryption handling (fresh keys)
 - 15-30 minutes total time
@@ -431,4 +434,4 @@ ansible-playbook credential_migration/migrate_credentials.yml
 rm credential_migration/filled_secrets.yml
 ```
 
-✅ **Zero credential loss achieved!**
+✅ **Credential structure migration complete! Remember to update secrets manually.**

@@ -15,6 +15,7 @@ from aap_migration import __version__
 from aap_migration.cli.commands import checkpoint as checkpoint_commands
 from aap_migration.cli.commands import cleanup as cleanup_commands
 from aap_migration.cli.commands import config as config_commands
+from aap_migration.cli.commands import credentials as credentials_commands
 from aap_migration.cli.commands import export_import
 from aap_migration.cli.commands import metadata as metadata_commands
 from aap_migration.cli.commands import migrate as migrate_commands
@@ -119,6 +120,7 @@ def cli(
 # Register command groups
 cli.add_command(checkpoint_commands.checkpoint)
 cli.add_command(config_commands.config)
+cli.add_command(credentials_commands.credentials)
 cli.add_command(metadata_commands.metadata)
 cli.add_command(migrate_commands.migrate)
 cli.add_command(schema_commands.schema_group)

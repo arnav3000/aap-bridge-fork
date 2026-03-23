@@ -1063,7 +1063,7 @@ sqlite3 migration_state.db "SELECT * FROM migration_progress;"
 ```
 
 **4. Report issues:**
-- GitHub: https://github.com/anthropics/claude-code/issues
+- Create GitHub issue in the project repository
 - Include: AAP versions, error messages, relevant logs
 
 ---
@@ -1318,8 +1318,7 @@ sqlite3 migration_state.db "SELECT * FROM migration_progress WHERE status='faile
 ```
 
 **3. GitHub Issues:**
-- Repository: https://github.com/anthropics/claude-code
-- Search existing issues
+- Search existing issues in the project repository
 - Create new issue with:
   - AAP versions (source and target)
   - Error messages
