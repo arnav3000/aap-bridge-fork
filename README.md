@@ -2,7 +2,7 @@
 
 A production-grade Python tool for migrating Ansible Automation Platform (AAP)
 installations from one version to another, designed to handle large-scale
-migrations (e.g., 80,000+ hosts)
+migrations
 
 ## Supported Versions
 
@@ -173,10 +173,10 @@ The tool uses a database to track migration state (ID mappings, checkpoints, pro
 | Feature | SQLite (Default) | PostgreSQL (Optional) |
 |---------|------------------|----------------------|
 | **Setup** | ✅ Zero configuration | Requires PostgreSQL server |
-| **Capacity** | Up to 80,000+ hosts | 100,000+ resources |
+| **Capacity** | Large migrations | Very large migrations |
 | **Location** | Local file | Local or remote |
 | **Backup** | Copy single file | Database dump |
-| **Best For** | 95% of migrations | Enterprise scale |
+| **Best For** | Most migrations | Enterprise scale |
 
 ##### Option A: SQLite (Default - Zero Configuration) ⭐ Recommended
 
@@ -184,16 +184,16 @@ SQLite is a file-based database that requires no server setup. Perfect for most 
 
 - ✅ **No installation required** - Built into Python
 - ✅ **Automatic setup** - Database file created on first run
-- ✅ **Handles large migrations** - Tested with 80,000+ hosts
+- ✅ **Handles large migrations** - Supports substantial workloads
 - ✅ **Easy backup** - Just copy the `migration_state.db` file
-- ✅ **Production-ready** - Successfully used in AAP 2.4 → 2.6 migrations
+- ✅ **Production-ready** - Successfully used in AAP migrations
 
 **No configuration needed!** The default `.env` uses SQLite.
 
 ##### Option B: PostgreSQL (Optional - For Enterprise Scale)
 
 Consider PostgreSQL only if you need:
-- Migrations with 100,000+ resources
+- Very large migrations
 - Distributed/remote state access
 - Cloud RDS integration
 
@@ -461,10 +461,10 @@ The tool migrates resources in the correct dependency order:
 ### Critical Limitations
 
 1. **Encrypted Credentials**: AAP API returns `$encrypted$` for secret fields. **Solution:**
-   - Use the zero-loss credential migration tool (see `ZERO-LOSS-CREDENTIAL-MIGRATION.md`)
+   - Use the credential migration tool (see `ZERO-LOSS-CREDENTIAL-MIGRATION.md`)
    - Automated playbook generation from source AAP
-   - Interactive secret filling (15-30 minutes for 20+ credentials)
-   - 100% migration success with proper encryption handling
+   - Interactive secret filling workflow
+   - Structure migration with proper encryption handling
    - Alternative: HashiCorp Vault integration or manual recreation
 
 2. **Duplicate Hostnames**: AAP 2.6 enforces stricter hostname uniqueness validation. If source AAP has duplicate hostnames within the same inventory, those hosts will fail to migrate. Solution: Rename duplicates in source before migration.
@@ -524,21 +524,21 @@ ansible-playbook credential_migration/migrate_credentials.yml
 - ✅ Zero database load (uses API only - 3 calls total)
 - ✅ Proper encryption (fresh credentials in target)
 - ✅ Automated playbook generation
-- ✅ 15-30 minutes for 20+ credentials
+- ✅ Efficient credential migration workflow
 
 ⚠️ **Important:** Secrets (passwords, tokens, keys) must be manually filled as AAP API doesn't export them.
 
 **Documentation:** See [ZERO-LOSS-CREDENTIAL-MIGRATION.md](ZERO-LOSS-CREDENTIAL-MIGRATION.md) for complete guide.
 
-### Success Stories
+### Testing
 
-The tool has been successfully tested with:
+The tool has been tested with:
 - ✅ **AAP 2.4 → AAP 2.6** migrations
-- ✅ **80,000+ hosts** in production environments
-- ✅ **10+ inventories** including dynamic inventories
-- ✅ **23+ credentials** across multiple credential types
-- ✅ **15+ job templates** with dependencies
-- ✅ **Complete RBAC** role assignments (72-94% automated)
+- ✅ Organizations, users, teams, and RBAC
+- ✅ Inventories including dynamic inventories
+- ✅ Credentials across multiple credential types
+- ✅ Job templates with dependencies
+- ✅ Projects and execution environments
 
 For detailed information, see **[USER-GUIDE.md](USER-GUIDE.md)** for comprehensive documentation including:
 - Complete setup and installation instructions
