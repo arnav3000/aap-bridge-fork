@@ -235,3 +235,16 @@ site/
 config/mappings.yaml
 
 CLAUDE.md
+
+# Migration test reports and temporary analysis files
+END-TO-END-CUSTOMER-TEST.md
+FIX-APPLIED-PHASE2-DUPLICATE.md
+LIVE-TEST-CHECKLIST.md
+MIGRATION-STATUS-REPORT.md
+PHASE2-DOUBLE-EXECUTION-BUG.md
+PHASE3-HANGING-ANALYSIS.md
+QUICK-FIX-PHASE3.md
+SUCCESS-REPORT-PHASE2-PHASE3-FIXES.md
+
+# Migration process ID files
+*.pid
