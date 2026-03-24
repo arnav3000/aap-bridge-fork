@@ -114,8 +114,8 @@ aap-bridge migrate full
 ```
 
 **📚 Documentation:**
-- **[CREDENTIAL-FIRST-WORKFLOW.md](CREDENTIAL-FIRST-WORKFLOW.md)** - Complete user guide
-- **[MIGRATION-WORKFLOW-DIAGRAM.md](MIGRATION-WORKFLOW-DIAGRAM.md)** - Visual diagrams and flowcharts
+- **[CREDENTIAL-FIRST-WORKFLOW.md](docs/workflows/CREDENTIAL-FIRST-WORKFLOW.md)** - Complete user guide
+- **[MIGRATION-WORKFLOW-DIAGRAM.md](docs/workflows/MIGRATION-WORKFLOW-DIAGRAM.md)** - Visual diagrams and flowcharts
 - **[QUICK-START-CREDENTIALS.md](QUICK-START-CREDENTIALS.md)** - Quick reference guide
 
 ## Architecture
@@ -528,7 +528,7 @@ ansible-playbook credential_migration/migrate_credentials.yml
 
 ⚠️ **Important:** Secrets (passwords, tokens, keys) must be manually filled as AAP API doesn't export them.
 
-**Documentation:** See [ZERO-LOSS-CREDENTIAL-MIGRATION.md](ZERO-LOSS-CREDENTIAL-MIGRATION.md) for complete guide.
+**Documentation:** See [credential-migration.md](docs/guides/credential-migration.md) for complete guide.
 
 ### Testing
 
