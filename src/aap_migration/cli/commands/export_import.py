@@ -409,6 +409,7 @@ def export(
                     )
                     skipped_manual.append(rtype)
                     continue
+
                 try:
                     endpoint = get_endpoint(rtype)
                 except KeyError:
@@ -598,14 +599,16 @@ def export(
                                 source_name = resource.get("name", "")
 
                                 # Queue mapping for batch insert (instead of individual write)
-                                pending_mappings.append(
-                                    {
-                                        "resource_type": rtype,
-                                        "source_id": source_id,
-                                        "target_id": None,  # Will be set during import
-                                        "source_name": source_name,
-                                    }
-                                )
+                                # Settings don't have IDs, skip mapping for settings
+                                if source_id is not None:
+                                    pending_mappings.append(
+                                        {
+                                            "resource_type": rtype,
+                                            "source_id": source_id,
+                                            "target_id": None,  # Will be set during import
+                                            "source_name": source_name,
+                                        }
+                                    )
 
                                 # Batch commit mappings to reduce DB overhead
                                 if len(pending_mappings) >= mapping_batch_size:
@@ -615,8 +618,9 @@ def export(
                                     pending_mappings = []
 
                                 # Save RAW resource data (NO transformation)
-                                # Only add source ID for tracking
-                                resource["_source_id"] = source_id
+                                # Only add source ID for tracking (if present)
+                                if source_id is not None:
+                                    resource["_source_id"] = source_id
                                 current_batch.append(resource)
                                 resource_count += 1
                             except Exception as e:

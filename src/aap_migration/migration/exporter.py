@@ -1795,7 +1795,52 @@ class SettingsExporter(ResourceExporter):
     - Sensitive secrets (passwords, API keys)
 
     This exporter fetches all settings for categorization by the transformer.
+
+    IMPORTANT: Always uses /settings/all/ endpoint to fetch ALL settings in one call,
+    regardless of what discovered endpoints say. The /settings/ endpoint returns categories,
+    but we need the unified /settings/all/ endpoint.
     """
+
+    async def get_count(self, endpoint: str, filters: dict[str, Any] | None = None) -> int:
+        """Override get_count for settings.
+
+        The /settings/all/ endpoint returns a single dict, not a paginated list.
+        Always return 1 to indicate one settings resource to export.
+
+        Args:
+            endpoint: API endpoint (ignored, always uses settings/all/)
+            filters: Optional filters (ignored for settings)
+
+        Returns:
+            Always returns 1 (single settings resource)
+        """
+        return 1
+
+    async def export_parallel(
+        self,
+        resource_type: str,
+        endpoint: str,
+        page_size: int = 200,
+        max_concurrent_pages: int = 5,
+        filters: dict[str, Any] | None = None,
+    ) -> AsyncGenerator[dict[str, Any], None]:
+        """Override export_parallel for settings.
+
+        Settings endpoint doesn't support pagination - it returns a single dict.
+        Delegate to regular export() method instead.
+
+        Args:
+            resource_type: Type of resource (ignored for settings)
+            endpoint: API endpoint (ignored, always uses settings/all/)
+            page_size: Page size (ignored for settings)
+            max_concurrent_pages: Concurrency limit (ignored for settings)
+            filters: Optional filters (ignored for settings)
+
+        Yields:
+            Single settings dictionary
+        """
+        async for settings in self.export(filters=filters):
+            yield settings
 
     async def export(
         self, filters: dict[str, Any] | None = None
@@ -1811,7 +1856,8 @@ class SettingsExporter(ResourceExporter):
         logger.info("exporting_settings")
 
         try:
-            # Settings use /settings/all/ endpoint which returns a single dict
+            # ALWAYS use /settings/all/ endpoint which returns all settings as a single dict
+            # Do NOT use discovered endpoint "/settings/" which returns category list
             settings_data = await self.client.get("settings/all/")
 
             if not isinstance(settings_data, dict):
@@ -1822,8 +1868,9 @@ class SettingsExporter(ResourceExporter):
                 return
 
             # Add metadata for transformer
+            from datetime import datetime, timezone
             settings_data['_migration_metadata'] = {
-                'export_timestamp': self.client._get_timestamp(),
+                'export_timestamp': datetime.now(timezone.utc).isoformat(),
                 'source_url': str(self.client.base_url),
                 'total_settings': len(settings_data)
             }
