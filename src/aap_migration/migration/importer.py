@@ -997,7 +997,9 @@ class TeamImporter(ResourceImporter):
 class OrganizationImporter(ResourceImporter):
     """Importer for organization resources."""
 
-    DEPENDENCIES = {}  # No dependencies
+    DEPENDENCIES = {
+        "default_environment": "execution_environments",
+    }
 
     async def import_organizations(
         self,
@@ -1899,6 +1901,15 @@ class HostImporter(ResourceImporter):
             source_name_by_id: dict[int, str] = {}
             batch_skipped = 0
 
+            # Fetch existing hosts in this inventory to check for duplicates
+            existing_hosts_data = await self.client.get(
+                f"inventories/{inventory_id}/hosts/",
+                params={"page_size": 1000},  # Get many hosts to check duplicates
+            )
+            existing_hosts_by_name = {
+                h["name"]: h for h in existing_hosts_data.get("results", [])
+            }
+
             for host in batch:
                 source_id = host.pop("_source_id", host.get("id"))
                 source_name = host.get("name", f"host_{source_id}")
@@ -1907,6 +1918,29 @@ class HostImporter(ResourceImporter):
                 # Skip if already migrated
                 if self.state.is_migrated("hosts", source_id):
                     self.stats["skipped_count"] += 1
+                    batch_skipped += 1
+                    continue
+
+                # Check if host already exists in target inventory (by name)
+                if source_name in existing_hosts_by_name:
+                    existing_host = existing_hosts_by_name[source_name]
+                    # Create ID mapping for existing host
+                    self.state.save_id_mapping(
+                        resource_type="hosts",
+                        source_id=source_id,
+                        target_id=existing_host["id"],
+                        source_name=source_name,
+                        target_name=existing_host.get("name"),
+                    )
+                    logger.info(
+                        "host_already_exists",
+                        source_id=source_id,
+                        source_name=source_name,
+                        target_id=existing_host["id"],
+                        inventory_id=inventory_id,
+                        message="Host already exists in target inventory - mapped existing host",
+                    )
+                    self.stats["conflict_count"] += 1
                     batch_skipped += 1
                     continue
 

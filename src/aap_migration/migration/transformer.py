@@ -1951,6 +1951,36 @@ class ScheduleTransformer(DataTransformer):
                     }
                     ujt_type = type_map.get(api_type)
 
+        # FALLBACK: Parse type from related URL if summary_fields.type is missing
+        if not ujt_type and "related" in data and "unified_job_template" in data["related"]:
+            ujt_url = data["related"]["unified_job_template"]
+            # URL format: /api/v2/{resource_type}/{id}/
+            # Example: /api/v2/job_templates/14/ → "job_templates"
+            # Example: /api/v2/projects/8/ → "projects"
+            import re
+            match = re.search(r'/api/v2/([^/]+)/\d+/', ujt_url)
+            if match:
+                # Extract resource type from URL (already plural in URL)
+                url_resource_type = match.group(1)
+                # Validate it's a known type
+                valid_types = {
+                    "job_templates": "job_templates",
+                    "workflow_job_templates": "workflow_job_templates",
+                    "projects": "projects",
+                    "inventory_sources": "inventory_sources",
+                    "system_job_templates": "system_job_templates",
+                }
+                ujt_type = valid_types.get(url_resource_type)
+                if ujt_type:
+                    logger.info(
+                        "schedule_ujt_type_from_url",
+                        source_id=source_id,
+                        source_name=data.get("name"),
+                        ujt_url=ujt_url,
+                        ujt_type=ujt_type,
+                        message="Determined schedule type from related URL (summary_fields.type was null)",
+                    )
+
         if not ujt_type:
             # Fallback: Try to infer type or skip if unknown
             # If we can't determine type, we can't validate dependency correctly
