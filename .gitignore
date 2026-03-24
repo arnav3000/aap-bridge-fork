@@ -234,3 +234,4 @@ site/
 # Configuration files with environment-specific values
 config/mappings.yaml
 
+CLAUDE.md
