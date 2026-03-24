@@ -104,9 +104,24 @@ else
 fi
 
 echo ""
+
+# Generate project failure analysis if any projects failed
+echo "📋 Analyzing project failures..."
+aap-bridge analyze-project-failures --output PROJECT-FAILURES-REPORT.md
+if [ -f "PROJECT-FAILURES-REPORT.md" ]; then
+    # Check if any projects failed
+    failed_count=$(sqlite3 migration_state.db "SELECT COUNT(*) FROM id_mappings WHERE resource_type='projects' AND target_id IS NULL;" 2>/dev/null || echo "0")
+    if [ "$failed_count" -gt "0" ]; then
+        echo "⚠️  $failed_count project(s) failed to import!"
+        echo "📄 See PROJECT-FAILURES-REPORT.md for manual fix instructions"
+    fi
+fi
+
+echo ""
 echo "✅ Migration complete!"
 echo ""
 echo "📁 Exported data: exports/"
 echo "📁 Transformed data: xformed/"
 echo "📁 Migration database: migration_state.db"
+echo "📁 Failure analysis: PROJECT-FAILURES-REPORT.md"
 echo ""

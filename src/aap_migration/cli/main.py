@@ -21,6 +21,7 @@ from aap_migration.cli.commands import metadata as metadata_commands
 from aap_migration.cli.commands import migrate as migrate_commands
 from aap_migration.cli.commands import patch_projects as patch_projects_commands
 from aap_migration.cli.commands import prep as prep_commands
+from aap_migration.cli.commands import project_failures as project_failures_commands
 from aap_migration.cli.commands import schema as schema_commands
 from aap_migration.cli.commands import state as state_commands
 from aap_migration.cli.commands import transform as transform_commands
@@ -133,6 +134,7 @@ cli.add_command(export_import.export)
 cli.add_command(transform_commands.transform)
 cli.add_command(export_import.import_cmd, name="import")
 cli.add_command(patch_projects_commands.patch_projects)
+cli.add_command(project_failures_commands.analyze_project_failures)
 cli.add_command(validate_commands.validate)
 cli.add_command(validate_commands.report)
 
