@@ -675,40 +675,31 @@ The tool migrates all AAP resources in the correct dependency order:
 
 For detailed information on what's included and what requires manual steps, see [USER-GUIDE.md](USER-GUIDE.md).
 
-## 📚 Complete Documentation
+## 📚 Documentation
 
-### User Guides
+### Getting Started
 
-- **[USER-GUIDE.md](USER-GUIDE.md)** - Complete user manual with all features and workflows
-- **[CREDENTIAL-FIRST-WORKFLOW.md](CREDENTIAL-FIRST-WORKFLOW.md)** - Detailed guide to credential-first migration
-- **[QUICK-START-CREDENTIALS.md](QUICK-START-CREDENTIALS.md)** - Quick reference for credential operations
-- **[MIGRATION-WORKFLOW-DIAGRAM.md](MIGRATION-WORKFLOW-DIAGRAM.md)** - Visual diagrams and flowcharts
+1. **[QUICK-START.md](QUICK-START.md)** - Quick start guide
+2. **[USER-GUIDE.md](USER-GUIDE.md)** - Complete user manual
 
-### Technical Documentation
+### Workflow Guides
 
-- **[CLAUDE.md](CLAUDE.md)** - Project overview and development guide (for contributors)
-- **[CREDENTIAL-FIRST-IMPLEMENTATION-SUMMARY.md](CREDENTIAL-FIRST-IMPLEMENTATION-SUMMARY.md)** - Technical implementation details
-- **[IMPLEMENTATION-COMPLETE.md](IMPLEMENTATION-COMPLETE.md)** - Complete implementation summary
+- **[Credential-First Migration](docs/workflows/CREDENTIAL-FIRST-WORKFLOW.md)** - Detailed credential workflow
+- **[Migration Workflow Diagrams](docs/workflows/MIGRATION-WORKFLOW-DIAGRAM.md)** - Visual process diagrams
+- **[RBAC Migration](docs/workflows/RBAC-MIGRATION-GUIDE.md)** - Role-based access control migration
+- **[Credential Migration Guide](docs/guides/credential-migration.md)** - Comprehensive credential guide
 
-### Test Results & Validation
-
-- **[REGRESSION-TEST-RESULTS.md](REGRESSION-TEST-RESULTS.md)** - Individual credential migration test results
-- **[FULL-MIGRATION-TEST-RESULTS.md](FULL-MIGRATION-TEST-RESULTS.md)** - Full migration workflow validation
-- Both tests validated credential structure migration (secrets require manual update) ✅
-
-### Configuration & Examples
+### Configuration
 
 - **[.env.example](.env.example)** - Environment variable template
 - **[config/config.yaml](config/config.yaml)** - Application configuration
 - **[config/mappings.yaml.example](config/mappings.yaml.example)** - Resource name mapping examples
 
-### Migration Reports
+### Additional Documentation
 
-After running a migration, find detailed reports in `./reports/`:
-- `credential-comparison.md` - Pre-migration credential diff
-- `migration-report.md` - Complete migration summary
-- `migration-report.json` - Machine-readable migration data
-- `migration-report.html` - HTML visualization
+- **[docs/](docs/)** - Complete documentation (getting started, user guides, developer guides)
+- **[examples/](examples/)** - Example configurations and playbooks
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history
 
 ### Getting Help
 

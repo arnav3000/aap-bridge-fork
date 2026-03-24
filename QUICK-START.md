@@ -116,8 +116,9 @@ The API returns `$encrypted$` for passwords, tokens, and keys.
 - `./reports/migration-report.md` - Full migration results
 
 **Documentation:**
-- `CREDENTIAL-FIRST-WORKFLOW.md` - Complete guide
-- `IMPLEMENTATION-COMPLETE.md` - Implementation details
+- `docs/workflows/CREDENTIAL-FIRST-WORKFLOW.md` - Complete guide
+- `USER-GUIDE.md` - Full user manual
+- `docs/` - All documentation
 
 ## Troubleshooting
 
