@@ -248,3 +248,6 @@ SUCCESS-REPORT-PHASE2-PHASE3-FIXES.md
 
 # Migration process ID files
 *.pid
+
+# Generated migration reports
+PROJECT-FAILURES-REPORT.md
