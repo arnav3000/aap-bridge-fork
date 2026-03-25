@@ -1661,7 +1661,12 @@ class WorkflowNodeImporter(ResourceImporter):
             # Just remove the source workflow ID tracking field
             resolved.pop("_source_workflow_id", None)
 
-            # Remove edge fields (will be handled separately)
+            # Extract edge fields before removing (will be handled after all nodes exist)
+            edge_data = {
+                "success_nodes": data.get("success_nodes", []),
+                "failure_nodes": data.get("failure_nodes", []),
+                "always_nodes": data.get("always_nodes", []),
+            }
             resolved.pop("success_nodes", None)
             resolved.pop("failure_nodes", None)
             resolved.pop("always_nodes", None)
@@ -1688,8 +1693,8 @@ class WorkflowNodeImporter(ResourceImporter):
                 data=resolved,
             )
 
-            # Create the node using the nested endpoint
-            result = await self.client.post(nested_endpoint, data=resolved)
+            # Create the node using the nested endpoint (use json_data parameter)
+            result = await self.client.post(nested_endpoint, json_data=resolved)
 
             # Mark as completed
             self.state.mark_completed(
@@ -1707,6 +1712,10 @@ class WorkflowNodeImporter(ResourceImporter):
                 target_id=result["id"],
                 workflow_id=workflow_target_id,
             )
+
+            # Attach edge data and source ID to result for later edge creation
+            result["_edge_data"] = edge_data
+            result["_source_id"] = source_id
 
             return result
 
@@ -1762,10 +1771,8 @@ class WorkflowNodeImporter(ResourceImporter):
         for node in nodes:
             source_id = node.pop("_source_id", node.get("id"))
 
-            # Remove edge fields before import (will be handled separately)
-            node.pop("success_nodes", None)
-            node.pop("failure_nodes", None)
-            node.pop("always_nodes", None)
+            # Don't remove edge fields here - import_resource() will extract and store them
+            # The edge creation happens after all nodes are imported
 
             try:
                 result = await self.import_resource(
@@ -2990,6 +2997,17 @@ class WorkflowImporter(ResourceImporter):
                     imported_count=len(imported_nodes),
                     total_nodes=len(all_pending_nodes),
                 )
+
+                # Phase 3: Create edges (connections) between nodes
+                if imported_nodes:
+                    logger.info(
+                        "starting_edge_creation_phase",
+                        node_count=len(imported_nodes),
+                    )
+                    await self._create_workflow_edges(imported_nodes)
+                else:
+                    logger.warning("no_imported_nodes_for_edge_creation")
+
             except Exception as e:
                 logger.error(
                     "workflow_nodes_import_failed",
@@ -2998,6 +3016,123 @@ class WorkflowImporter(ResourceImporter):
                 )
 
         return results
+
+    async def _create_workflow_edges(self, nodes: list[dict[str, Any]]) -> None:
+        """Create edges (connections) between workflow nodes.
+
+        Must be called after all nodes are imported so we can map source IDs to target IDs.
+
+        Args:
+            nodes: List of imported node data with _edge_data and _source_id attached
+        """
+        # Build mapping of source node ID -> target node ID
+        node_id_map = {}
+        for node in nodes:
+            source_id = node.get("_source_id")
+            target_id = node.get("id")
+            if source_id and target_id:
+                node_id_map[source_id] = target_id
+
+        logger.info(
+            "creating_workflow_edges",
+            total_nodes=len(nodes),
+            node_id_mappings=len(node_id_map),
+        )
+
+        edge_count = 0
+        failed_edges = 0
+
+        for node in nodes:
+            source_node_id = node.get("_source_id")
+            target_node_id = node.get("id")
+            edge_data = node.get("_edge_data", {})
+
+            if not target_node_id or not edge_data:
+                continue
+
+            # Create success edges
+            for source_child_id in edge_data.get("success_nodes", []):
+                target_child_id = node_id_map.get(source_child_id)
+                if target_child_id:
+                    try:
+                        await self.client.post(
+                            f"workflow_job_template_nodes/{target_node_id}/success_nodes/",
+                            json_data={"id": target_child_id}
+                        )
+                        edge_count += 1
+                        logger.debug(
+                            "workflow_edge_created",
+                            edge_type="success",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                        )
+                    except Exception as e:
+                        failed_edges += 1
+                        logger.warning(
+                            "workflow_edge_failed",
+                            edge_type="success",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                            error=str(e),
+                        )
+
+            # Create failure edges
+            for source_child_id in edge_data.get("failure_nodes", []):
+                target_child_id = node_id_map.get(source_child_id)
+                if target_child_id:
+                    try:
+                        await self.client.post(
+                            f"workflow_job_template_nodes/{target_node_id}/failure_nodes/",
+                            json_data={"id": target_child_id}
+                        )
+                        edge_count += 1
+                        logger.debug(
+                            "workflow_edge_created",
+                            edge_type="failure",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                        )
+                    except Exception as e:
+                        failed_edges += 1
+                        logger.warning(
+                            "workflow_edge_failed",
+                            edge_type="failure",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                            error=str(e),
+                        )
+
+            # Create always edges
+            for source_child_id in edge_data.get("always_nodes", []):
+                target_child_id = node_id_map.get(source_child_id)
+                if target_child_id:
+                    try:
+                        await self.client.post(
+                            f"workflow_job_template_nodes/{target_node_id}/always_nodes/",
+                            json_data={"id": target_child_id}
+                        )
+                        edge_count += 1
+                        logger.debug(
+                            "workflow_edge_created",
+                            edge_type="always",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                        )
+                    except Exception as e:
+                        failed_edges += 1
+                        logger.warning(
+                            "workflow_edge_failed",
+                            edge_type="always",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                            error=str(e),
+                        )
+
+        logger.info(
+            "workflow_edges_created",
+            total_edges=edge_count,
+            failed_edges=failed_edges,
+        )
 
     async def import_workflow_job_templates(
         self,
