@@ -593,3 +593,109 @@ class AAPTargetClient(BaseAPIClient):
         except Exception as e:
             logger.error("aap_connectivity_failed", error=str(e))
             return False
+
+    # Gateway API methods (AAP 2.6+)
+    @retry_api_call
+    async def create_gateway_authenticator(
+        self,
+        name: str,
+        plugin_type: str,
+        configuration: dict[str, Any],
+        enabled: bool = True,
+        create_objects: bool = True,
+        remove_users: bool = False,
+        order: int = 2,
+    ) -> dict[str, Any]:
+        """Create a Platform Gateway authenticator (AAP 2.6+).
+
+        This method creates authenticators via the Platform Gateway API, which is
+        separate from the Controller API. Used for LDAP, SAML, OIDC, etc.
+
+        Args:
+            name: Authenticator name (e.g., "Primary LDAP")
+            plugin_type: Plugin type (e.g., "ansible_base.authentication.authenticator_plugins.ldap")
+            configuration: Authenticator configuration (field names without AUTH_LDAP_ prefix)
+            enabled: Enable the authenticator
+            create_objects: Auto-create users on login
+            remove_users: Remove users when they no longer authenticate
+            order: Authenticator order (1=local, 2+=external)
+
+        Returns:
+            Created authenticator data
+
+        Example:
+            >>> config = {
+            ...     "SERVER_URI": ["ldap://ldap.example.com:389"],
+            ...     "BIND_DN": "cn=svc,ou=ServiceAccounts,dc=example,dc=com",
+            ...     "USER_SEARCH": ["ou=Users,dc=example,dc=com", "SCOPE_SUBTREE", "(uid=%(user)s)"]
+            ... }
+            >>> result = await client.create_gateway_authenticator(
+            ...     name="Primary LDAP",
+            ...     plugin_type="ansible_base.authentication.authenticator_plugins.ldap",
+            ...     configuration=config
+            ... )
+        """
+        # Gateway API is at /api/gateway/v1/ (different from controller API)
+        # Need to construct the full URL, not relative to controller API
+        gateway_url = self.base_url.replace("/api/controller/v2", "/api/gateway/v1")
+        endpoint = f"{gateway_url}/authenticators/"
+
+        payload = {
+            "name": name,
+            "type": plugin_type,
+            "enabled": enabled,
+            "create_objects": create_objects,
+            "remove_users": remove_users,
+            "order": order,
+            "configuration": configuration,
+        }
+
+        try:
+            # Use direct httpx client since endpoint is absolute URL
+            response = await self._client.post(
+                endpoint,
+                json=payload,
+                headers={"Authorization": f"Bearer {self._token}"},
+            )
+            response.raise_for_status()
+            result = response.json()
+
+            logger.info(
+                "gateway_authenticator_created",
+                name=name,
+                plugin_type=plugin_type,
+                authenticator_id=result.get("id"),
+            )
+            return result
+
+        except Exception as e:
+            logger.error(
+                "gateway_authenticator_creation_failed",
+                name=name,
+                plugin_type=plugin_type,
+                error=str(e),
+            )
+            raise
+
+    @retry_api_call
+    async def list_gateway_authenticators(self) -> list[dict[str, Any]]:
+        """List all Platform Gateway authenticators (AAP 2.6+).
+
+        Returns:
+            List of authenticators
+        """
+        gateway_url = self.base_url.replace("/api/controller/v2", "/api/gateway/v1")
+        endpoint = f"{gateway_url}/authenticators/"
+
+        try:
+            response = await self._client.get(
+                endpoint,
+                headers={"Authorization": f"Bearer {self._token}"},
+            )
+            response.raise_for_status()
+            data = response.json()
+            return data.get("results", [])
+
+        except Exception as e:
+            logger.error("gateway_authenticators_list_failed", error=str(e))
+            raise

@@ -171,8 +171,23 @@ curl -sk -H "Authorization: Bearer $TOKEN" \
 - ✅ Gateway endpoint confirmed: `/api/gateway/v1/authenticators/`
 - ✅ LDAP plugin schema documented
 - ✅ Field mapping completed
-- 🔲 Implementation pending
+- ✅ **Implementation complete** (automatic LDAP migration to Gateway)
 - 🔲 Testing pending
+
+## Implementation
+
+**Automatic LDAP migration is now implemented in:**
+- `src/aap_migration/migration/importer.py` - SettingsImporter class
+- `src/aap_migration/client/aap_target_client.py` - Gateway authenticator methods
+
+**How it works:**
+1. Detects target AAP version (>= 2.6.0)
+2. Extracts LDAP settings from all categories (safe, review_required, sensitive)
+3. Groups LDAP servers (PRIMARY, SECONDARY, TERTIARY)
+4. Transforms AUTH_LDAP_* fields to Gateway format (removes prefix)
+5. Creates Gateway authenticator objects via `/api/gateway/v1/authenticators/`
+6. Imports non-LDAP settings to Controller API as before
+7. BIND_PASSWORD excluded for security (manual entry required in Gateway UI)
 
 ---
 

@@ -112,14 +112,21 @@ class SettingsImporter:
 
 ## Status
 
-**Current Status:** Planning - AAP 2.6 not available for testing
+**Current Status:** ✅ Implementation Complete - Testing Pending
+
+**Completed:**
+1. ✅ Gateway endpoint confirmed: `/api/gateway/v1/authenticators/`
+2. ✅ LDAP plugin schema documented (see AAP-26-LDAP-GATEWAY-MAPPING.md)
+3. ✅ Field mapping completed (AUTH_LDAP_* → Gateway format)
+4. ✅ Implementation complete in SettingsImporter
+5. ✅ Automatic version detection added
+6. ✅ Multiple LDAP server support (PRIMARY, SECONDARY, TERTIARY)
 
 **Next Steps:**
-1. Wait for AAP 2.6 environment to be available
-2. Test Gateway authenticators endpoint
-3. Determine exact JSON payload format
-4. Implement automatic LDAP split
-5. Test end-to-end migration
+1. Test end-to-end LDAP migration with AAP 2.6
+2. Verify LDAP authentication works after migration
+3. Test with multiple LDAP servers
+4. Validate error handling and edge cases
 
 ## Branch
 
@@ -132,8 +139,32 @@ class SettingsImporter:
 - Current workaround documented in README.md "Post-Migration: Verify LDAP Authentication"
 - Related files: SETTINGS-REVIEW-REPORT.md generation
 
+## Implementation Summary
+
+**Implementation complete in:**
+- `src/aap_migration/client/aap_target_client.py`:
+  - Added `create_gateway_authenticator()` method
+  - Added `list_gateway_authenticators()` method
+
+- `src/aap_migration/migration/importer.py`:
+  - Modified `SettingsImporter.import_resource()` to detect AAP 2.6
+  - Added `_extract_ldap_settings()` to collect LDAP settings
+  - Added `_migrate_ldap_to_gateway()` for automatic Gateway migration
+  - Added `_group_ldap_servers()` to handle multiple LDAP servers
+  - Added `_transform_ldap_to_gateway()` for field mapping
+  - Updated `_generate_settings_review_report()` to indicate LDAP status
+
+**Key Features:**
+- Automatic AAP version detection (checks target version >= 2.6.0)
+- LDAP settings automatically extracted and migrated to Gateway
+- Non-LDAP settings still imported to Controller API
+- Support for multiple LDAP servers (PRIMARY, SECONDARY, TERTIARY)
+- Field transformation: `AUTH_LDAP_*` → Gateway format (removes prefix)
+- BIND_PASSWORD excluded for security (manual entry required)
+- Clear reporting in SETTINGS-REVIEW-REPORT.md
+
 ---
 
 **Created:** 2026-03-26
 **Last Updated:** 2026-03-26
-**Status:** Deferred - Awaiting AAP 2.6 availability
+**Status:** ✅ Implementation Complete - Testing Pending

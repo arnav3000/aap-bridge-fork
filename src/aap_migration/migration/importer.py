@@ -8,6 +8,8 @@ import asyncio
 from collections.abc import Callable
 from typing import Any
 
+from packaging import version
+
 from aap_migration.client.aap_target_client import AAPTargetClient
 from aap_migration.client.bulk_operations import BulkOperations
 from aap_migration.client.exceptions import APIError, ConflictError
@@ -4178,6 +4180,7 @@ class SettingsImporter(ResourceImporter):
     - Auto-imports safe settings (non-sensitive, non-environment-specific)
     - Generates review report for environment-specific settings
     - Generates template for sensitive settings (passwords, secrets)
+    - AAP 2.6+: Migrates LDAP settings to Platform Gateway authenticators
     """
 
     DEPENDENCIES: dict[str, str] = {}
@@ -4216,8 +4219,30 @@ class SettingsImporter(ResourceImporter):
 
         imported_count = 0
         failed_count = 0
+        ldap_migrated = False
 
-        # Import safe settings automatically
+        # Detect AAP version
+        from packaging import version
+        target_version = await self.client.get_version()
+        is_aap_26 = version.parse(target_version) >= version.parse("2.6.0")
+
+        # AAP 2.6+: Migrate LDAP settings to Gateway authenticators
+        if is_aap_26:
+            ldap_settings = self._extract_ldap_settings(safe, review_required, sensitive)
+            if ldap_settings:
+                logger.info(
+                    "ldap_settings_detected",
+                    count=len(ldap_settings),
+                    message="LDAP settings detected - will migrate to Platform Gateway"
+                )
+                ldap_migrated = await self._migrate_ldap_to_gateway(ldap_settings)
+
+                # Remove LDAP settings from other categories (already migrated to Gateway)
+                safe = {k: v for k, v in safe.items() if not k.startswith('AUTH_LDAP_')}
+                review_required = {k: v for k, v in review_required.items() if not k.startswith('AUTH_LDAP_')}
+                sensitive = {k: v for k, v in sensitive.items() if not k.startswith('AUTH_LDAP_')}
+
+        # Import safe settings automatically (non-LDAP for AAP 2.6)
         if safe:
             try:
                 await self.client.patch("settings/all/", json_data=safe)
@@ -4233,42 +4258,253 @@ class SettingsImporter(ResourceImporter):
 
         # Generate review report
         if review_required or sensitive:
-            self._generate_settings_review_report(review_required, sensitive)
+            self._generate_settings_review_report(review_required, sensitive, ldap_migrated)
 
         self.stats["imported_count"] += imported_count
         self.stats["error_count"] += failed_count
 
-        return {
+        result = {
             "safe_imported": imported_count,
             "review_required": len(review_required),
             "sensitive_requires_manual": len(sensitive),
             "report_generated": "SETTINGS-REVIEW-REPORT.md"
         }
 
+        if ldap_migrated:
+            result["ldap_migrated_to_gateway"] = True
+
+        return result
+
+    def _extract_ldap_settings(
+        self,
+        safe: dict,
+        review_required: dict,
+        sensitive: dict
+    ) -> dict[str, Any]:
+        """Extract all LDAP settings from categorized settings.
+
+        Args:
+            safe: Safe settings
+            review_required: Environment-specific settings
+            sensitive: Sensitive settings
+
+        Returns:
+            Dictionary of all LDAP settings (AUTH_LDAP_*)
+        """
+        ldap_settings = {}
+
+        # Collect LDAP settings from all categories
+        for category in [safe, review_required, sensitive]:
+            for key, value in category.items():
+                if key.startswith('AUTH_LDAP_'):
+                    # For review_required and sensitive, extract the actual value
+                    if isinstance(value, dict) and 'source_value' in value:
+                        ldap_settings[key] = value['source_value']
+                    else:
+                        ldap_settings[key] = value
+
+        return ldap_settings
+
+    async def _migrate_ldap_to_gateway(self, ldap_settings: dict[str, Any]) -> bool:
+        """Migrate LDAP settings to Platform Gateway authenticators (AAP 2.6+).
+
+        Args:
+            ldap_settings: Dictionary of AUTH_LDAP_* settings from source
+
+        Returns:
+            True if migration successful, False otherwise
+        """
+        try:
+            # Group LDAP settings by server (primary, secondary, etc.)
+            ldap_servers = self._group_ldap_servers(ldap_settings)
+
+            authenticators_created = 0
+
+            for server_name, server_settings in ldap_servers.items():
+                # Transform AAP 2.4 format to Gateway format
+                gateway_config = self._transform_ldap_to_gateway(server_settings)
+
+                if not gateway_config:
+                    logger.warning(
+                        "ldap_server_skipped",
+                        server_name=server_name,
+                        message="Insufficient LDAP configuration"
+                    )
+                    continue
+
+                # Create Gateway authenticator
+                try:
+                    # Order: 2 for primary, 3 for secondary, etc.
+                    order = 2 + authenticators_created
+
+                    await self.client.create_gateway_authenticator(
+                        name=server_name,
+                        plugin_type="ansible_base.authentication.authenticator_plugins.ldap",
+                        configuration=gateway_config,
+                        enabled=True,
+                        create_objects=True,
+                        remove_users=False,
+                        order=order,
+                    )
+
+                    authenticators_created += 1
+                    logger.info(
+                        "ldap_gateway_authenticator_created",
+                        server_name=server_name,
+                        order=order,
+                        message=f"✓ Created Gateway authenticator: {server_name}"
+                    )
+
+                except Exception as e:
+                    logger.error(
+                        "ldap_gateway_authenticator_failed",
+                        server_name=server_name,
+                        error=str(e),
+                    )
+
+            if authenticators_created > 0:
+                logger.info(
+                    "ldap_migration_to_gateway_completed",
+                    count=authenticators_created,
+                    message=f"✓ Migrated {authenticators_created} LDAP server(s) to Platform Gateway"
+                )
+                return True
+            else:
+                logger.warning(
+                    "ldap_migration_to_gateway_failed",
+                    message="No LDAP authenticators created"
+                )
+                return False
+
+        except Exception as e:
+            logger.error("ldap_migration_to_gateway_error", error=str(e))
+            return False
+
+    def _group_ldap_servers(self, ldap_settings: dict[str, Any]) -> dict[str, dict[str, Any]]:
+        """Group LDAP settings by server (primary, secondary, etc.).
+
+        AAP 2.4 uses:
+        - AUTH_LDAP_* for primary
+        - AUTH_LDAP_1_* for secondary
+        - AUTH_LDAP_2_* for tertiary
+
+        Args:
+            ldap_settings: All LDAP settings
+
+        Returns:
+            Dictionary of server settings keyed by server name
+        """
+        servers = {}
+
+        # Primary server (no number suffix)
+        primary = {
+            k: v for k, v in ldap_settings.items()
+            if k.startswith('AUTH_LDAP_') and not k.startswith('AUTH_LDAP_1_') and not k.startswith('AUTH_LDAP_2_')
+        }
+        if primary:
+            servers["Primary LDAP"] = primary
+
+        # Secondary server (AUTH_LDAP_1_*)
+        secondary = {
+            k.replace('AUTH_LDAP_1_', 'AUTH_LDAP_'): v
+            for k, v in ldap_settings.items()
+            if k.startswith('AUTH_LDAP_1_')
+        }
+        if secondary:
+            servers["Secondary LDAP"] = secondary
+
+        # Tertiary server (AUTH_LDAP_2_*)
+        tertiary = {
+            k.replace('AUTH_LDAP_2_', 'AUTH_LDAP_'): v
+            for k, v in ldap_settings.items()
+            if k.startswith('AUTH_LDAP_2_')
+        }
+        if tertiary:
+            servers["Tertiary LDAP"] = tertiary
+
+        return servers
+
+    def _transform_ldap_to_gateway(self, server_settings: dict[str, Any]) -> dict[str, Any] | None:
+        """Transform AAP 2.4 LDAP settings to Gateway authenticator format.
+
+        Field mapping:
+        - AUTH_LDAP_SERVER_URI → SERVER_URI
+        - AUTH_LDAP_BIND_DN → BIND_DN
+        - AUTH_LDAP_BIND_PASSWORD → BIND_PASSWORD (excluded for security)
+        - AUTH_LDAP_* → * (remove prefix)
+
+        Args:
+            server_settings: LDAP settings for one server (with AUTH_LDAP_ prefix)
+
+        Returns:
+            Gateway authenticator configuration or None if insufficient data
+        """
+        # Required fields
+        server_uri = server_settings.get('AUTH_LDAP_SERVER_URI')
+        if not server_uri:
+            return None
+
+        config = {}
+
+        # Map all fields by removing AUTH_LDAP_ prefix
+        field_mapping = {
+            'AUTH_LDAP_SERVER_URI': 'SERVER_URI',
+            'AUTH_LDAP_BIND_DN': 'BIND_DN',
+            # BIND_PASSWORD excluded for security (manual entry required)
+            'AUTH_LDAP_CONNECTION_OPTIONS': 'CONNECTION_OPTIONS',
+            'AUTH_LDAP_GROUP_TYPE': 'GROUP_TYPE',
+            'AUTH_LDAP_GROUP_TYPE_PARAMS': 'GROUP_TYPE_PARAMS',
+            'AUTH_LDAP_GROUP_SEARCH': 'GROUP_SEARCH',
+            'AUTH_LDAP_START_TLS': 'START_TLS',
+            'AUTH_LDAP_USER_DN_TEMPLATE': 'USER_DN_TEMPLATE',
+            'AUTH_LDAP_USER_ATTR_MAP': 'USER_ATTR_MAP',
+            'AUTH_LDAP_USER_SEARCH': 'USER_SEARCH',
+        }
+
+        for old_key, new_key in field_mapping.items():
+            if old_key in server_settings:
+                value = server_settings[old_key]
+                # Ensure SERVER_URI is a list
+                if new_key == 'SERVER_URI' and isinstance(value, str):
+                    value = [value]
+                config[new_key] = value
+
+        return config
+
     def _generate_settings_review_report(
         self,
         review_required: dict,
-        sensitive: dict
+        sensitive: dict,
+        ldap_migrated: bool = False
     ) -> None:
         """Generate markdown report for settings that need review.
 
         Args:
             review_required: Environment-specific settings
             sensitive: Sensitive settings (passwords, secrets)
+            ldap_migrated: Whether LDAP was migrated to Gateway
         """
         from pathlib import Path
 
         report_lines = []
         report_lines.append("# Settings Migration Review Report\n\n")
 
-        # Add LDAP warning for AAP 2.6
-        report_lines.append("⚠️ **LDAP Settings in AAP 2.6:** LDAP settings are imported to Controller API. ")
-        report_lines.append("In AAP 2.6, LDAP authentication may be managed by Platform Gateway. ")
-        report_lines.append("After migration, verify LDAP authentication works:\n")
-        report_lines.append("1. Test LDAP login with a test user\n")
-        report_lines.append("2. Manually enter `AUTH_LDAP_BIND_PASSWORD` (not migrated for security)\n")
-        report_lines.append("3. If LDAP login fails, configure LDAP via Platform Gateway (Settings → Authentication in UI)\n")
-        report_lines.append("4. See README.md 'Post-Migration: Verify LDAP Authentication' section for details\n\n")
+        # Add LDAP status
+        if ldap_migrated:
+            report_lines.append("✅ **LDAP Settings Migrated to Gateway:** LDAP settings have been automatically ")
+            report_lines.append("migrated to Platform Gateway authenticators. After migration:\n")
+            report_lines.append("1. Manually enter `AUTH_LDAP_BIND_PASSWORD` in Gateway UI (Settings → Authentication)\n")
+            report_lines.append("2. Test LDAP login with a test user\n")
+            report_lines.append("3. Verify authenticators in Gateway: `https://target-aap/api/gateway/v1/authenticators/`\n\n")
+        else:
+            report_lines.append("⚠️ **LDAP Settings in AAP 2.6:** LDAP settings are imported to Controller API. ")
+            report_lines.append("In AAP 2.6, LDAP authentication may be managed by Platform Gateway. ")
+            report_lines.append("After migration, verify LDAP authentication works:\n")
+            report_lines.append("1. Test LDAP login with a test user\n")
+            report_lines.append("2. Manually enter `AUTH_LDAP_BIND_PASSWORD` (not migrated for security)\n")
+            report_lines.append("3. If LDAP login fails, configure LDAP via Platform Gateway (Settings → Authentication in UI)\n")
+            report_lines.append("4. See README.md 'Post-Migration: Verify LDAP Authentication' section for details\n\n")
+
         report_lines.append("---\n\n")
 
         if review_required:
