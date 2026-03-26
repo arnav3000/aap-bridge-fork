@@ -17,17 +17,26 @@ ansible_base.authentication.authenticator_plugins.ldap
 
 | AAP 2.4 (Controller) | AAP 2.6 (Gateway) | Type | Required |
 |---------------------|-------------------|------|----------|
+| **Connection Settings** |
 | `AUTH_LDAP_SERVER_URI` | `SERVER_URI` | URLListField | ✅ Yes |
 | `AUTH_LDAP_BIND_DN` | `BIND_DN` | DNField | No |
 | `AUTH_LDAP_BIND_PASSWORD` | `BIND_PASSWORD` | CharField | No |
 | `AUTH_LDAP_CONNECTION_OPTIONS` | `CONNECTION_OPTIONS` | LDAPConnectionOptions | No |
+| `AUTH_LDAP_START_TLS` | `START_TLS` | BooleanField | No |
+| **User Settings** |
+| `AUTH_LDAP_USER_SEARCH` | `USER_SEARCH` | LDAPSearchField | No |
+| `AUTH_LDAP_USER_DN_TEMPLATE` | `USER_DN_TEMPLATE` | DNField | No |
+| `AUTH_LDAP_USER_ATTR_MAP` | `USER_ATTR_MAP` | UserAttrMap | ✅ Yes |
+| **Group Settings** |
 | `AUTH_LDAP_GROUP_TYPE` | `GROUP_TYPE` | ChoiceField | ✅ Yes |
 | `AUTH_LDAP_GROUP_TYPE_PARAMS` | `GROUP_TYPE_PARAMS` | DictField | ✅ Yes |
 | `AUTH_LDAP_GROUP_SEARCH` | `GROUP_SEARCH` | LDAPSearchField | No |
-| `AUTH_LDAP_START_TLS` | `START_TLS` | BooleanField | No |
-| `AUTH_LDAP_USER_DN_TEMPLATE` | `USER_DN_TEMPLATE` | DNField | No |
-| `AUTH_LDAP_USER_ATTR_MAP` | `USER_ATTR_MAP` | UserAttrMap | ✅ Yes |
-| `AUTH_LDAP_USER_SEARCH` | `USER_SEARCH` | LDAPSearchField | No |
+| `AUTH_LDAP_REQUIRE_GROUP` | `REQUIRE_GROUP` | DNField | No |
+| `AUTH_LDAP_DENY_GROUP` | `DENY_GROUP` | DNField | No |
+| **Organization & Team Mappings** |
+| `AUTH_LDAP_ORGANIZATION_MAP` | `ORGANIZATION_MAP` | DictField | No |
+| `AUTH_LDAP_TEAM_MAP` | `TEAM_MAP` | DictField | No |
+| `AUTH_LDAP_USER_FLAGS_BY_GROUP` | `USER_FLAGS_BY_GROUP` | DictField | No |
 
 ### Multiple LDAP Servers
 
@@ -72,7 +81,26 @@ POST /api/gateway/v1/authenticators/
       "last_name": "sn",
       "email": "mail"
     },
-    "USER_SEARCH": ["ou=Users,dc=example,dc=com", "SCOPE_SUBTREE", "(sAMAccountName=%(user)s)"]
+    "USER_SEARCH": ["ou=Users,dc=example,dc=com", "SCOPE_SUBTREE", "(sAMAccountName=%(user)s)"],
+    "USER_FLAGS_BY_GROUP": {
+      "is_superuser": "cn=AAP-Admins,ou=Groups,dc=example,dc=com",
+      "is_system_auditor": "cn=AAP-Auditors,ou=Groups,dc=example,dc=com"
+    },
+    "ORGANIZATION_MAP": {
+      "Global Engineering": {
+        "admins": "cn=Engineering-Admins,ou=Groups,dc=example,dc=com",
+        "users": "cn=Engineering-Users,ou=Groups,dc=example,dc=com",
+        "remove_admins": false,
+        "remove_users": false
+      }
+    },
+    "TEAM_MAP": {
+      "Backend Development": {
+        "organization": "Global Engineering",
+        "users": "cn=Backend-Developers,ou=Groups,dc=example,dc=com",
+        "remove": false
+      }
+    }
   }
 }
 ```

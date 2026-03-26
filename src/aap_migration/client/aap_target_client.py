@@ -652,10 +652,10 @@ class AAPTargetClient(BaseAPIClient):
 
         try:
             # Use direct httpx client since endpoint is absolute URL
-            response = await self._client.post(
+            response = await self.client.post(
                 endpoint,
                 json=payload,
-                headers={"Authorization": f"Bearer {self._token}"},
+                headers={"Authorization": f"Bearer {self.token}"},
             )
             response.raise_for_status()
             result = response.json()
@@ -688,9 +688,9 @@ class AAPTargetClient(BaseAPIClient):
         endpoint = f"{gateway_url}/authenticators/"
 
         try:
-            response = await self._client.get(
+            response = await self.client.get(
                 endpoint,
-                headers={"Authorization": f"Bearer {self._token}"},
+                headers={"Authorization": f"Bearer {self.token}"},
             )
             response.raise_for_status()
             data = response.json()

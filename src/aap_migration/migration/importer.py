@@ -4448,17 +4448,29 @@ class SettingsImporter(ResourceImporter):
 
         # Map all fields by removing AUTH_LDAP_ prefix
         field_mapping = {
+            # Connection settings
             'AUTH_LDAP_SERVER_URI': 'SERVER_URI',
             'AUTH_LDAP_BIND_DN': 'BIND_DN',
             # BIND_PASSWORD excluded for security (manual entry required)
             'AUTH_LDAP_CONNECTION_OPTIONS': 'CONNECTION_OPTIONS',
+            'AUTH_LDAP_START_TLS': 'START_TLS',
+
+            # User settings
+            'AUTH_LDAP_USER_SEARCH': 'USER_SEARCH',
+            'AUTH_LDAP_USER_DN_TEMPLATE': 'USER_DN_TEMPLATE',
+            'AUTH_LDAP_USER_ATTR_MAP': 'USER_ATTR_MAP',
+
+            # Group settings
             'AUTH_LDAP_GROUP_TYPE': 'GROUP_TYPE',
             'AUTH_LDAP_GROUP_TYPE_PARAMS': 'GROUP_TYPE_PARAMS',
             'AUTH_LDAP_GROUP_SEARCH': 'GROUP_SEARCH',
-            'AUTH_LDAP_START_TLS': 'START_TLS',
-            'AUTH_LDAP_USER_DN_TEMPLATE': 'USER_DN_TEMPLATE',
-            'AUTH_LDAP_USER_ATTR_MAP': 'USER_ATTR_MAP',
-            'AUTH_LDAP_USER_SEARCH': 'USER_SEARCH',
+            'AUTH_LDAP_REQUIRE_GROUP': 'REQUIRE_GROUP',
+            'AUTH_LDAP_DENY_GROUP': 'DENY_GROUP',
+
+            # Organization and Team mappings (critical for enterprise)
+            'AUTH_LDAP_ORGANIZATION_MAP': 'ORGANIZATION_MAP',
+            'AUTH_LDAP_TEAM_MAP': 'TEAM_MAP',
+            'AUTH_LDAP_USER_FLAGS_BY_GROUP': 'USER_FLAGS_BY_GROUP',
         }
 
         for old_key, new_key in field_mapping.items():
