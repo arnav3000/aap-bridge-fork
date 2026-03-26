@@ -2660,6 +2660,14 @@ class CredentialImporter(ResourceImporter):
                 error=str(e),
             )
             self.stats["error_count"] += 1
+
+            # Mark as failed in database to prevent stuck "in_progress" state
+            self.state.mark_failed(
+                resource_type=resource_type,
+                source_id=source_id,
+                error_message=f"{type(e).__name__}: {str(e)}",
+            )
+
             self.import_errors.append(
                 {
                     "resource_type": resource_type,
