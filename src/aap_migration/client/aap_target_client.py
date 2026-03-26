@@ -699,3 +699,91 @@ class AAPTargetClient(BaseAPIClient):
         except Exception as e:
             logger.error("gateway_authenticators_list_failed", error=str(e))
             raise
+
+    @retry_api_call
+    async def create_authenticator_map(
+        self,
+        authenticator_id: int,
+        name: str,
+        map_type: str,
+        triggers: dict[str, Any],
+        organization: str | None = None,
+        team: str | None = None,
+        role: str | None = None,
+        revoke: bool = False,
+        order: int = 10,
+    ) -> dict[str, Any]:
+        """Create an authenticator map for organization/team/user mappings (AAP 2.6+).
+
+        Args:
+            authenticator_id: Authenticator ID to attach the map to
+            name: Map name (e.g., "LDAP - Engineering - Members")
+            map_type: Map type (organization, team, is_superuser, role, allow)
+            triggers: Trigger conditions (e.g., {"groups": {"has_or": ["cn=..."]}})
+            organization: Organization name (for organization/team map types)
+            team: Team name (for team map type)
+            role: Role name (e.g., "Organization Member", "Team Member")
+            revoke: Whether to revoke permission if user doesn't match
+            order: Processing order (lower = higher precedence)
+
+        Returns:
+            Created authenticator map data
+
+        Example:
+            >>> triggers = {"groups": {"has_or": ["cn=Engineering-Users,ou=Groups,dc=example,dc=com"]}}
+            >>> result = await client.create_authenticator_map(
+            ...     authenticator_id=2,
+            ...     name="LDAP - Global Engineering - Members",
+            ...     map_type="organization",
+            ...     organization="Global Engineering",
+            ...     role="Organization Member",
+            ...     triggers=triggers
+            ... )
+        """
+        gateway_url = self.base_url.replace("/api/controller/v2", "/api/gateway/v1")
+        endpoint = f"{gateway_url}/authenticator_maps/"
+
+        payload: dict[str, Any] = {
+            "name": name,
+            "authenticator": authenticator_id,
+            "map_type": map_type,
+            "triggers": triggers,
+            "revoke": revoke,
+            "order": order,
+        }
+
+        # Add optional fields based on map type
+        if organization:
+            payload["organization"] = organization
+        if team:
+            payload["team"] = team
+        if role:
+            payload["role"] = role
+
+        try:
+            response = await self.client.post(
+                endpoint,
+                json=payload,
+                headers={"Authorization": f"Bearer {self.token}"},
+            )
+            response.raise_for_status()
+            result = response.json()
+
+            logger.info(
+                "authenticator_map_created",
+                map_id=result.get("id"),
+                name=name,
+                map_type=map_type,
+                authenticator_id=authenticator_id,
+            )
+            return result
+
+        except Exception as e:
+            logger.error(
+                "authenticator_map_creation_failed",
+                name=name,
+                map_type=map_type,
+                authenticator_id=authenticator_id,
+                error=str(e),
+            )
+            raise

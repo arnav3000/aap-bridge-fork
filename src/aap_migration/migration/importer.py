@@ -4319,9 +4319,10 @@ class SettingsImporter(ResourceImporter):
             ldap_servers = self._group_ldap_servers(ldap_settings)
 
             authenticators_created = 0
+            total_maps_created = 0
 
             for server_name, server_settings in ldap_servers.items():
-                # Transform AAP 2.4 format to Gateway format
+                # Transform AAP 2.4 format to Gateway format (connection/search settings only)
                 gateway_config = self._transform_ldap_to_gateway(server_settings)
 
                 if not gateway_config:
@@ -4337,7 +4338,7 @@ class SettingsImporter(ResourceImporter):
                     # Order: 2 for primary, 3 for secondary, etc.
                     order = 2 + authenticators_created
 
-                    await self.client.create_gateway_authenticator(
+                    authenticator = await self.client.create_gateway_authenticator(
                         name=server_name,
                         plugin_type="ansible_base.authentication.authenticator_plugins.ldap",
                         configuration=gateway_config,
@@ -4347,13 +4348,34 @@ class SettingsImporter(ResourceImporter):
                         order=order,
                     )
 
+                    authenticator_id = authenticator.get('id')
                     authenticators_created += 1
+
                     logger.info(
                         "ldap_gateway_authenticator_created",
                         server_name=server_name,
+                        authenticator_id=authenticator_id,
                         order=order,
                         message=f"✓ Created Gateway authenticator: {server_name}"
                     )
+
+                    # Create authenticator maps for organization/team/user flag mappings
+                    maps_created = await self._create_authenticator_maps(
+                        authenticator_id=authenticator_id,
+                        server_name=server_name,
+                        server_settings=server_settings
+                    )
+
+                    total_maps_created += maps_created
+
+                    if maps_created > 0:
+                        logger.info(
+                            "ldap_authenticator_maps_created",
+                            server_name=server_name,
+                            authenticator_id=authenticator_id,
+                            maps_count=maps_created,
+                            message=f"✓ Created {maps_created} authenticator map(s)"
+                        )
 
                 except Exception as e:
                     logger.error(
@@ -4365,8 +4387,9 @@ class SettingsImporter(ResourceImporter):
             if authenticators_created > 0:
                 logger.info(
                     "ldap_migration_to_gateway_completed",
-                    count=authenticators_created,
-                    message=f"✓ Migrated {authenticators_created} LDAP server(s) to Platform Gateway"
+                    authenticators_count=authenticators_created,
+                    maps_count=total_maps_created,
+                    message=f"✓ Migrated {authenticators_created} LDAP server(s) with {total_maps_created} mapping(s) to Platform Gateway"
                 )
                 return True
             else:
@@ -4424,8 +4447,161 @@ class SettingsImporter(ResourceImporter):
 
         return servers
 
+    async def _create_authenticator_maps(
+        self,
+        authenticator_id: int,
+        server_name: str,
+        server_settings: dict[str, Any]
+    ) -> int:
+        """Create authenticator maps for organization/team/user flag mappings.
+
+        In AAP 2.6, organization and team mappings are not part of the authenticator
+        configuration. They must be created as separate authenticator_map objects.
+
+        Args:
+            authenticator_id: ID of the created authenticator
+            server_name: Name of the LDAP server (for map naming)
+            server_settings: LDAP settings with AUTH_LDAP_ prefix
+
+        Returns:
+            Number of maps successfully created
+        """
+        maps_created = 0
+
+        # Extract mapping fields from server settings
+        org_map = server_settings.get('AUTH_LDAP_ORGANIZATION_MAP', {})
+        team_map = server_settings.get('AUTH_LDAP_TEAM_MAP', {})
+        user_flags = server_settings.get('AUTH_LDAP_USER_FLAGS_BY_GROUP', {})
+
+        try:
+            # 1. Create user flag maps (superuser, auditor, etc.)
+            if user_flags:
+                for flag_name, ldap_group in user_flags.items():
+                    if not ldap_group:
+                        continue
+
+                    try:
+                        await self.client.create_authenticator_map(
+                            authenticator_id=authenticator_id,
+                            name=f"LDAP - {flag_name.replace('_', ' ').title()}",
+                            map_type=flag_name,  # e.g., "is_superuser", "is_system_auditor"
+                            triggers={
+                                "groups": {
+                                    "has_or": [ldap_group]
+                                }
+                            },
+                            order=5  # High priority for user flags
+                        )
+                        maps_created += 1
+                    except Exception as e:
+                        logger.error(
+                            "authenticator_map_creation_failed",
+                            flag=flag_name,
+                            error=str(e)
+                        )
+
+            # 2. Create organization maps
+            if org_map:
+                for org_name, org_config in org_map.items():
+                    # Create member map
+                    users_group = org_config.get('users')
+                    if users_group:
+                        try:
+                            await self.client.create_authenticator_map(
+                                authenticator_id=authenticator_id,
+                                name=f"LDAP - {org_name} - Members",
+                                map_type="organization",
+                                organization=org_name,
+                                role="Organization Member",
+                                triggers={
+                                    "groups": {
+                                        "has_or": [users_group]
+                                    }
+                                },
+                                revoke=org_config.get('remove_users', False),
+                                order=10
+                            )
+                            maps_created += 1
+                        except Exception as e:
+                            logger.error(
+                                "authenticator_map_creation_failed",
+                                org=org_name,
+                                role="member",
+                                error=str(e)
+                            )
+
+                    # Create admin map
+                    admins_group = org_config.get('admins')
+                    if admins_group:
+                        try:
+                            await self.client.create_authenticator_map(
+                                authenticator_id=authenticator_id,
+                                name=f"LDAP - {org_name} - Admins",
+                                map_type="organization",
+                                organization=org_name,
+                                role="Organization Admin",
+                                triggers={
+                                    "groups": {
+                                        "has_or": [admins_group]
+                                    }
+                                },
+                                revoke=org_config.get('remove_admins', False),
+                                order=10
+                            )
+                            maps_created += 1
+                        except Exception as e:
+                            logger.error(
+                                "authenticator_map_creation_failed",
+                                org=org_name,
+                                role="admin",
+                                error=str(e)
+                            )
+
+            # 3. Create team maps
+            if team_map:
+                for team_name, team_config in team_map.items():
+                    users_group = team_config.get('users')
+                    org_name = team_config.get('organization')
+
+                    if users_group and org_name:
+                        try:
+                            await self.client.create_authenticator_map(
+                                authenticator_id=authenticator_id,
+                                name=f"LDAP - {team_name} Team",
+                                map_type="team",
+                                organization=org_name,
+                                team=team_name,
+                                role="Team Member",
+                                triggers={
+                                    "groups": {
+                                        "has_or": [users_group]
+                                    }
+                                },
+                                revoke=team_config.get('remove', False),
+                                order=20  # Lower priority than org maps
+                            )
+                            maps_created += 1
+                        except Exception as e:
+                            logger.error(
+                                "authenticator_map_creation_failed",
+                                team=team_name,
+                                error=str(e)
+                            )
+
+        except Exception as e:
+            logger.error(
+                "authenticator_maps_creation_error",
+                authenticator_id=authenticator_id,
+                error=str(e)
+            )
+
+        return maps_created
+
     def _transform_ldap_to_gateway(self, server_settings: dict[str, Any]) -> dict[str, Any] | None:
         """Transform AAP 2.4 LDAP settings to Gateway authenticator format.
+
+        Note: In AAP 2.6, organization/team mappings are NOT part of the authenticator
+        configuration. They are created as separate authenticator_maps via a different API.
 
         Field mapping:
         - AUTH_LDAP_SERVER_URI → SERVER_URI
@@ -4446,7 +4622,8 @@ class SettingsImporter(ResourceImporter):
 
         config = {}
 
-        # Map all fields by removing AUTH_LDAP_ prefix
+        # Map ONLY the fields supported by Gateway authenticator configuration
+        # Organization/Team mappings are handled separately via authenticator_maps API
         field_mapping = {
             # Connection settings
             'AUTH_LDAP_SERVER_URI': 'SERVER_URI',
@@ -4464,13 +4641,7 @@ class SettingsImporter(ResourceImporter):
             'AUTH_LDAP_GROUP_TYPE': 'GROUP_TYPE',
             'AUTH_LDAP_GROUP_TYPE_PARAMS': 'GROUP_TYPE_PARAMS',
             'AUTH_LDAP_GROUP_SEARCH': 'GROUP_SEARCH',
-            'AUTH_LDAP_REQUIRE_GROUP': 'REQUIRE_GROUP',
-            'AUTH_LDAP_DENY_GROUP': 'DENY_GROUP',
-
-            # Organization and Team mappings (critical for enterprise)
-            'AUTH_LDAP_ORGANIZATION_MAP': 'ORGANIZATION_MAP',
-            'AUTH_LDAP_TEAM_MAP': 'TEAM_MAP',
-            'AUTH_LDAP_USER_FLAGS_BY_GROUP': 'USER_FLAGS_BY_GROUP',
+            # Note: REQUIRE_GROUP and DENY_GROUP may need to be authenticator_maps too
         }
 
         for old_key, new_key in field_mapping.items():
