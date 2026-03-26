@@ -1,6 +1,6 @@
-"""AAP 2.3 Source Client for extracting resources.
+"""AAP Source Client for extracting resources.
 
-This client provides methods to extract all resource types from AAP 2.3
+This client provides methods to extract all resource types from AAP 2.4+
 with efficient pagination and filtering.
 """
 
@@ -17,10 +17,12 @@ logger = get_logger(__name__)
 
 
 class AAPSourceClient(BaseAPIClient):
-    """Client for AAP 2.3 source instance.
+    """Client for AAP 2.4+ source instance.
 
     This client extends BaseAPIClient with AAP-specific methods for
     extracting resources using pagination.
+
+    Supports AAP versions 2.4, 2.5, and later.
     """
 
     def __init__(
@@ -54,6 +56,46 @@ class AAPSourceClient(BaseAPIClient):
             max_keepalive_connections=max_keepalive_connections,
         )
         logger.info("aap_source_client_initialized", url=config.url)
+        self._version_cache: str | None = None
+
+    @retry_api_call
+    async def get_version(self) -> str:
+        """Detect the AAP version from the /config/ endpoint.
+
+        Returns:
+            Version string (e.g., "2.4.0", "2.5.1")
+
+        Raises:
+            APIError: If version cannot be determined
+        """
+        if self._version_cache:
+            return self._version_cache
+
+        try:
+            config_data = await self.get("config/")
+            version = config_data.get("version", "")
+
+            if not version:
+                logger.warning(
+                    "version_not_found_in_config",
+                    message="Version field not found in /config/ response, using fallback"
+                )
+                # Try to extract from ansible_version or default to 2.4.0
+                version = config_data.get("ansible_version", "2.4.0")
+
+            self._version_cache = version
+            logger.info("aap_version_detected", version=version, url=self.base_url)
+            return version
+
+        except Exception as e:
+            logger.error(
+                "version_detection_failed",
+                error=str(e),
+                message="Failed to detect AAP version, defaulting to 2.4.0"
+            )
+            # Default to 2.4.0 if detection fails
+            self._version_cache = "2.4.0"
+            return self._version_cache
 
     @retry_api_call
     async def get_paginated(

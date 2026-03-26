@@ -1,7 +1,7 @@
-"""AAP 2.6 Target Client for importing resources.
+"""AAP 2.5+ Target Client for importing resources.
 
-This client provides methods to create resources in AAP 2.6 with
-Platform Gateway support and bulk operations.
+This client provides methods to create resources in AAP 2.5+ with
+Platform Gateway support (required for AAP 2.6+) and bulk operations.
 """
 
 from typing import Any
@@ -17,11 +17,13 @@ logger = get_logger(__name__)
 
 
 class AAPTargetClient(BaseAPIClient):
-    """Client for AAP 2.6 target instance.
+    """Client for AAP 2.5+ target instance.
 
-    This client extends BaseAPIClient with AAP 2.6-specific methods for
+    This client extends BaseAPIClient with AAP-specific methods for
     creating resources, including bulk operations support. It handles
-    the Platform Gateway routing automatically.
+    the Platform Gateway routing automatically for AAP 2.6+.
+
+    Supports AAP versions 2.5, 2.6, and later.
     """
 
     def __init__(
@@ -65,6 +67,46 @@ class AAPTargetClient(BaseAPIClient):
             max_keepalive_connections=max_keepalive_connections,
         )
         logger.info("aap_target_client_initialized", url=base_url)
+        self._version_cache: str | None = None
+
+    @retry_api_call
+    async def get_version(self) -> str:
+        """Detect the AAP version from the /config/ endpoint.
+
+        Returns:
+            Version string (e.g., "2.5.0", "2.6.1")
+
+        Raises:
+            APIError: If version cannot be determined
+        """
+        if self._version_cache:
+            return self._version_cache
+
+        try:
+            config_data = await self.get("config/")
+            version = config_data.get("version", "")
+
+            if not version:
+                logger.warning(
+                    "version_not_found_in_config",
+                    message="Version field not found in /config/ response, using fallback"
+                )
+                # Try to extract from ansible_version or default to 2.6.0
+                version = config_data.get("ansible_version", "2.6.0")
+
+            self._version_cache = version
+            logger.info("aap_version_detected", version=version, url=self.base_url)
+            return version
+
+        except Exception as e:
+            logger.error(
+                "version_detection_failed",
+                error=str(e),
+                message="Failed to detect AAP version, defaulting to 2.6.0"
+            )
+            # Default to 2.6.0 if detection fails
+            self._version_cache = "2.6.0"
+            return self._version_cache
 
     # Core CRUD operations
     @retry_api_call

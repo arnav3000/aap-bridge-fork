@@ -12,6 +12,7 @@ from aap_migration.client.aap_source_client import AAPSourceClient
 from aap_migration.client.aap_target_client import AAPTargetClient
 from aap_migration.config import MigrationConfig
 from aap_migration.migration.checkpoint import CheckpointManager
+from aap_migration.migration.credential_comparator import CredentialComparator
 from aap_migration.migration.exporter import create_exporter
 from aap_migration.migration.importer import create_importer
 from aap_migration.migration.state import MigrationState
@@ -34,6 +35,7 @@ class MigrationCoordinator:
     """
 
     # Migration phases in dependency order
+    # IMPORTANT: Credentials MUST be migrated before other resources (per requirement)
     MIGRATION_PHASES = [
         {
             "name": "organizations",
@@ -42,21 +44,22 @@ class MigrationCoordinator:
             "batch_size": 50,
         },
         {
-            "name": "identity",
-            "description": "Labels, Users, and Teams",
-            "resource_types": ["labels", "users", "teams"],
-            "batch_size": 100,
-        },
-        {
             "name": "credentials",
-            "description": "Credential Types and Credentials",
+            "description": "Credential Types and Credentials (REQUIRED BEFORE OTHER RESOURCES)",
             "resource_types": ["credential_types", "credentials"],
             "batch_size": 50,
+            "critical": True,  # Mark as critical - must complete before other phases
         },
         {
             "name": "credential_input_sources",
             "description": "Credential Input Sources",
             "resource_types": ["credential_input_sources"],
+            "batch_size": 100,
+        },
+        {
+            "name": "identity",
+            "description": "Labels, Users, and Teams",
+            "resource_types": ["labels", "users", "teams"],
             "batch_size": 100,
         },
         {
@@ -188,6 +191,80 @@ class MigrationCoordinator:
             dry_run=config.dry_run,
         )
 
+    async def compare_and_verify_credentials(
+        self,
+        report_path: str | None = None,
+    ) -> dict[str, Any]:
+        """Compare credentials between source and target before migration.
+
+        This method:
+        1. Fetches all credentials from source and target
+        2. Identifies missing credentials in target
+        3. Generates a detailed report
+        4. Returns comparison results
+
+        Args:
+            report_path: Optional path to save the comparison report
+
+        Returns:
+            Dictionary with comparison results including:
+            - missing_count: Number of credentials missing in target
+            - missing_credentials: List of missing credential details
+            - report: Markdown report string
+        """
+        logger.info("credential_comparison_starting")
+
+        comparator = CredentialComparator(
+            source_client=self.source_client,
+            target_client=self.target_client,
+            state=self.state,
+        )
+
+        # Perform comparison
+        result = await comparator.compare_credentials()
+
+        # Generate report
+        report = comparator.generate_report(result)
+
+        # Save report if path provided
+        if report_path:
+            try:
+                import os
+                os.makedirs(os.path.dirname(report_path), exist_ok=True)
+                with open(report_path, "w") as f:
+                    f.write(report)
+                logger.info("credential_comparison_report_saved", path=report_path)
+            except Exception as e:
+                logger.error("credential_report_save_failed", path=report_path, error=str(e))
+
+        # Return summary
+        summary = {
+            "total_source": result.total_source,
+            "total_target": result.total_target,
+            "matching_count": result.matching_credentials,
+            "missing_count": len(result.missing_in_target),
+            "managed_skipped": result.managed_credentials_skipped,
+            "missing_credentials": [
+                {
+                    "source_id": diff.source_id,
+                    "name": diff.name,
+                    "type": diff.credential_type_name,
+                    "organization": diff.organization_name,
+                }
+                for diff in result.missing_in_target
+            ],
+            "report": report,
+        }
+
+        logger.info(
+            "credential_comparison_completed",
+            total_source=result.total_source,
+            total_target=result.total_target,
+            missing=len(result.missing_in_target),
+        )
+
+        return summary
+
     async def migrate_all(
         self,
         skip_phases: list[str] | None = None,
@@ -232,6 +309,50 @@ class MigrationCoordinator:
             only_phases=only_phases,
             total_phases=len(phases_to_execute),
         )
+
+        # STEP 1: Compare credentials before migration (credential-first approach)
+        credential_comparison = None
+        if not skip_phases or "credentials" not in skip_phases:
+            logger.info("pre_migration_credential_check_starting")
+            try:
+                import os
+                os.makedirs(report_dir, exist_ok=True)
+                credential_report_path = os.path.join(report_dir, "credential-comparison.md")
+
+                credential_comparison = await self.compare_and_verify_credentials(
+                    report_path=credential_report_path
+                )
+
+                if credential_comparison["missing_count"] > 0:
+                    logger.warning(
+                        "missing_credentials_detected",
+                        missing_count=credential_comparison["missing_count"],
+                        report_path=credential_report_path,
+                        message=f"{credential_comparison['missing_count']} credentials missing in target. "
+                        "These will be migrated first before other resources.",
+                    )
+                    # Print summary to console
+                    print("\n" + "=" * 80)
+                    print("CREDENTIAL COMPARISON RESULTS")
+                    print("=" * 80)
+                    print(f"Source Credentials: {credential_comparison['total_source']}")
+                    print(f"Target Credentials: {credential_comparison['total_target']}")
+                    print(f"Missing in Target: {credential_comparison['missing_count']}")
+                    print(f"\nDetailed report saved to: {credential_report_path}")
+                    print("=" * 80 + "\n")
+                else:
+                    logger.info(
+                        "all_credentials_present",
+                        total_credentials=credential_comparison['total_target'],
+                        message="All source credentials already exist in target",
+                    )
+
+            except Exception as e:
+                logger.error(
+                    "credential_comparison_failed",
+                    error=str(e),
+                    message="Failed to compare credentials. Continuing with migration.",
+                )
 
         try:
             # Use progress display as context manager

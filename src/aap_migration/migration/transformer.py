@@ -106,7 +106,7 @@ class SkipResourceError(Exception):
 
 
 class DataTransformer:
-    """Base transformer for converting AAP 2.3 data to AAP 2.6 format.
+    """Base transformer for converting AAP 2.4+ data to AAP 2.5+ format.
 
     Handles common transformations:
     - Removing deprecated fields
@@ -1024,7 +1024,12 @@ class CredentialTransformer(DataTransformer):
         self.external_credential_type_ids: set[int] | None = None
 
     def _load_external_credential_types(self) -> None:
-        """Load IDs of external credential types from export files."""
+        """Load IDs of external credential types from export files.
+
+        Tracks custom (managed=False) external credential types that must be
+        created before credentials can use them. Managed external types (like
+        HashiCorp Vault Secret Lookup) are built-in and don't need this check.
+        """
         self.external_credential_type_ids = set()
         if not self.input_dir:
             return
@@ -1038,7 +1043,9 @@ class CredentialTransformer(DataTransformer):
                 with open(json_file) as f:
                     types = json.load(f)
                     for ct in types:
-                        if ct.get("kind") == "external":
+                        # Only track CUSTOM external types (managed=False)
+                        # Managed external types (like HashiCorp Vault) are built-in
+                        if ct.get("kind") == "external" and not ct.get("managed"):
                             # Use _source_id if available, otherwise id
                             source_id = ct.get("_source_id") or ct.get("id")
                             if source_id:
@@ -1048,6 +1055,80 @@ class CredentialTransformer(DataTransformer):
                     "failed_to_load_external_credential_types",
                     file=str(json_file),
                     error=str(e),
+                )
+
+    def _apply_credential_type_field_mappings(
+        self, data: dict[str, Any], source_id: int
+    ) -> None:
+        """Apply credential type-specific field mappings for AAP version compatibility.
+
+        Handles schema differences between AAP versions for specific credential types.
+        For example, HashiCorp Vault Secret Lookup has different fields in AAP 2.4 vs 2.6.
+
+        Args:
+            data: Credential data (modified in place)
+            source_id: Source credential ID
+        """
+        if "inputs" not in data or not isinstance(data["inputs"], dict):
+            return
+
+        # Get credential type name to determine mapping
+        cred_type_id = data.get("credential_type")
+        if not cred_type_id or not self.state:
+            return
+
+        # Get source credential type name
+        # First try to get it from the database mappings
+        cred_type_name = None
+        try:
+            # Query id_mappings for credential_type source_name
+            mapping_info = self.state.get_id_mapping("credential_types", cred_type_id)
+            if mapping_info:
+                cred_type_name = mapping_info.get("source_name")
+        except Exception:
+            pass
+
+        # If we couldn't get the name from state, try summary_fields
+        if not cred_type_name and "summary_fields" in data:
+            cred_type_info = data.get("summary_fields", {}).get("credential_type", {})
+            if isinstance(cred_type_info, dict):
+                cred_type_name = cred_type_info.get("name")
+
+        if not cred_type_name:
+            return
+
+        # HashiCorp Vault Secret Lookup: AAP 2.4 → 2.6 field mapping
+        if cred_type_name == "HashiCorp Vault Secret Lookup":
+            inputs = data["inputs"]
+            removed_fields = []
+
+            # AAP 2.6 doesn't accept these fields - remove them
+            fields_to_remove = [
+                "api_version",      # API version selection removed in 2.6
+                "namespace",        # Namespace handling changed
+                "role_id",          # AppRole auth changed
+                "secret_id",        # AppRole auth changed
+                "default_auth_path", # Auth path handling changed
+                "kubernetes_role",  # Kubernetes auth changed
+                "username",         # User auth changed
+                "password",         # User auth changed
+            ]
+
+            for field in fields_to_remove:
+                if field in inputs:
+                    removed_fields.append(field)
+                    del inputs[field]
+
+            if removed_fields:
+                logger.warning(
+                    "hashicorp_vault_fields_removed",
+                    resource_type="credentials",
+                    source_id=source_id,
+                    source_name=data.get("name"),
+                    removed_fields=removed_fields,
+                    message="Removed incompatible HashiCorp Vault fields for AAP 2.6 - "
+                            "credential will be created with basic auth (url, token, cacert). "
+                            "Advanced auth methods (AppRole, Kubernetes, namespace) must be reconfigured manually.",
                 )
 
     def _apply_specific_transformations(
@@ -1155,6 +1236,9 @@ class CredentialTransformer(DataTransformer):
                     source_name=data.get("name"),
                     message="credential_type field is REQUIRED but missing - import will fail",
                 )
+
+        # Apply credential type-specific input field mappings (e.g., HashiCorp Vault)
+        self._apply_credential_type_field_mappings(data, source_id)
 
         # Handle encrypted fields - generate temporary values so creation succeeds
         if "inputs" in data:
@@ -1746,7 +1830,13 @@ class CredentialTypeTransformer(DataTransformer):
             resources = results.get("results", [])
             if resources and len(resources) > 0:
                 target_id = resources[0]["id"]
-                state.mark_completed("credential_types", source_id, target_id, source_name=name)
+                # Save to id_mappings table so credentials can find it
+                state.save_id_mapping(
+                    resource_type="credential_types",
+                    source_id=source_id,
+                    target_id=target_id,
+                    source_name=name,
+                )
                 logger.info(
                     "credential_type_mapped_from_target",
                     name=name,
@@ -1951,6 +2041,36 @@ class ScheduleTransformer(DataTransformer):
                     }
                     ujt_type = type_map.get(api_type)
 
+        # FALLBACK: Parse type from related URL if summary_fields.type is missing
+        if not ujt_type and "related" in data and "unified_job_template" in data["related"]:
+            ujt_url = data["related"]["unified_job_template"]
+            # URL format: /api/v2/{resource_type}/{id}/
+            # Example: /api/v2/job_templates/14/ → "job_templates"
+            # Example: /api/v2/projects/8/ → "projects"
+            import re
+            match = re.search(r'/api/v2/([^/]+)/\d+/', ujt_url)
+            if match:
+                # Extract resource type from URL (already plural in URL)
+                url_resource_type = match.group(1)
+                # Validate it's a known type
+                valid_types = {
+                    "job_templates": "job_templates",
+                    "workflow_job_templates": "workflow_job_templates",
+                    "projects": "projects",
+                    "inventory_sources": "inventory_sources",
+                    "system_job_templates": "system_job_templates",
+                }
+                ujt_type = valid_types.get(url_resource_type)
+                if ujt_type:
+                    logger.info(
+                        "schedule_ujt_type_from_url",
+                        source_id=source_id,
+                        source_name=data.get("name"),
+                        ujt_url=ujt_url,
+                        ujt_type=ujt_type,
+                        message="Determined schedule type from related URL (summary_fields.type was null)",
+                    )
+
         if not ujt_type:
             # Fallback: Try to infer type or skip if unknown
             # If we can't determine type, we can't validate dependency correctly
@@ -2149,6 +2269,142 @@ class JobsTransformer(DataTransformer):
         return data
 
 
+class ApplicationTransformer(DataTransformer):
+    """Transformer for OAuth applications with secret management.
+
+    Applications contain sensitive client secrets that should be handled carefully:
+    - Redacts client_secret in transformed output
+    - Marks applications for secret regeneration
+    - Resolves organization dependencies
+    - Preserves all non-sensitive metadata
+    """
+
+    DEPENDENCIES = {
+        "organization": "organizations",
+    }
+    REQUIRED_DEPENDENCIES = {"organization"}
+
+    def _apply_specific_transformations(
+        self, data: dict[str, Any], resource_type: str
+    ) -> dict[str, Any]:
+        """Apply application-specific transformations.
+
+        Args:
+            data: Raw application data
+            resource_type: Should be 'applications'
+
+        Returns:
+            Transformed application data with redacted secret
+        """
+        # Preserve source ID
+        data["_source_id"] = data.get("id")
+
+        # Handle client secret
+        # AAP masks secrets with "************" when exporting, but we need to detect
+        # if a secret exists and mark it for regeneration
+        if 'client_secret' in data and data['client_secret']:
+            # Redact the actual secret value (even if already masked)
+            data['client_secret'] = "***REDACTED_WILL_BE_REGENERATED***"
+            # Mark for secret regeneration during import
+            data['_requires_new_secret'] = True
+
+        # Add migration notes
+        data['_migration_notes'] = {
+            'client_secret_action': 'will_be_auto_generated' if data.get('_requires_new_secret') else 'none',
+            'redirect_uris_action': 'review_for_environment',
+            'external_systems_action': 'update_with_new_client_id_secret'
+        }
+
+        return data
+
+
+class SettingsTransformer(DataTransformer):
+    """Transformer for global system settings with categorization.
+
+    Settings contain a mix of safe, environment-specific, and sensitive data.
+    This transformer categorizes them for selective import with review workflow.
+    """
+
+    # Settings don't have dependencies like other resources
+    DEPENDENCIES: dict[str, str] = {}
+    REQUIRED_DEPENDENCIES: set[str] = set()
+
+    # Patterns for identifying sensitive settings
+    SENSITIVE_PATTERNS = [
+        'PASSWORD', 'SECRET', 'KEY', 'TOKEN', 'PRIVATE',
+        'CLIENT_SECRET', 'BIND_PASSWORD', 'SOCIAL_AUTH'
+    ]
+
+    # Patterns for environment-specific settings
+    ENVIRONMENT_PATTERNS = [
+        'URL', 'URI', 'HOST', 'PATH', 'DOMAIN', 'SERVER',
+        'EMAIL_HOST', 'LDAP', 'SMTP'  # LDAP catches all LDAP settings (schema can differ between AAP versions)
+    ]
+
+    def _apply_specific_transformations(
+        self, data: dict[str, Any], resource_type: str
+    ) -> dict[str, Any]:
+        """Apply settings-specific transformations.
+
+        Categorizes settings into:
+        - safe_to_copy: Non-sensitive, non-environment-specific
+        - review_required: Environment-specific (URLs, paths)
+        - sensitive: Passwords, secrets, API keys
+
+        Args:
+            data: Raw settings data (all settings in one dict)
+            resource_type: Should be 'settings'
+
+        Returns:
+            Categorized settings data
+        """
+        # Extract metadata
+        metadata = data.pop('_migration_metadata', {})
+
+        # Categorize settings
+        categorized = {
+            'safe_to_copy': {},
+            'review_required': {},
+            'sensitive': {},
+            '_migration_metadata': metadata
+        }
+
+        for key, value in data.items():
+            # Skip internal fields
+            if key.startswith('_'):
+                continue
+
+            # Check if sensitive
+            if any(pattern in key for pattern in self.SENSITIVE_PATTERNS):
+                categorized['sensitive'][key] = {
+                    '_original_value_redacted': True,
+                    '_action': 'provide_new_value_manually',
+                    '_placeholder': f'***PROVIDE_{key}***'
+                }
+            # Check if environment-specific
+            elif any(pattern in key for pattern in self.ENVIRONMENT_PATTERNS):
+                categorized['review_required'][key] = {
+                    'source_value': value,
+                    '_action': 'review_and_adapt_for_target_environment'
+                }
+            # Safe to copy
+            else:
+                categorized['safe_to_copy'][key] = value
+
+        # Add summary
+        categorized['_summary'] = {
+            'total_settings': len(data),
+            'safe_to_copy_count': len(categorized['safe_to_copy']),
+            'review_required_count': len(categorized['review_required']),
+            'sensitive_count': len(categorized['sensitive']),
+            'auto_import_percentage': round(
+                len(categorized['safe_to_copy']) / len(data) * 100, 1
+            ) if len(data) > 0 else 0
+        }
+
+        return categorized
+
+
 # =============================================================================
 # Transformer Factory
 # =============================================================================
@@ -2177,6 +2433,8 @@ TRANSFORMER_CLASSES: dict[str, type[DataTransformer]] = {
     "notification_templates": NotificationTemplateTransformer,
     "credential_input_sources": CredentialInputSourceTransformer,
     "jobs": JobsTransformer,
+    "applications": ApplicationTransformer,
+    "settings": SettingsTransformer,
 }
 
 

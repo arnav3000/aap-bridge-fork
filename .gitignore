@@ -204,6 +204,16 @@ tests/
 migrations/
 scripts/
 
+# AAP Bridge State Databases (SQLite)
+migration_state.db
+migration_state.db-journal
+migration_state.db-wal
+migration_state.db-shm
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
 # Documentation PDFs (API references, etc.)
 docs/*.pdf
 archive/
@@ -212,7 +222,6 @@ archive/
 # AI Development Workflow (private - not tracked in public repos)
 .claude/
 .gemini/
-CLAUDE.md
 GEMINI.md
 .mcp.json
 workflow/
@@ -225,3 +234,21 @@ site/
 # Configuration files with environment-specific values
 config/mappings.yaml
 
+CLAUDE.md
+
+# Migration test reports and temporary analysis files
+END-TO-END-CUSTOMER-TEST.md
+FIX-APPLIED-PHASE2-DUPLICATE.md
+LIVE-TEST-CHECKLIST.md
+MIGRATION-STATUS-REPORT.md
+PHASE2-DOUBLE-EXECUTION-BUG.md
+PHASE3-HANGING-ANALYSIS.md
+QUICK-FIX-PHASE3.md
+SUCCESS-REPORT-PHASE2-PHASE3-FIXES.md
+
+# Migration process ID files
+*.pid
+
+# Generated migration reports
+PROJECT-FAILURES-REPORT.md
+CLAUDE.md

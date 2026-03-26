@@ -21,9 +21,14 @@ SOURCE__TOKEN=your_source_token
 TARGET__URL=https://target-aap.example.com/api/controller/v2
 TARGET__TOKEN=your_target_token
 
-# PostgreSQL state database
-MIGRATION_STATE_DB_PATH=postgresql://user:password@localhost:5432/aap_migration
+# State database (SQLite default - no setup needed!)
+MIGRATION_STATE_DB_PATH=sqlite:///./migration_state.db
 ```
+
+!!! tip "Database Configuration"
+    SQLite is used by default and requires zero configuration. The database file
+    is created automatically on first run. PostgreSQL is only needed for
+    enterprise-scale migrations (100,000+ resources).
 
 !!! warning "Platform Gateway URL"
     For AAP 2.6+, the target URL must use `/api/controller/v2` (Platform

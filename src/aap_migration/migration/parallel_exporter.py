@@ -200,26 +200,29 @@ class ParallelExportCoordinator:
                     source_id = resource.get("id")
                     source_name = resource.get("name", "")
 
-                    pending_mappings.append(
-                        {
-                            "resource_type": resource_type,
-                            "source_id": source_id,
-                            "target_id": None,
-                            "source_name": source_name,
-                        }
-                    )
+                    # Settings don't have IDs, skip mapping for settings
+                    if source_id is not None:
+                        pending_mappings.append(
+                            {
+                                "resource_type": resource_type,
+                                "source_id": source_id,
+                                "target_id": None,
+                                "source_name": source_name,
+                            }
+                        )
 
-                    # Batch commit mappings (thread-safe)
-                    if len(pending_mappings) >= mapping_batch_size:
-                        async with self._state_lock:
-                            self.migration_state.batch_create_mappings(
-                                pending_mappings, batch_size=mapping_batch_size
-                            )
-                        pending_mappings = []
+                        # Batch commit mappings (thread-safe)
+                        if len(pending_mappings) >= mapping_batch_size:
+                            async with self._state_lock:
+                                self.migration_state.batch_create_mappings(
+                                    pending_mappings, batch_size=mapping_batch_size
+                                )
+                            pending_mappings = []
 
                     # Save RAW resource data (NO transformation)
-                    # Only add source ID for tracking
-                    resource["_source_id"] = source_id
+                    # Only add source ID for tracking (if present)
+                    if source_id is not None:
+                        resource["_source_id"] = source_id
                     current_batch.append(resource)
                     stats["exported"] += 1
 

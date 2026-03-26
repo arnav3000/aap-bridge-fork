@@ -31,6 +31,10 @@ from aap_migration.prep import (
     save_schema,
 )
 from aap_migration.utils.logging import get_logger
+from aap_migration.utils.version_validation import (
+    VersionValidationError,
+    validate_version_compatibility,
+)
 
 logger = get_logger(__name__)
 
@@ -114,7 +118,28 @@ def prep(ctx: MigrationContext, output_dir: Path, force: bool) -> None:
                 await ctx.target_client.get("ping/")
 
             # ============================================
-            # 2. DISCOVER ENDPOINTS (combined output)
+            # 2. DETECT AAP VERSIONS
+            # ============================================
+            with step_progress("Detecting AAP versions"):
+                source_version = await ctx.source_client.get_version()
+                target_version = await ctx.target_client.get_version()
+
+            logger.info(
+                "versions_detected",
+                source_version=source_version,
+                target_version=target_version,
+            )
+
+            # Validate version compatibility
+            try:
+                validate_version_compatibility(source_version, target_version)
+            except VersionValidationError as e:
+                logger.error("version_validation_failed", error=str(e))
+                console.print(f"\n[red]✗ Version Compatibility Error:[/red] {e}")
+                raise click.Abort() from e
+
+            # ============================================
+            # 3. DISCOVER ENDPOINTS (combined output)
             # ============================================
             common_ignored = ctx.config.ignored_endpoints.get("common", [])
             source_ignored = common_ignored + ctx.config.ignored_endpoints.get("source", [])
@@ -123,12 +148,12 @@ def prep(ctx: MigrationContext, output_dir: Path, force: bool) -> None:
             with step_progress("Discovering endpoints"):
                 source_endpoints = await discover_endpoints(
                     ctx.source_client,
-                    api_version="2.3.0",
+                    api_version=source_version,
                     ignored_endpoints=source_ignored,
                 )
                 target_endpoints = await discover_endpoints(
                     ctx.target_client,
-                    api_version="2.6.0",
+                    api_version=target_version,
                     ignored_endpoints=target_ignored,
                 )
             # Log details to file only
@@ -142,7 +167,7 @@ def prep(ctx: MigrationContext, output_dir: Path, force: bool) -> None:
             save_endpoints(target_endpoints, target_endpoints_file)
 
             # ============================================
-            # 3. GENERATE SCHEMAS
+            # 4. GENERATE SCHEMAS
             # ============================================
             with step_progress("Generating schemas"):
                 source_schema = await generate_schema(ctx.source_client, source_endpoints)
@@ -160,7 +185,7 @@ def prep(ctx: MigrationContext, output_dir: Path, force: bool) -> None:
             save_schema(target_schema, target_schema_file)
 
             # ============================================
-            # 4. COMPARE SCHEMAS
+            # 5. COMPARE SCHEMAS
             # ============================================
             with step_progress("Comparing schemas"):
                 comparison = compare_schemas(source_schema, target_schema)
