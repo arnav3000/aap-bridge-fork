@@ -34,7 +34,7 @@ flowchart TB
         MigrationState[MigrationState]
         IDMapping[IDMapping]
         Progress[Progress]
-        PostgreSQL[(PostgreSQL)]
+        Database[(SQLite/PostgreSQL)]
     end
 
     prep --> SchemaComparator
@@ -52,7 +52,7 @@ flowchart TB
     AAPTarget --> MigrationState
     MigrationState --> IDMapping
     MigrationState --> Progress
-    MigrationState --> PostgreSQL
+    MigrationState --> Database
 ```
 
 ## Directory Structure
@@ -192,7 +192,7 @@ Special handling for:
 
 #### MigrationState
 
-Central state manager backed by PostgreSQL:
+Central state manager backed by SQLite (default) or PostgreSQL (optional):
 
 ```python
 class MigrationState:

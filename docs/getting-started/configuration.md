@@ -23,8 +23,11 @@ SOURCE__TOKEN=your_source_api_token
 TARGET__URL=https://target-aap.example.com/api/controller/v2
 TARGET__TOKEN=your_target_api_token
 
-# PostgreSQL state database
-MIGRATION_STATE_DB_PATH=postgresql://user:password@localhost:5432/aap_migration
+# State database (SQLite default - no setup required!)
+MIGRATION_STATE_DB_PATH=sqlite:///./migration_state.db
+
+# For PostgreSQL (optional - enterprise scale only):
+# MIGRATION_STATE_DB_PATH=postgresql://user:password@localhost:5432/aap_migration
 
 ```
 

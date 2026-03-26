@@ -71,7 +71,7 @@ class ResourceImporter:
 
         Args:
             resource_type: Type of resource being imported
-            source_id: Source resource ID (from AAP 2.3)
+            source_id: Source resource ID (from source AAP)
             data: Transformed resource data
             resolve_dependencies: Whether to resolve foreign key dependencies
 
@@ -326,6 +326,111 @@ class ResourceImporter:
         # Use class-level DEPENDENCIES or return empty dict
         return self.DEPENDENCIES
 
+    async def _handle_project_manual_to_scm_transition(
+        self, resource_type: str, source_id: int, existing: dict[str, Any], data: dict[str, Any]
+    ) -> dict[str, Any] | None:
+        """Handle transition from Manual to SCM project type.
+
+        AAP requires a two-step update when converting Manual projects to SCM:
+        1. Set scm_type and scm_url (basic SCM configuration)
+        2. Set scm_update_on_launch and other SCM options
+
+        Args:
+            resource_type: Type of resource ('projects')
+            source_id: Source resource ID
+            existing: Existing project in target AAP
+            data: New project data with SCM configuration
+
+        Returns:
+            Updated resource or None on failure
+        """
+        existing_scm_type = existing.get("scm_type") or ""
+        new_scm_type = data.get("scm_type") or ""
+
+        # Log for debugging
+        logger.debug(
+            "checking_project_scm_transition",
+            source_id=source_id,
+            existing_scm_type=repr(existing_scm_type),
+            new_scm_type=repr(new_scm_type),
+            is_manual=existing_scm_type in ("", None),
+            is_scm=new_scm_type not in ("", None),
+        )
+
+        # Check if this is a Manual → SCM transition
+        # Manual projects have scm_type as empty string or None
+        if existing_scm_type in ("", None) and new_scm_type not in ("", None):
+            logger.info(
+                "project_manual_to_scm_transition",
+                resource_type=resource_type,
+                source_id=source_id,
+                existing_type="manual",
+                new_type=new_scm_type,
+            )
+
+            # Step 1: Update with basic SCM fields only
+            # Include credential if present (required for private repos)
+            basic_scm_data = {
+                "scm_type": data.get("scm_type"),
+                "scm_url": data.get("scm_url"),
+                "scm_branch": data.get("scm_branch", ""),
+            }
+
+            # Add credential if present
+            if "credential" in data:
+                basic_scm_data["credential"] = data["credential"]
+
+            # Remove None values
+            basic_scm_data = {k: v for k, v in basic_scm_data.items() if v is not None}
+
+            try:
+                logger.info(
+                    "project_update_step1_basic_scm",
+                    resource_type=resource_type,
+                    source_id=source_id,
+                    fields=list(basic_scm_data.keys()),
+                )
+                await self.client.update_resource(resource_type, existing["id"], basic_scm_data)
+
+                # Step 2: Update with SCM options
+                scm_options = {
+                    "scm_clean": data.get("scm_clean"),
+                    "scm_delete_on_update": data.get("scm_delete_on_update"),
+                    "scm_update_on_launch": data.get("scm_update_on_launch"),
+                    "scm_update_cache_timeout": data.get("scm_update_cache_timeout"),
+                }
+
+                # Remove None values
+                scm_options = {k: v for k, v in scm_options.items() if v is not None}
+
+                if scm_options:
+                    logger.info(
+                        "project_update_step2_scm_options",
+                        resource_type=resource_type,
+                        source_id=source_id,
+                        fields=list(scm_options.keys()),
+                    )
+                    updated = await self.client.update_resource(
+                        resource_type, existing["id"], scm_options
+                    )
+                    return updated
+                else:
+                    # If no options to set, fetch the updated resource from step 1
+                    result = await self.client.get(f"{resource_type}/{existing['id']}/")
+                    return result
+
+            except Exception as e:
+                logger.error(
+                    "project_manual_to_scm_transition_failed",
+                    resource_type=resource_type,
+                    source_id=source_id,
+                    error=str(e),
+                )
+                raise
+
+        # Not a Manual → SCM transition, return None to indicate no special handling
+        return None
+
     async def _handle_conflict(
         self, resource_type: str, source_id: int, data: dict[str, Any]
     ) -> dict[str, Any] | None:
@@ -374,6 +479,40 @@ class ResourceImporter:
                         source_id=source_id,
                         reason="Resources differ",
                     )
+
+                    # Special handling for projects: Manual → SCM transition
+                    if resource_type == "projects":
+                        manual_to_scm_result = await self._handle_project_manual_to_scm_transition(
+                            resource_type, source_id, existing, data
+                        )
+                        if manual_to_scm_result:
+                            # Transition handled successfully
+                            self.state.mark_completed(
+                                resource_type=resource_type,
+                                source_id=source_id,
+                                target_id=manual_to_scm_result["id"],
+                                target_name=manual_to_scm_result.get("name"),
+                            )
+                            return manual_to_scm_result
+
+                        # For manual projects, clear SCM options to prevent validation errors
+                        # AAP rejects updates that leave scm_update_on_launch=true on manual projects
+                        if data.get("scm_type") in ("", None):
+                            logger.debug(
+                                "clearing_scm_options_for_manual_project",
+                                source_id=source_id,
+                                existing_scm_update=existing.get("scm_update_on_launch"),
+                            )
+                            # Explicitly clear SCM options that don't apply to manual projects
+                            data = {
+                                **data,
+                                "scm_update_on_launch": False,
+                                "scm_clean": False,
+                                "scm_delete_on_update": False,
+                                "scm_update_cache_timeout": 0,
+                            }
+
+                    # Standard update (or no special handling needed)
                     updated = await self.client.update_resource(resource_type, existing["id"], data)
                     self.state.mark_completed(
                         resource_type=resource_type,
@@ -601,7 +740,7 @@ class CredentialTypeImporter(ResourceImporter):
 
         Args:
             resource_type: Type of resource being imported
-            source_id: Source resource ID (from AAP 2.3)
+            source_id: Source resource ID (from source AAP)
             data: Transformed resource data
             resolve_dependencies: Whether to resolve foreign key dependencies
 
@@ -997,7 +1136,9 @@ class TeamImporter(ResourceImporter):
 class OrganizationImporter(ResourceImporter):
     """Importer for organization resources."""
 
-    DEPENDENCIES = {}  # No dependencies
+    DEPENDENCIES = {
+        "default_environment": "execution_environments",
+    }
 
     async def import_organizations(
         self,
@@ -1491,7 +1632,110 @@ class InventorySourceImporter(ResourceImporter):
         Returns:
             List of created inventory source data
         """
-        return await self._import_parallel("inventory_sources", sources, progress_callback)
+        # Extract schedules before import
+        sources_with_schedules = []
+        for source in sources:
+            schedules = source.pop("schedules", None)
+            if schedules:
+                source_id = source.get("_source_id", source.get("id"))
+                sources_with_schedules.append({
+                    "source_inventory_source_id": source_id,
+                    "schedules": schedules,
+                })
+
+        # Import inventory sources
+        results = await self._import_parallel("inventory_sources", sources, progress_callback)
+
+        # Import schedules for successfully imported inventory sources
+        if sources_with_schedules:
+            logger.info(
+                "importing_inventory_source_schedules",
+                total_sources_with_schedules=len(sources_with_schedules),
+            )
+
+            for schedule_data in sources_with_schedules:
+                source_inventory_source_id = schedule_data["source_inventory_source_id"]
+                schedules = schedule_data["schedules"]
+
+                # Get the target inventory source ID from the state mapping
+                target_inventory_source_id = self.state.get_target_id("inventory_sources", source_inventory_source_id)
+                if not target_inventory_source_id:
+                    logger.warning(
+                        "inventory_source_not_found_for_schedule",
+                        source_inventory_source_id=source_inventory_source_id,
+                    )
+                    continue
+
+                # Get inventory source name for logging
+                source_result = next((s for s in results if s.get("id") == target_inventory_source_id), None)
+                source_name = source_result.get("name", "unknown") if source_result else "unknown"
+
+                for schedule in schedules:
+                    schedule_name = schedule.get("name", "unknown")
+
+                    # Remove read-only fields
+                    schedule_to_import = {k: v for k, v in schedule.items() if k not in [
+                        "id", "type", "url", "related", "summary_fields",
+                        "created", "modified", "last_run", "next_run",
+                        "status", "unified_job_template"
+                    ]}
+
+                    try:
+                        result = await self.client.post(
+                            f"inventory_sources/{target_inventory_source_id}/schedules/",
+                            json_data=schedule_to_import,
+                        )
+                        logger.info(
+                            "inventory_source_schedule_imported",
+                            inventory_source_id=target_inventory_source_id,
+                            inventory_source_name=source_name,
+                            schedule_name=schedule_name,
+                            schedule_id=result.get("id"),
+                        )
+                    except Exception as e:
+                        logger.error(
+                            "inventory_source_schedule_import_failed",
+                            inventory_source_id=target_inventory_source_id,
+                            inventory_source_name=source_name,
+                            schedule_name=schedule_name,
+                            error=str(e),
+                        )
+
+        # Automatically trigger sync for all successfully imported inventory sources
+        if results:
+            logger.info(
+                "triggering_inventory_source_syncs",
+                total_inventory_sources=len(results),
+            )
+
+            for result in results:
+                inventory_source_id = result.get("id")
+                inventory_source_name = result.get("name", "unknown")
+
+                if not inventory_source_id:
+                    continue
+
+                try:
+                    # Trigger sync via POST to /inventory_sources/{id}/update/
+                    sync_result = await self.client.post(
+                        f"inventory_sources/{inventory_source_id}/update/",
+                        json_data={},
+                    )
+                    logger.info(
+                        "inventory_source_sync_triggered",
+                        inventory_source_id=inventory_source_id,
+                        inventory_source_name=inventory_source_name,
+                        inventory_update_id=sync_result.get("id"),
+                    )
+                except Exception as e:
+                    logger.warning(
+                        "inventory_source_sync_failed",
+                        inventory_source_id=inventory_source_id,
+                        inventory_source_name=inventory_source_name,
+                        error=str(e),
+                    )
+
+        return results
 
 
 class ScheduleImporter(ResourceImporter):
@@ -1583,12 +1827,166 @@ class WorkflowNodeImporter(ResourceImporter):
 
     Edge relationships (success_nodes, failure_nodes, always_nodes) are
     removed during initial import and should be handled separately.
+
+    NOTE: Workflow nodes use a nested endpoint under workflow_job_templates,
+    not the flat /workflow_nodes/ endpoint.
     """
 
     DEPENDENCIES = {
         "workflow_job_template": "workflow_job_templates",
         "unified_job_template": "unified_job_templates",
     }
+
+    async def import_resource(
+        self,
+        resource_type: str,
+        source_id: int,
+        data: dict[str, Any],
+        resolve_dependencies: bool = True,
+    ) -> dict[str, Any] | None:
+        """Override to use nested workflow node endpoint.
+
+        Workflow nodes must be created at:
+        /workflow_job_templates/{workflow_id}/workflow_nodes/
+        not at /workflow_nodes/
+        """
+        # Get the workflow template ID (should be target ID, not source)
+        workflow_target_id = data.get("workflow_job_template")
+        if not workflow_target_id:
+            logger.error(
+                "workflow_node_missing_workflow_id",
+                source_id=source_id,
+                data_keys=list(data.keys()),
+            )
+            return None
+
+        # Check if already imported
+        if self.state.is_migrated(resource_type, source_id):
+            logger.debug(
+                "resource_already_imported",
+                resource_type=resource_type,
+                source_id=source_id,
+            )
+            self.stats["skipped_count"] += 1
+            return None
+
+        # Mark as in progress
+        self.state.mark_in_progress(
+            resource_type=resource_type,
+            source_id=source_id,
+            source_name=data.get("identifier", "unknown"),
+            phase="import",
+        )
+
+        try:
+            # Resolve unified_job_template dependency only
+            # (workflow_job_template is already the target ID)
+            resolved = dict(data)
+            if "unified_job_template" in resolved and resolved["unified_job_template"]:
+                ujt_source_id = resolved["unified_job_template"]
+                # Try to map the unified job template
+                # This could be a job_template, workflow_job_template, or other template type
+                # For now, assume it's a job_template (most common case)
+                target_id = self.state.get_mapped_id("job_templates", ujt_source_id)
+                if target_id:
+                    resolved["unified_job_template"] = target_id
+                else:
+                    logger.warning(
+                        "workflow_node_ujt_not_found",
+                        source_id=source_id,
+                        ujt_source_id=ujt_source_id,
+                    )
+                    # Remove the field if we can't resolve it
+                    resolved.pop("unified_job_template")
+
+            # Keep workflow_job_template in data (it's required for POST even though it's in the URL)
+            # Just remove the source workflow ID tracking field
+            resolved.pop("_source_workflow_id", None)
+
+            # Extract edge fields before removing (will be handled after all nodes exist)
+            edge_data = {
+                "success_nodes": data.get("success_nodes", []),
+                "failure_nodes": data.get("failure_nodes", []),
+                "always_nodes": data.get("always_nodes", []),
+            }
+            resolved.pop("success_nodes", None)
+            resolved.pop("failure_nodes", None)
+            resolved.pop("always_nodes", None)
+
+            # Remove read-only/metadata fields that shouldn't be in POST
+            read_only_fields = [
+                "id", "type", "url", "related", "summary_fields",
+                "created", "modified", "natural_key"
+            ]
+            for field in read_only_fields:
+                resolved.pop(field, None)
+
+            # Remove None values
+            resolved = {k: v for k, v in resolved.items() if v is not None}
+
+            # Use nested endpoint
+            nested_endpoint = f"workflow_job_templates/{workflow_target_id}/workflow_nodes/"
+
+            # Log the data being sent for debugging
+            logger.debug(
+                "workflow_node_create_attempt",
+                endpoint=nested_endpoint,
+                data_keys=list(resolved.keys()),
+                data=resolved,
+            )
+
+            # Create the node using the nested endpoint (use json_data parameter)
+            result = await self.client.post(nested_endpoint, json_data=resolved)
+
+            # Mark as completed
+            self.state.mark_completed(
+                resource_type=resource_type,
+                source_id=source_id,
+                target_id=result["id"],
+                target_name=result.get("identifier", "unknown"),
+            )
+
+            self.stats["imported_count"] += 1
+
+            logger.info(
+                "workflow_node_imported",
+                source_id=source_id,
+                target_id=result["id"],
+                workflow_id=workflow_target_id,
+            )
+
+            # Attach edge data and source ID to result for later edge creation
+            result["_edge_data"] = edge_data
+            result["_source_id"] = source_id
+
+            return result
+
+        except Exception as e:
+            logger.error(
+                "workflow_node_import_failed",
+                resource_type=resource_type,
+                source_id=source_id,
+                error=str(e),
+            )
+
+            self.stats["error_count"] += 1
+            self.state.mark_failed(
+                resource_type=resource_type,
+                source_id=source_id,
+                error_message=f"{type(e).__name__}: {str(e)}",
+            )
+
+            self.import_errors.append(
+                {
+                    "resource_type": resource_type,
+                    "source_id": source_id,
+                    "name": data.get("identifier", "unknown"),
+                    "error": str(e),
+                    "error_type": type(e).__name__,
+                }
+            )
+
+            return None
 
     async def import_workflow_nodes(
         self,
@@ -1615,10 +2013,8 @@ class WorkflowNodeImporter(ResourceImporter):
         for node in nodes:
             source_id = node.pop("_source_id", node.get("id"))
 
-            # Remove edge fields before import (will be handled separately)
-            node.pop("success_nodes", None)
-            node.pop("failure_nodes", None)
-            node.pop("always_nodes", None)
+            # Don't remove edge fields here - import_resource() will extract and store them
+            # The edge creation happens after all nodes are imported
 
             try:
                 result = await self.import_resource(
@@ -1899,6 +2295,15 @@ class HostImporter(ResourceImporter):
             source_name_by_id: dict[int, str] = {}
             batch_skipped = 0
 
+            # Fetch existing hosts in this inventory to check for duplicates
+            existing_hosts_data = await self.client.get(
+                f"inventories/{inventory_id}/hosts/",
+                params={"page_size": 1000},  # Get many hosts to check duplicates
+            )
+            existing_hosts_by_name = {
+                h["name"]: h for h in existing_hosts_data.get("results", [])
+            }
+
             for host in batch:
                 source_id = host.pop("_source_id", host.get("id"))
                 source_name = host.get("name", f"host_{source_id}")
@@ -1907,6 +2312,29 @@ class HostImporter(ResourceImporter):
                 # Skip if already migrated
                 if self.state.is_migrated("hosts", source_id):
                     self.stats["skipped_count"] += 1
+                    batch_skipped += 1
+                    continue
+
+                # Check if host already exists in target inventory (by name)
+                if source_name in existing_hosts_by_name:
+                    existing_host = existing_hosts_by_name[source_name]
+                    # Create ID mapping for existing host
+                    self.state.save_id_mapping(
+                        resource_type="hosts",
+                        source_id=source_id,
+                        target_id=existing_host["id"],
+                        source_name=source_name,
+                        target_name=existing_host.get("name"),
+                    )
+                    logger.info(
+                        "host_already_exists",
+                        source_id=source_id,
+                        source_name=source_name,
+                        target_id=existing_host["id"],
+                        inventory_id=inventory_id,
+                        message="Host already exists in target inventory - mapped existing host",
+                    )
+                    self.stats["conflict_count"] += 1
                     batch_skipped += 1
                     continue
 
@@ -2045,8 +2473,14 @@ class CredentialImporter(ResourceImporter):
     }
 
     # Built-in credential type IDs (managed by AAP, consistent across versions)
-    # Built-in types are IDs 1-27 in both AAP 2.3 and AAP 2.6
+    # Built-in types are IDs 1-27 in AAP 2.3, 2.4, 2.5, and 2.6
     # Custom types start at ID 28+
+    #
+    # NOTE: This assumption should be verified for your specific AAP versions.
+    # If your source or target AAP has different built-in credential type IDs,
+    # adjust this value accordingly. You can verify by checking:
+    #   GET /api/v2/credential_types/?managed=true
+    # on both source and target AAP instances.
     BUILTIN_CREDENTIAL_TYPE_MAX_ID = 27
 
     async def import_resource(
@@ -2064,7 +2498,7 @@ class CredentialImporter(ResourceImporter):
 
         Args:
             resource_type: Type of resource being imported
-            source_id: Source resource ID (from AAP 2.3)
+            source_id: Source resource ID (from source AAP)
             data: Transformed resource data
             resolve_dependencies: Whether to resolve foreign key dependencies
 
@@ -2420,7 +2854,76 @@ class ProjectImporter(ResourceImporter):
         Returns:
             List of created project data
         """
-        return await self._import_parallel("projects", projects, progress_callback)
+        # Extract schedules before import
+        projects_with_schedules = []
+        for project in projects:
+            schedules = project.pop("schedules", None)
+            if schedules:
+                source_id = project.get("_source_id", project.get("id"))
+                projects_with_schedules.append({
+                    "source_project_id": source_id,
+                    "schedules": schedules,
+                })
+
+        # Import projects
+        results = await self._import_parallel("projects", projects, progress_callback)
+
+        # Import schedules for successfully imported projects
+        if projects_with_schedules:
+            logger.info(
+                "importing_project_schedules",
+                total_projects_with_schedules=len(projects_with_schedules),
+            )
+
+            for schedule_data in projects_with_schedules:
+                source_project_id = schedule_data["source_project_id"]
+                schedules = schedule_data["schedules"]
+
+                # Get the target project ID from the state mapping
+                target_project_id = self.state.get_target_id("projects", source_project_id)
+                if not target_project_id:
+                    logger.warning(
+                        "project_not_found_for_schedule",
+                        source_project_id=source_project_id,
+                    )
+                    continue
+
+                # Get project name for logging
+                project_result = next((p for p in results if p.get("id") == target_project_id), None)
+                project_name = project_result.get("name", "unknown") if project_result else "unknown"
+
+                for schedule in schedules:
+                    schedule_name = schedule.get("name", "unknown")
+
+                    # Remove read-only fields
+                    schedule_to_import = {k: v for k, v in schedule.items() if k not in [
+                        "id", "type", "url", "related", "summary_fields",
+                        "created", "modified", "last_run", "next_run",
+                        "status", "unified_job_template"
+                    ]}
+
+                    try:
+                        result = await self.client.post(
+                            f"projects/{target_project_id}/schedules/",
+                            json_data=schedule_to_import,
+                        )
+                        logger.info(
+                            "project_schedule_imported",
+                            project_id=target_project_id,
+                            project_name=project_name,
+                            schedule_name=schedule_name,
+                            schedule_id=result.get("id"),
+                        )
+                    except Exception as e:
+                        logger.error(
+                            "project_schedule_import_failed",
+                            project_id=target_project_id,
+                            project_name=project_name,
+                            schedule_name=schedule_name,
+                            error=str(e),
+                        )
+
+        return results
 
 
 async def wait_for_project_sync(
@@ -2609,12 +3112,16 @@ class JobTemplateImporter(ResourceImporter):
         success_count = 0
         failed_count = 0
         skipped_count = 0
+        templates_with_schedules = []  # Collect templates that have schedules to create
 
         for template in templates:
             source_id = template.pop("_source_id", template.get("id"))
 
             # Extract credentials for post-creation association
             credentials = template.pop("credentials", [])
+
+            # Extract schedules for separate import
+            schedules = template.pop("schedules", None)
 
             # Clean up EE markers
             if template.get("_needs_execution_environment"):
@@ -2645,6 +3152,15 @@ class JobTemplateImporter(ResourceImporter):
                             target_id, credentials, template.get("name")
                         )
 
+                    # Store schedules for later import
+                    if schedules:
+                        templates_with_schedules.append({
+                            "source_template_id": source_id,
+                            "template_id": target_id,
+                            "template_name": result.get("name", "unknown"),
+                            "schedules": schedules,
+                        })
+
                     results.append(result)
                     success_count += 1
                 else:
@@ -2661,6 +3177,50 @@ class JobTemplateImporter(ResourceImporter):
 
             if progress_callback:
                 progress_callback(success_count, failed_count, skipped_count)
+
+        # Import schedules
+        if templates_with_schedules:
+            logger.info(
+                "importing_job_template_schedules",
+                total_templates_with_schedules=len(templates_with_schedules),
+            )
+
+            for schedule_data in templates_with_schedules:
+                source_template_id = schedule_data["source_template_id"]
+                template_id = schedule_data["template_id"]
+                template_name = schedule_data["template_name"]
+                schedules = schedule_data["schedules"]
+
+                for schedule in schedules:
+                    schedule_name = schedule.get("name", "unknown")
+
+                    # Remove read-only fields
+                    schedule_to_import = {k: v for k, v in schedule.items() if k not in [
+                        "id", "type", "url", "related", "summary_fields",
+                        "created", "modified", "last_run", "next_run",
+                        "status", "unified_job_template"
+                    ]}
+
+                    try:
+                        result = await self.client.post(
+                            f"job_templates/{template_id}/schedules/",
+                            json_data=schedule_to_import,
+                        )
+                        logger.info(
+                            "job_template_schedule_imported",
+                            template_id=template_id,
+                            template_name=template_name,
+                            schedule_name=schedule_name,
+                            schedule_id=result.get("id"),
+                        )
+                    except Exception as e:
+                        logger.error(
+                            "job_template_schedule_import_failed",
+                            template_id=template_id,
+                            template_name=template_name,
+                            schedule_name=schedule_name,
+                            error=str(e),
+                        )
 
         return results
 
@@ -2732,7 +3292,7 @@ class WorkflowImporter(ResourceImporter):
     ) -> list[dict[str, Any]]:
         """Import multiple workflow job templates with live progress updates.
 
-        Note: Workflow nodes must be imported separately after workflows are created.
+        Imports workflows first, then automatically imports their workflow nodes.
         Workflows use sequential import (not parallel) to properly track node metadata.
 
         Args:
@@ -2747,12 +3307,26 @@ class WorkflowImporter(ResourceImporter):
         success_count = 0
         failed_count = 0
         skipped_count = 0
+        all_pending_nodes = []  # Collect all nodes for batch import
+        workflows_with_surveys = []  # Collect workflows that have surveys to apply
+        workflows_with_schedules = []  # Collect workflows that have schedules to create
+        workflows_with_notifications = []  # Collect workflows that have notification associations
 
+        # Phase 1: Import workflows and collect nodes/surveys/schedules/notifications
         for workflow in workflows:
             source_id = workflow.pop("_source_id", workflow.get("id"))
 
             # Extract nodes for separate import
             nodes = workflow.pop("_workflow_nodes", None)
+
+            # Extract survey spec for separate import (must be POSTed after workflow creation)
+            survey_spec = workflow.pop("survey_spec", None)
+
+            # Extract schedules for separate import
+            schedules = workflow.pop("schedules", None)
+
+            # Extract notification associations for separate import
+            notifications = workflow.pop("notifications", None)
 
             result = await self.import_resource(
                 resource_type="workflow_job_templates",
@@ -2761,9 +3335,39 @@ class WorkflowImporter(ResourceImporter):
             )
 
             if result:
-                if nodes:
-                    # Store nodes for later import
-                    result["_pending_nodes"] = nodes
+                if nodes and len(nodes) > 0:
+                    # Store workflow mapping for node import
+                    for node in nodes:
+                        # Add workflow_job_template reference to node
+                        node["workflow_job_template"] = result["id"]
+                        node["_source_workflow_id"] = source_id
+                    all_pending_nodes.extend(nodes)
+
+                # Store survey spec for later import
+                if survey_spec:
+                    workflows_with_surveys.append({
+                        "workflow_id": result["id"],
+                        "workflow_name": result.get("name", "unknown"),
+                        "survey_spec": survey_spec,
+                    })
+
+                # Store schedules for later import
+                if schedules:
+                    workflows_with_schedules.append({
+                        "source_workflow_id": source_id,
+                        "workflow_id": result["id"],
+                        "workflow_name": result.get("name", "unknown"),
+                        "schedules": schedules,
+                    })
+
+                # Store notification associations for later import
+                if notifications:
+                    workflows_with_notifications.append({
+                        "workflow_id": result["id"],
+                        "workflow_name": result.get("name", "unknown"),
+                        "notifications": notifications,
+                    })
+
                 results.append(result)
                 success_count += 1
             else:
@@ -2773,7 +3377,300 @@ class WorkflowImporter(ResourceImporter):
             if progress_callback:
                 progress_callback(success_count, failed_count, skipped_count)
 
+        # Phase 2: Import all workflow nodes
+        if all_pending_nodes:
+            logger.info(
+                "importing_workflow_nodes",
+                total_nodes=len(all_pending_nodes),
+                total_workflows=len(results),
+            )
+
+            # Create node importer and import nodes
+            # WorkflowNodeImporter is defined in this same file
+            node_importer = WorkflowNodeImporter(
+                client=self.client,
+                state=self.state,
+                performance_config=self.performance_config,
+            )
+
+            try:
+                imported_nodes = await node_importer.import_workflow_nodes(
+                    all_pending_nodes,
+                    progress_callback=None,  # Could add separate progress for nodes
+                )
+                logger.info(
+                    "workflow_nodes_imported",
+                    imported_count=len(imported_nodes),
+                    total_nodes=len(all_pending_nodes),
+                )
+
+                # Phase 3: Create edges (connections) between nodes
+                if imported_nodes:
+                    logger.info(
+                        "starting_edge_creation_phase",
+                        node_count=len(imported_nodes),
+                    )
+                    await self._create_workflow_edges(imported_nodes)
+                else:
+                    logger.warning("no_imported_nodes_for_edge_creation")
+
+            except Exception as e:
+                logger.error(
+                    "workflow_nodes_import_failed",
+                    total_nodes=len(all_pending_nodes),
+                    error=str(e),
+                )
+
+        # Phase 4: Import survey specs
+        if workflows_with_surveys:
+            logger.info(
+                "importing_workflow_surveys",
+                total_surveys=len(workflows_with_surveys),
+            )
+
+            for survey_data in workflows_with_surveys:
+                workflow_id = survey_data["workflow_id"]
+                workflow_name = survey_data["workflow_name"]
+                survey_spec = survey_data["survey_spec"]
+
+                try:
+                    await self.client.post(
+                        f"workflow_job_templates/{workflow_id}/survey_spec/",
+                        json_data=survey_spec,
+                    )
+                    logger.info(
+                        "workflow_survey_imported",
+                        workflow_id=workflow_id,
+                        workflow_name=workflow_name,
+                        survey_questions=len(survey_spec.get("spec", [])),
+                    )
+                except Exception as e:
+                    logger.error(
+                        "workflow_survey_import_failed",
+                        workflow_id=workflow_id,
+                        workflow_name=workflow_name,
+                        error=str(e),
+                    )
+
+        # Phase 5: Import schedules
+        if workflows_with_schedules:
+            logger.info(
+                "importing_workflow_schedules",
+                total_workflows_with_schedules=len(workflows_with_schedules),
+            )
+
+            for schedule_data in workflows_with_schedules:
+                source_workflow_id = schedule_data["source_workflow_id"]
+                workflow_id = schedule_data["workflow_id"]
+                workflow_name = schedule_data["workflow_name"]
+                schedules = schedule_data["schedules"]
+
+                for schedule in schedules:
+                    schedule_name = schedule.get("name", "unknown")
+
+                    # Remove read-only fields
+                    schedule_to_import = {k: v for k, v in schedule.items() if k not in [
+                        "id", "type", "url", "related", "summary_fields",
+                        "created", "modified", "last_run", "next_run",
+                        "status", "unified_job_template"
+                    ]}
+
+                    try:
+                        result = await self.client.post(
+                            f"workflow_job_templates/{workflow_id}/schedules/",
+                            json_data=schedule_to_import,
+                        )
+                        logger.info(
+                            "workflow_schedule_imported",
+                            workflow_id=workflow_id,
+                            workflow_name=workflow_name,
+                            schedule_name=schedule_name,
+                            schedule_id=result.get("id"),
+                        )
+                    except Exception as e:
+                        logger.error(
+                            "workflow_schedule_import_failed",
+                            workflow_id=workflow_id,
+                            workflow_name=workflow_name,
+                            schedule_name=schedule_name,
+                            error=str(e),
+                        )
+
+        # Phase 6: Associate notification templates
+        if workflows_with_notifications:
+            logger.info(
+                "associating_workflow_notifications",
+                total_workflows_with_notifications=len(workflows_with_notifications),
+            )
+
+            for notif_data in workflows_with_notifications:
+                workflow_id = notif_data["workflow_id"]
+                workflow_name = notif_data["workflow_name"]
+                notifications = notif_data["notifications"]
+
+                for notif_type, source_notif_ids in notifications.items():
+                    for source_notif_id in source_notif_ids:
+                        # Map notification template ID from source to target
+                        target_notif_id = self.state.get_target_id("notification_templates", source_notif_id)
+
+                        if not target_notif_id:
+                            logger.warning(
+                                "notification_template_not_migrated",
+                                workflow_id=workflow_id,
+                                workflow_name=workflow_name,
+                                source_notif_id=source_notif_id,
+                                notif_type=notif_type,
+                            )
+                            continue
+
+                        try:
+                            await self.client.post(
+                                f"workflow_job_templates/{workflow_id}/{notif_type}/",
+                                json_data={"id": target_notif_id},
+                            )
+                            logger.info(
+                                "workflow_notification_associated",
+                                workflow_id=workflow_id,
+                                workflow_name=workflow_name,
+                                notification_id=target_notif_id,
+                                notif_type=notif_type,
+                            )
+                        except Exception as e:
+                            logger.error(
+                                "workflow_notification_association_failed",
+                                workflow_id=workflow_id,
+                                workflow_name=workflow_name,
+                                notification_id=target_notif_id,
+                                notif_type=notif_type,
+                                error=str(e),
+                            )
+
         return results
+
+    async def _create_workflow_edges(self, nodes: list[dict[str, Any]]) -> None:
+        """Create edges (connections) between workflow nodes.
+
+        Must be called after all nodes are imported so we can map source IDs to target IDs.
+
+        Args:
+            nodes: List of imported node data with _edge_data and _source_id attached
+        """
+        # Build mapping of source node ID -> target node ID
+        node_id_map = {}
+        for node in nodes:
+            source_id = node.get("_source_id")
+            target_id = node.get("id")
+            if source_id and target_id:
+                node_id_map[source_id] = target_id
+
+        logger.info(
+            "creating_workflow_edges",
+            total_nodes=len(nodes),
+            node_id_mappings=len(node_id_map),
+        )
+
+        edge_count = 0
+        failed_edges = 0
+
+        for node in nodes:
+            source_node_id = node.get("_source_id")
+            target_node_id = node.get("id")
+            edge_data = node.get("_edge_data", {})
+
+            if not target_node_id or not edge_data:
+                continue
+
+            # Create success edges
+            for source_child_id in edge_data.get("success_nodes", []):
+                target_child_id = node_id_map.get(source_child_id)
+                if target_child_id:
+                    try:
+                        await self.client.post(
+                            f"workflow_job_template_nodes/{target_node_id}/success_nodes/",
+                            json_data={"id": target_child_id}
+                        )
+                        edge_count += 1
+                        logger.debug(
+                            "workflow_edge_created",
+                            edge_type="success",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                        )
+                    except Exception as e:
+                        failed_edges += 1
+                        logger.warning(
+                            "workflow_edge_failed",
+                            edge_type="success",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                            error=str(e),
+                        )
+
+            # Create failure edges
+            for source_child_id in edge_data.get("failure_nodes", []):
+                target_child_id = node_id_map.get(source_child_id)
+                if target_child_id:
+                    try:
+                        await self.client.post(
+                            f"workflow_job_template_nodes/{target_node_id}/failure_nodes/",
+                            json_data={"id": target_child_id}
+                        )
+                        edge_count += 1
+                        logger.debug(
+                            "workflow_edge_created",
+                            edge_type="failure",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                        )
+                    except Exception as e:
+                        failed_edges += 1
+                        logger.warning(
+                            "workflow_edge_failed",
+                            edge_type="failure",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                            error=str(e),
+                        )
+
+            # Create always edges
+            for source_child_id in edge_data.get("always_nodes", []):
+                target_child_id = node_id_map.get(source_child_id)
+                if target_child_id:
+                    try:
+                        await self.client.post(
+                            f"workflow_job_template_nodes/{target_node_id}/always_nodes/",
+                            json_data={"id": target_child_id}
+                        )
+                        edge_count += 1
+                        logger.debug(
+                            "workflow_edge_created",
+                            edge_type="always",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                        )
+                    except Exception as e:
+                        failed_edges += 1
+                        logger.warning(
+                            "workflow_edge_failed",
+                            edge_type="always",
+                            from_node=target_node_id,
+                            to_node=target_child_id,
+                            error=str(e),
+                        )
+
+        logger.info(
+            "workflow_edges_created",
+            total_edges=edge_count,
+            failed_edges=failed_edges,
+        )
+
+    async def import_workflow_job_templates(
+        self,
+        workflows: list[dict[str, Any]],
+        progress_callback: Callable[[int, int, int], None] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Alias for import_workflows to match CLI method naming convention."""
+        return await self.import_workflows(workflows, progress_callback)
 
 
 class NotificationTemplateImporter(ResourceImporter):
@@ -2885,7 +3782,76 @@ class SystemJobTemplateImporter(ResourceImporter):
         progress_callback: Callable[[int, int, int], None] | None = None,
     ) -> list[dict[str, Any]]:
         """Import multiple system job templates (mapping only)."""
-        return await self._import_parallel("system_job_templates", templates, progress_callback)
+        # Extract schedules before import
+        templates_with_schedules = []
+        for template in templates:
+            schedules = template.pop("schedules", None)
+            if schedules:
+                source_id = template.get("_source_id", template.get("id"))
+                templates_with_schedules.append({
+                    "source_template_id": source_id,
+                    "schedules": schedules,
+                })
+
+        # Import (map) system job templates
+        results = await self._import_parallel("system_job_templates", templates, progress_callback)
+
+        # Import schedules for successfully mapped system job templates
+        if templates_with_schedules:
+            logger.info(
+                "importing_system_job_template_schedules",
+                total_templates_with_schedules=len(templates_with_schedules),
+            )
+
+            for schedule_data in templates_with_schedules:
+                source_template_id = schedule_data["source_template_id"]
+                schedules = schedule_data["schedules"]
+
+                # Get the target system job template ID from the state mapping
+                target_template_id = self.state.get_target_id("system_job_templates", source_template_id)
+                if not target_template_id:
+                    logger.warning(
+                        "system_job_template_not_found_for_schedule",
+                        source_template_id=source_template_id,
+                    )
+                    continue
+
+                # Get system job template name for logging
+                template_result = next((t for t in results if t.get("id") == target_template_id), None)
+                template_name = template_result.get("name", "unknown") if template_result else "unknown"
+
+                for schedule in schedules:
+                    schedule_name = schedule.get("name", "unknown")
+
+                    # Remove read-only fields
+                    schedule_to_import = {k: v for k, v in schedule.items() if k not in [
+                        "id", "type", "url", "related", "summary_fields",
+                        "created", "modified", "last_run", "next_run",
+                        "status", "unified_job_template"
+                    ]}
+
+                    try:
+                        result = await self.client.post(
+                            f"system_job_templates/{target_template_id}/schedules/",
+                            json_data=schedule_to_import,
+                        )
+                        logger.info(
+                            "system_job_template_schedule_imported",
+                            template_id=target_template_id,
+                            template_name=template_name,
+                            schedule_name=schedule_name,
+                            schedule_id=result.get("id"),
+                        )
+                    except Exception as e:
+                        logger.error(
+                            "system_job_template_schedule_import_failed",
+                            template_id=target_template_id,
+                            template_name=template_name,
+                            schedule_name=schedule_name,
+                            error=str(e),
+                        )
+
+        return results
 
 
 class CredentialInputSourceImporter(ResourceImporter):
@@ -3065,6 +4031,315 @@ class CredentialInputSourceImporter(ResourceImporter):
 
 
 # Factory function for creating importers
+class ApplicationImporter(ResourceImporter):
+    """Importer for OAuth applications with secret management.
+
+    Applications contain sensitive client secrets. This importer:
+    - Auto-generates new client secrets (security best practice)
+    - Creates applications with new secrets
+    - Generates report of which external systems need updates
+    - Optionally uses provided secrets from config
+    """
+
+    DEPENDENCIES = {
+        "organization": "organizations",
+    }
+
+    async def import_resource(
+        self,
+        resource_type: str,
+        source_id: int,
+        data: dict[str, Any],
+        resolve_dependencies: bool = True,
+    ) -> dict[str, Any] | None:
+        """Import an OAuth application with secret generation.
+
+        Args:
+            resource_type: Should be 'applications'
+            source_id: Source application ID
+            data: Application data
+            resolve_dependencies: Whether to resolve organization dependency
+
+        Returns:
+            Created application data with new client_id/client_secret
+        """
+        if self.state.is_migrated(resource_type, source_id):
+            self.stats["skipped_count"] += 1
+            return None
+
+        name = data.get("name")
+        if not name:
+            logger.error("application_missing_name", source_id=source_id)
+            return None
+
+        self.state.mark_in_progress(resource_type, source_id, name, "import")
+
+        # Resolve organization dependency
+        if resolve_dependencies:
+            await self._resolve_dependencies(resource_type, data)
+
+        # Handle client secret
+        if data.get('_requires_new_secret'):
+            # Client secret will be auto-generated by AAP on creation
+            # Remove the redacted placeholder
+            data.pop('client_secret', None)
+            logger.info(
+                "application_will_generate_new_secret",
+                name=name,
+                source_id=source_id
+            )
+
+        # Remove fields that AAP auto-generates or shouldn't be sent in POST
+        # client_id and client_secret are auto-generated by AAP
+        data.pop('client_id', None)
+        if not data.get('_requires_new_secret'):
+            # Also remove client_secret if it exists (AAP masks it anyway)
+            data.pop('client_secret', None)
+
+        # Remove migration metadata
+        for key in list(data.keys()):
+            if key.startswith('_'):
+                data.pop(key)
+
+        # Create application
+        try:
+            result = await self.client.post(f"{resource_type}/", json_data=data)
+
+            target_id = result["id"]
+            new_client_id = result.get("client_id")
+            new_client_secret = result.get("client_secret")
+
+            # Save mapping
+            self.state.save_id_mapping(
+                resource_type=resource_type,
+                source_id=source_id,
+                target_id=target_id,
+                source_name=name,
+                target_name=result.get("name", name),
+            )
+            self.state.mark_completed(resource_type, source_id, target_id, name)
+            self.stats["imported_count"] += 1
+
+            # Log new credentials for user
+            logger.info(
+                "application_created_with_new_secret",
+                source_id=source_id,
+                target_id=target_id,
+                name=name,
+                client_id=new_client_id,
+                message=f"⚠️  Update external systems with new credentials"
+            )
+
+            # Add to report for user
+            self.import_errors.append({
+                "resource_type": "applications",
+                "source_id": source_id,
+                "name": name,
+                "action_required": "UPDATE_EXTERNAL_SYSTEMS",
+                "new_client_id": new_client_id,
+                "new_client_secret": new_client_secret,
+                "message": f"Application '{name}' created with NEW credentials. Update external systems."
+            })
+
+            return result
+
+        except Exception as e:
+            logger.error(
+                "application_import_failed",
+                name=name,
+                source_id=source_id,
+                error=str(e),
+            )
+            self.state.mark_failed(resource_type, source_id, str(e))
+            self.stats["error_count"] += 1
+            return None
+
+    async def import_applications(
+        self,
+        applications: list[dict[str, Any]],
+        progress_callback: Callable[[int, int, int], None] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Import multiple OAuth applications.
+
+        Args:
+            applications: List of application data
+            progress_callback: Optional progress callback
+
+        Returns:
+            List of created applications with new secrets
+        """
+        return await self._import_parallel("applications", applications, progress_callback)
+
+
+class SettingsImporter(ResourceImporter):
+    """Importer for global system settings with review workflow.
+
+    Settings are categorized into safe/review/sensitive. This importer:
+    - Auto-imports safe settings (non-sensitive, non-environment-specific)
+    - Generates review report for environment-specific settings
+    - Generates template for sensitive settings (passwords, secrets)
+    """
+
+    DEPENDENCIES: dict[str, str] = {}
+
+    async def import_resource(
+        self,
+        resource_type: str,
+        source_id: int,
+        data: dict[str, Any],
+        resolve_dependencies: bool = True,
+    ) -> dict[str, Any] | None:
+        """Import settings with categorization and review workflow.
+
+        Args:
+            resource_type: Should be 'settings'
+            source_id: Source settings ID (typically 0)
+            data: Categorized settings data
+            resolve_dependencies: Not used for settings
+
+        Returns:
+            Result of settings import
+        """
+        # Settings are imported as a single resource
+        safe = data.get('safe_to_copy', {})
+        review_required = data.get('review_required', {})
+        sensitive = data.get('sensitive', {})
+        summary = data.get('_summary', {})
+
+        logger.info(
+            "settings_import_starting",
+            total_safe=len(safe),
+            total_review=len(review_required),
+            total_sensitive=len(sensitive),
+            auto_import_percentage=summary.get('auto_import_percentage', 0)
+        )
+
+        imported_count = 0
+        failed_count = 0
+
+        # Import safe settings automatically
+        if safe:
+            try:
+                await self.client.patch("settings/all/", json_data=safe)
+                imported_count = len(safe)
+                logger.info(
+                    "settings_safe_imported",
+                    count=imported_count,
+                    message=f"✓ Auto-imported {imported_count} safe settings"
+                )
+            except Exception as e:
+                logger.error("settings_safe_import_failed", error=str(e))
+                failed_count = len(safe)
+
+        # Generate review report
+        if review_required or sensitive:
+            self._generate_settings_review_report(review_required, sensitive)
+
+        self.stats["imported_count"] += imported_count
+        self.stats["error_count"] += failed_count
+
+        return {
+            "safe_imported": imported_count,
+            "review_required": len(review_required),
+            "sensitive_requires_manual": len(sensitive),
+            "report_generated": "SETTINGS-REVIEW-REPORT.md"
+        }
+
+    def _generate_settings_review_report(
+        self,
+        review_required: dict,
+        sensitive: dict
+    ) -> None:
+        """Generate markdown report for settings that need review.
+
+        Args:
+            review_required: Environment-specific settings
+            sensitive: Sensitive settings (passwords, secrets)
+        """
+        from pathlib import Path
+
+        report_lines = []
+        report_lines.append("# Settings Migration Review Report\n\n")
+
+        # Add LDAP warning for AAP 2.6
+        report_lines.append("⚠️ **LDAP Settings in AAP 2.6:** LDAP settings are imported to Controller API. ")
+        report_lines.append("In AAP 2.6, LDAP authentication may be managed by Platform Gateway. ")
+        report_lines.append("After migration, verify LDAP authentication works:\n")
+        report_lines.append("1. Test LDAP login with a test user\n")
+        report_lines.append("2. Manually enter `AUTH_LDAP_BIND_PASSWORD` (not migrated for security)\n")
+        report_lines.append("3. If LDAP login fails, configure LDAP via Platform Gateway (Settings → Authentication in UI)\n")
+        report_lines.append("4. See README.md 'Post-Migration: Verify LDAP Authentication' section for details\n\n")
+        report_lines.append("---\n\n")
+
+        if review_required:
+            report_lines.append("## ⚠️  Environment-Specific Settings (Review Required)\n\n")
+            report_lines.append("These settings contain URLs, paths, or hostnames that may differ between environments:\n\n")
+
+            for key, value_info in sorted(review_required.items()):
+                source_value = value_info.get('source_value')
+                report_lines.append(f"### `{key}`\n")
+                report_lines.append(f"**Source value:** `{source_value}`\n\n")
+                report_lines.append("**Action:** Review and update if needed:\n")
+                report_lines.append(f"```bash\n")
+                report_lines.append(f"curl -sk -X PATCH -H 'Authorization: Bearer $TOKEN' \\\n")
+                report_lines.append(f"  'https://target-aap/api/v2/settings/all/' \\\n")
+                report_lines.append(f"  -d '{{'{key}': 'NEW_VALUE'}}'\n")
+                report_lines.append(f"```\n\n")
+
+        if sensitive:
+            report_lines.append("## 🔒 Sensitive Settings (Manual Input Required)\n\n")
+            report_lines.append("These settings contain passwords, secrets, or API keys that were redacted:\n\n")
+
+            for key in sorted(sensitive.keys()):
+                report_lines.append(f"### `{key}`\n")
+                report_lines.append("**Action:** Provide new value:\n")
+                report_lines.append(f"```bash\n")
+                report_lines.append(f"curl -sk -X PATCH -H 'Authorization: Bearer $TOKEN' \\\n")
+                report_lines.append(f"  'https://target-aap/api/v2/settings/all/' \\\n")
+                report_lines.append(f"  -d '{{'{key}': 'YOUR_NEW_VALUE'}}'\n")
+                report_lines.append(f"```\n\n")
+
+        # Write report
+        report_path = Path("SETTINGS-REVIEW-REPORT.md")
+        with open(report_path, 'w') as f:
+            f.writelines(report_lines)
+
+        logger.info("settings_review_report_generated", path=str(report_path))
+
+    async def import_settings(
+        self,
+        settings_list: list[dict[str, Any]],
+        progress_callback: Callable[[int, int, int], None] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Import settings (expects a list with single settings dict).
+
+        Args:
+            settings_list: List containing single settings dict
+            progress_callback: Optional progress callback
+
+        Returns:
+            List with import result
+        """
+        if not settings_list or len(settings_list) == 0:
+            return []
+
+        # Settings is a single resource
+        settings_data = settings_list[0]
+        result = await self.import_resource(
+            resource_type="settings",
+            source_id=0,  # Settings have no real ID
+            data=settings_data,
+            resolve_dependencies=False
+        )
+
+        if progress_callback:
+            success = 1 if result else 0
+            failed = 0 if result else 1
+            progress_callback(success, failed, 0)
+
+        return [result] if result else []
+
+
 def create_importer(
     resource_type: str,
     client: AAPTargetClient,
@@ -3118,6 +4393,9 @@ def create_importer(
         "rbac": RBACImporter,
         # System
         "system_job_templates": SystemJobTemplateImporter,
+        # OAuth and Configuration
+        "applications": ApplicationImporter,
+        "settings": SettingsImporter,
     }
 
     importer_class = importers.get(resource_type)

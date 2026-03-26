@@ -285,9 +285,9 @@ class ResourceExporter:
             resume_from_id=self._resume_from_id,
         )
 
-        # Load existing mappings cache ONCE before starting export
-        # This enables efficient O(1) resume checks instead of N database queries
-        self._load_existing_mappings_cache(resource_type)
+        # NOTE: Removed existing mappings cache loading for phased migration support
+        # Export now exports ALL resources; import handles idempotency via ID mappings
+        # self._load_existing_mappings_cache(resource_type)  # DISABLED
 
         total_fetched = 0
         export_stopped_early = False
@@ -455,16 +455,13 @@ class ResourceExporter:
             self.stats["skipped_count"] += 1
             return None
 
-        # Check if already exported (for resume capability)
-        # Use in-memory cache for O(1) lookup instead of database query
-        if (resource_type, resource["id"]) in self._existing_mappings_cache:
-            logger.debug(
-                "resource_already_exported",
-                resource_type=resource_type,
-                source_id=resource["id"],
-            )
-            self.stats["skipped_count"] += 1
-            return None
+        # CRITICAL: Do NOT skip resources based on ID mappings in database
+        # ID mappings indicate resources were IMPORTED, not exported
+        # For phased migration (e.g., Phase 1: orgs, Phase 2: users):
+        #   - Phase 1 imports orgs → creates ID mappings in DB
+        #   - Phase 2 must still EXPORT orgs (even though they have mappings)
+        #   - Import phase will skip re-importing using ID mappings (idempotency)
+        # Skipping export based on mappings breaks phased migration!
 
         return resource
 
@@ -542,8 +539,8 @@ class ResourceExporter:
             filters=filters,
         )
 
-        # Load existing mappings cache ONCE before starting export
-        self._load_existing_mappings_cache(resource_type)
+        # NOTE: Removed existing mappings cache loading for phased migration support
+        # self._load_existing_mappings_cache(resource_type)  # DISABLED
 
         total_fetched = 0
 
@@ -892,6 +889,26 @@ class InventorySourceExporter(ResourceExporter):
             page_size=self.performance_config.batch_sizes.get("inventory_sources", 200),
             filters=filters,
         ):
+            # Fetch schedules
+            try:
+                schedules_response = await self.client.get(
+                    f"inventory_sources/{source['id']}/schedules/"
+                )
+                schedules = schedules_response.get("results", [])
+                if schedules:
+                    source["schedules"] = schedules
+                    logger.debug(
+                        "inventory_source_schedules_fetched",
+                        inventory_source_id=source["id"],
+                        schedule_count=len(schedules),
+                    )
+            except Exception as e:
+                logger.warning(
+                    "failed_to_fetch_inventory_source_schedules",
+                    inventory_source_id=source["id"],
+                    error=str(e),
+                )
+
             yield source
 
 
@@ -1267,6 +1284,26 @@ class ProjectExporter(ResourceExporter):
             page_size=self.performance_config.batch_sizes.get("projects", 50),
             filters=filters,
         ):
+            # Fetch schedules
+            try:
+                schedules_response = await self.client.get(
+                    f"projects/{project['id']}/schedules/"
+                )
+                schedules = schedules_response.get("results", [])
+                if schedules:
+                    project["schedules"] = schedules
+                    logger.debug(
+                        "project_schedules_fetched",
+                        project_id=project["id"],
+                        schedule_count=len(schedules),
+                    )
+            except Exception as e:
+                logger.warning(
+                    "failed_to_fetch_project_schedules",
+                    project_id=project["id"],
+                    error=str(e),
+                )
+
             yield project
 
 
@@ -1326,6 +1363,26 @@ class JobTemplateExporter(ResourceExporter):
                         )
                         template["_credentials"] = []
 
+            # Fetch schedules
+            try:
+                schedules_response = await self.client.get(
+                    f"job_templates/{template['id']}/schedules/"
+                )
+                schedules = schedules_response.get("results", [])
+                if schedules:
+                    template["schedules"] = schedules
+                    logger.debug(
+                        "job_template_schedules_fetched",
+                        job_template_id=template["id"],
+                        schedule_count=len(schedules),
+                    )
+            except Exception as e:
+                logger.warning(
+                    "failed_to_fetch_job_template_schedules",
+                    job_template_id=template["id"],
+                    error=str(e),
+                )
+
             yield template
 
     async def export_parallel(
@@ -1376,6 +1433,26 @@ class JobTemplateExporter(ResourceExporter):
                     )
                     template["_credentials"] = []
 
+            # Fetch schedules
+            try:
+                schedules_response = await self.client.get(
+                    f"job_templates/{template['id']}/schedules/"
+                )
+                schedules = schedules_response.get("results", [])
+                if schedules:
+                    template["schedules"] = schedules
+                    logger.debug(
+                        "job_template_schedules_fetched",
+                        job_template_id=template["id"],
+                        schedule_count=len(schedules),
+                    )
+            except Exception as e:
+                logger.warning(
+                    "failed_to_fetch_job_template_schedules",
+                    job_template_id=template["id"],
+                    error=str(e),
+                )
+
             yield template
 
 
@@ -1422,6 +1499,195 @@ class WorkflowExporter(ResourceExporter):
                     )
                     workflow["nodes"] = []
 
+            # Fetch survey spec if survey is enabled
+            if workflow.get("survey_enabled"):
+                try:
+                    survey_spec = await self.client.get(
+                        f"workflow_job_templates/{workflow['id']}/survey_spec/"
+                    )
+                    workflow["survey_spec"] = survey_spec
+                    logger.debug(
+                        "workflow_survey_fetched",
+                        workflow_id=workflow["id"],
+                        survey_questions=len(survey_spec.get("spec", [])),
+                    )
+                except Exception as e:
+                    logger.warning(
+                        "failed_to_fetch_workflow_survey",
+                        workflow_id=workflow["id"],
+                        error=str(e),
+                    )
+
+            # Fetch schedules
+            try:
+                schedules_response = await self.client.get(
+                    f"workflow_job_templates/{workflow['id']}/schedules/"
+                )
+                schedules = schedules_response.get("results", [])
+                if schedules:
+                    workflow["schedules"] = schedules
+                    logger.debug(
+                        "workflow_schedules_fetched",
+                        workflow_id=workflow["id"],
+                        schedule_count=len(schedules),
+                    )
+            except Exception as e:
+                logger.warning(
+                    "failed_to_fetch_workflow_schedules",
+                    workflow_id=workflow["id"],
+                    error=str(e),
+                )
+
+            # Fetch notification template associations
+            notification_types = ["started", "success", "error", "approvals"]
+            notifications = {}
+            for notif_type in notification_types:
+                try:
+                    notif_response = await self.client.get(
+                        f"workflow_job_templates/{workflow['id']}/notification_templates_{notif_type}/"
+                    )
+                    notif_templates = notif_response.get("results", [])
+                    if notif_templates:
+                        # Store just the IDs for association
+                        notifications[f"notification_templates_{notif_type}"] = [
+                            nt["id"] for nt in notif_templates
+                        ]
+                except Exception as e:
+                    logger.warning(
+                        f"failed_to_fetch_workflow_notifications_{notif_type}",
+                        workflow_id=workflow["id"],
+                        error=str(e),
+                    )
+
+            if notifications:
+                workflow["notifications"] = notifications
+                total_notifs = sum(len(v) for v in notifications.values())
+                logger.debug(
+                    "workflow_notifications_fetched",
+                    workflow_id=workflow["id"],
+                    notification_count=total_notifs,
+                )
+
+            yield workflow
+
+    async def export_parallel(
+        self,
+        resource_type: str,
+        endpoint: str,
+        page_size: int = 200,
+        max_concurrent_pages: int = 5,
+        filters: dict[str, Any] | None = None,
+    ) -> AsyncGenerator[dict[str, Any], None]:
+        """Export workflow templates using parallel page fetching with node inclusion.
+
+        Overrides base class to fetch workflow nodes for each workflow.
+
+        Args:
+            resource_type: Type of resource being exported (for logging)
+            endpoint: API endpoint to fetch from
+            page_size: Number of items per page (max 200)
+            max_concurrent_pages: Maximum number of pages to fetch concurrently
+            filters: Optional query parameters for filtering
+
+        Yields:
+            Workflow dictionaries with 'nodes' field containing workflow nodes
+        """
+        logger.info("parallel_export_workflows_with_nodes", max_concurrent_pages=max_concurrent_pages)
+
+        # Use base class parallel export to get workflows
+        async for workflow in super().export_parallel(
+            resource_type=resource_type,
+            endpoint=endpoint,
+            page_size=page_size,
+            max_concurrent_pages=max_concurrent_pages,
+            filters=filters,
+        ):
+            # Fetch workflow nodes for each workflow
+            try:
+                nodes = await self.client.get_workflow_nodes(workflow["id"])
+                workflow["nodes"] = nodes
+                logger.debug(
+                    "workflow_nodes_fetched",
+                    workflow_id=workflow["id"],
+                    node_count=len(nodes),
+                )
+            except Exception as e:
+                logger.warning(
+                    "failed_to_fetch_workflow_nodes",
+                    workflow_id=workflow["id"],
+                    error=str(e),
+                )
+                workflow["nodes"] = []
+
+            # Fetch survey spec if survey is enabled
+            if workflow.get("survey_enabled"):
+                try:
+                    survey_spec = await self.client.get(
+                        f"workflow_job_templates/{workflow['id']}/survey_spec/"
+                    )
+                    workflow["survey_spec"] = survey_spec
+                    logger.debug(
+                        "workflow_survey_fetched",
+                        workflow_id=workflow["id"],
+                        survey_questions=len(survey_spec.get("spec", [])),
+                    )
+                except Exception as e:
+                    logger.warning(
+                        "failed_to_fetch_workflow_survey",
+                        workflow_id=workflow["id"],
+                        error=str(e),
+                    )
+
+            # Fetch schedules
+            try:
+                schedules_response = await self.client.get(
+                    f"workflow_job_templates/{workflow['id']}/schedules/"
+                )
+                schedules = schedules_response.get("results", [])
+                if schedules:
+                    workflow["schedules"] = schedules
+                    logger.debug(
+                        "workflow_schedules_fetched",
+                        workflow_id=workflow["id"],
+                        schedule_count=len(schedules),
+                    )
+            except Exception as e:
+                logger.warning(
+                    "failed_to_fetch_workflow_schedules",
+                    workflow_id=workflow["id"],
+                    error=str(e),
+                )
+
+            # Fetch notification template associations
+            notification_types = ["started", "success", "error", "approvals"]
+            notifications = {}
+            for notif_type in notification_types:
+                try:
+                    notif_response = await self.client.get(
+                        f"workflow_job_templates/{workflow['id']}/notification_templates_{notif_type}/"
+                    )
+                    notif_templates = notif_response.get("results", [])
+                    if notif_templates:
+                        # Store just the IDs for association
+                        notifications[f"notification_templates_{notif_type}"] = [
+                            nt["id"] for nt in notif_templates
+                        ]
+                except Exception as e:
+                    logger.warning(
+                        f"failed_to_fetch_workflow_notifications_{notif_type}",
+                        workflow_id=workflow["id"],
+                        error=str(e),
+                    )
+
+            if notifications:
+                workflow["notifications"] = notifications
+                total_notifs = sum(len(v) for v in notifications.values())
+                logger.debug(
+                    "workflow_notifications_fetched",
+                    workflow_id=workflow["id"],
+                    notification_count=total_notifs,
+                )
+
             yield workflow
 
 
@@ -1451,6 +1717,26 @@ class SystemJobTemplateExporter(ResourceExporter):
             page_size=self.performance_config.batch_sizes.get("system_job_templates", 50),
             filters=filters,
         ):
+            # Fetch schedules
+            try:
+                schedules_response = await self.client.get(
+                    f"system_job_templates/{template['id']}/schedules/"
+                )
+                schedules = schedules_response.get("results", [])
+                if schedules:
+                    template["schedules"] = schedules
+                    logger.debug(
+                        "system_job_template_schedules_fetched",
+                        system_job_template_id=template["id"],
+                        schedule_count=len(schedules),
+                    )
+            except Exception as e:
+                logger.warning(
+                    "failed_to_fetch_system_job_template_schedules",
+                    system_job_template_id=template["id"],
+                    error=str(e),
+                )
+
             yield template
 
 
@@ -1749,6 +2035,145 @@ class JobsExporter(ResourceExporter):
             yield job
 
 
+class ApplicationExporter(ResourceExporter):
+    """Exporter for OAuth applications with security safeguards.
+
+    OAuth applications contain sensitive client secrets that should not be
+    blindly copied between environments. This exporter:
+    - Redacts client_secret values
+    - Marks applications for secret regeneration
+    - Preserves all non-sensitive metadata
+    """
+
+    async def export(
+        self, filters: dict[str, Any] | None = None
+    ) -> AsyncGenerator[dict[str, Any], None]:
+        """Export OAuth applications with secret redaction.
+
+        Args:
+            filters: Optional query parameters for filtering
+
+        Yields:
+            Application dictionaries with redacted secrets
+        """
+        logger.info("exporting_applications")
+        async for app in self.export_resources(
+            resource_type="applications",
+            endpoint="applications/",
+            page_size=self.performance_config.batch_sizes.get("applications", 50),
+            filters=filters,
+        ):
+            # Mark if application has a client secret (for transformer)
+            if 'client_secret' in app and app['client_secret']:
+                app['_has_client_secret'] = True
+                # Keep the secret for now - transformer will handle redaction
+                # This allows users to optionally copy secrets if they want
+
+            yield app
+
+
+class SettingsExporter(ResourceExporter):
+    """Exporter for global system settings with categorization.
+
+    Settings contain a mix of:
+    - Safe configuration (job timeouts, UI preferences)
+    - Environment-specific values (URLs, file paths)
+    - Sensitive secrets (passwords, API keys)
+
+    This exporter fetches all settings for categorization by the transformer.
+
+    IMPORTANT: Always uses /settings/all/ endpoint to fetch ALL settings in one call,
+    regardless of what discovered endpoints say. The /settings/ endpoint returns categories,
+    but we need the unified /settings/all/ endpoint.
+    """
+
+    async def get_count(self, endpoint: str, filters: dict[str, Any] | None = None) -> int:
+        """Override get_count for settings.
+
+        The /settings/all/ endpoint returns a single dict, not a paginated list.
+        Always return 1 to indicate one settings resource to export.
+
+        Args:
+            endpoint: API endpoint (ignored, always uses settings/all/)
+            filters: Optional filters (ignored for settings)
+
+        Returns:
+            Always returns 1 (single settings resource)
+        """
+        return 1
+
+    async def export_parallel(
+        self,
+        resource_type: str,
+        endpoint: str,
+        page_size: int = 200,
+        max_concurrent_pages: int = 5,
+        filters: dict[str, Any] | None = None,
+    ) -> AsyncGenerator[dict[str, Any], None]:
+        """Override export_parallel for settings.
+
+        Settings endpoint doesn't support pagination - it returns a single dict.
+        Delegate to regular export() method instead.
+
+        Args:
+            resource_type: Type of resource (ignored for settings)
+            endpoint: API endpoint (ignored, always uses settings/all/)
+            page_size: Page size (ignored for settings)
+            max_concurrent_pages: Concurrency limit (ignored for settings)
+            filters: Optional filters (ignored for settings)
+
+        Yields:
+            Single settings dictionary
+        """
+        async for settings in self.export(filters=filters):
+            yield settings
+
+    async def export(
+        self, filters: dict[str, Any] | None = None
+    ) -> AsyncGenerator[dict[str, Any], None]:
+        """Export all system settings.
+
+        Args:
+            filters: Optional query parameters (typically not used for settings)
+
+        Yields:
+            Single dictionary containing all settings
+        """
+        logger.info("exporting_settings")
+
+        try:
+            # ALWAYS use /settings/all/ endpoint which returns all settings as a single dict
+            # Do NOT use discovered endpoint "/settings/" which returns category list
+            settings_data = await self.client.get("settings/all/")
+
+            if not isinstance(settings_data, dict):
+                logger.warning(
+                    "settings_export_unexpected_format",
+                    data_type=type(settings_data).__name__
+                )
+                return
+
+            # Add metadata for transformer
+            from datetime import datetime, timezone
+            settings_data['_migration_metadata'] = {
+                'export_timestamp': datetime.now(timezone.utc).isoformat(),
+                'source_url': str(self.client.base_url),
+                'total_settings': len(settings_data)
+            }
+
+            # Yield as a single resource (transformer will categorize)
+            yield settings_data
+
+        except APIError as e:
+            logger.error(
+                "settings_export_failed",
+                error=str(e),
+                status_code=getattr(e, 'status_code', None)
+            )
+            # Don't fail the entire export if settings fail
+            return
+
+
 # Factory function for creating exporters
 def create_exporter(
     resource_type: str,
@@ -1793,6 +2218,8 @@ def create_exporter(
         "notification_templates": NotificationTemplateExporter,
         "system_job_templates": SystemJobTemplateExporter,
         "jobs": JobsExporter,
+        "applications": ApplicationExporter,
+        "settings": SettingsExporter,
     }
 
     exporter_class = exporters.get(resource_type)
