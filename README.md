@@ -406,7 +406,10 @@ aap-bridge migrate -r workflow_job_templates --skip-prep
 # Phase 7: Schedules
 aap-bridge migrate -r schedules --skip-prep
 
-# Phase 8: Settings (Optional - review before applying)
+# Phase 8: Applications (OAuth applications)
+aap-bridge migrate -r applications --skip-prep
+
+# Phase 9: Settings (Optional - review before applying)
 aap-bridge migrate -r settings --skip-prep
 
 # Step 4: Validate migration
@@ -484,7 +487,12 @@ aap-bridge export -r schedules
 aap-bridge transform -r schedules
 aap-bridge import -r schedules --yes
 
-# Phase 8: Settings (Optional)
+# Phase 8: Applications (OAuth applications)
+aap-bridge export -r applications
+aap-bridge transform -r applications
+aap-bridge import -r applications --yes
+
+# Phase 9: Settings (Optional)
 aap-bridge export -r settings
 aap-bridge transform -r settings
 aap-bridge import -r settings --yes
