@@ -2328,6 +2328,13 @@ class HostImporter(ResourceImporter):
                         source_name=source_name,
                         target_name=existing_host.get("name"),
                     )
+                    # Mark as completed to track this resource was processed
+                    self.state.mark_completed(
+                        resource_type="hosts",
+                        source_id=source_id,
+                        target_id=existing_host["id"],
+                        target_name=existing_host.get("name"),
+                    )
                     logger.info(
                         "host_already_exists",
                         source_id=source_id,

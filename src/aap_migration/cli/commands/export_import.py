@@ -1260,6 +1260,14 @@ def import_cmd(
                     source_name=identifier,
                     target_name=existing.get(identifier_field),
                 )
+                # Mark as completed to prevent orphaned ID mapping
+                state.mark_completed(
+                    resource_type=resource_type,
+                    source_id=source_id,
+                    target_id=existing["id"],
+                    target_name=existing.get(identifier_field),
+                    source_name=identifier,
+                )
 
                 found_count += 1
 

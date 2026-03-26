@@ -178,12 +178,21 @@ class CredentialComparator:
                 # Store ID mapping if not already stored
                 source_id = source_cred.get("id")
                 target_id = target_cred.get("id")
+                source_name = source_cred.get("name")
 
                 if not self.state.is_migrated("credentials", source_id):
-                    self.state.save_id_mapping("credentials", source_id, target_id)
+                    self.state.save_id_mapping("credentials", source_id, target_id, source_name=source_name)
+                    # Mark as completed to prevent orphaned ID mapping
+                    self.state.mark_completed(
+                        resource_type="credentials",
+                        source_id=source_id,
+                        target_id=target_id,
+                        target_name=source_name,
+                        source_name=source_name,
+                    )
                     logger.debug(
                         "credential_mapping_stored",
-                        name=source_cred.get("name"),
+                        name=source_name,
                         source_id=source_id,
                         target_id=target_id,
                     )

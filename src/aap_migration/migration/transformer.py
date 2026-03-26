@@ -1837,6 +1837,14 @@ class CredentialTypeTransformer(DataTransformer):
                     target_id=target_id,
                     source_name=name,
                 )
+                # Mark as completed to prevent orphaned ID mapping
+                state.mark_completed(
+                    resource_type="credential_types",
+                    source_id=source_id,
+                    target_id=target_id,
+                    target_name=name,
+                    source_name=name,
+                )
                 logger.info(
                     "credential_type_mapped_from_target",
                     name=name,
