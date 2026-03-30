@@ -177,7 +177,7 @@
         credential_type: "HashiCorp Vault Secret Lookup"
         inputs:
           url: "https://vault.example.com:8200"
-          token: "hvs.CAESIJlU9JMYEhOPxhTkZ-L5vr-JxBqsevjRxA5tP39hdGVzdA"
+          token: "YOUR_VAULT_TOKEN_HERE"
           cacert: |
             -----BEGIN CERTIFICATE-----
             MIIDXTCCAkWgAwIBAgIJAKJ5pVqvLxGWMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV

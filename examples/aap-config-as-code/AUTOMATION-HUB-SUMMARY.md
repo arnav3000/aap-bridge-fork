@@ -27,7 +27,7 @@ Added Automation Hub configuration with namespaces and comprehensive guidance fo
 | **Hub URL** | `https://192.168.100.26` |
 | **API Endpoint** | `/api/galaxy/` |
 | **Pulp API** | `/api/galaxy/pulp/api/v3/` |
-| **Token** | `32450248b843940858835016d91a447abb23f74d` |
+| **Token** | `YOUR_AUTOMATION_HUB_TOKEN` |
 | **Protocol** | HTTPS (certificate validation disabled for testing) |
 
 ---
@@ -274,7 +274,7 @@ ansible-galaxy collection build
 ansible-galaxy collection publish \
   namespace-collection-1.0.0.tar.gz \
   --server https://192.168.100.26/api/galaxy/ \
-  --token 32450248b843940858835016d91a447abb23f74d
+  --token YOUR_AUTOMATION_HUB_TOKEN
 ```
 
 ### **Method 2: Web UI**
@@ -290,13 +290,13 @@ ansible-galaxy collection publish \
 
 ```bash
 # Upload collection via API
-curl -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+curl -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   -H "Content-Type: multipart/form-data" \
   -F "file=@namespace-collection-1.0.0.tar.gz" \
   https://192.168.100.26/api/galaxy/v3/artifacts/collections/
 
 # Check upload status
-curl -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+curl -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   https://192.168.100.26/api/galaxy/v3/collections/namespace/collection/
 ```
 
@@ -380,7 +380,7 @@ server_list = automation_hub
 
 [galaxy_server.automation_hub]
 url=https://192.168.100.26/api/galaxy/
-token=32450248b843940858835016d91a447abb23f74d
+token=YOUR_AUTOMATION_HUB_TOKEN
 
 # Optional: Add public Galaxy as fallback
 # [galaxy_server.public_galaxy]
@@ -442,11 +442,11 @@ ansible-galaxy collection install community.general \
 
 ```bash
 # List all namespaces
-curl -sk -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+curl -sk -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   https://192.168.100.26/api/galaxy/_ui/v1/namespaces/ | jq
 
 # Get specific namespace
-curl -sk -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+curl -sk -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   https://192.168.100.26/api/galaxy/_ui/v1/namespaces/redhat/ | jq
 ```
 
@@ -454,11 +454,11 @@ curl -sk -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
 
 ```bash
 # List all collections
-curl -sk -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+curl -sk -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   https://192.168.100.26/api/galaxy/v3/collections/ | jq
 
 # Get specific collection
-curl -sk -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+curl -sk -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   https://192.168.100.26/api/galaxy/v3/collections/community/general/ | jq
 ```
 
@@ -466,12 +466,12 @@ curl -sk -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
 
 ```bash
 # List remote repositories
-curl -sk -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+curl -sk -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   https://192.168.100.26/api/galaxy/pulp/api/v3/remotes/ansible/collection/ | jq
 
 # Sync a remote repository
 curl -sk -X POST \
-  -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+  -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   https://192.168.100.26/api/galaxy/pulp/api/v3/remotes/ansible/collection/REMOTE_ID/sync/
 ```
 
@@ -479,7 +479,7 @@ curl -sk -X POST \
 
 ```bash
 # List EE images
-curl -sk -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+curl -sk -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   https://192.168.100.26/api/galaxy/pulp/api/v3/distributions/container/container/ | jq
 
 # Search registry
@@ -650,7 +650,7 @@ Unlike AAP configuration objects (which are JSON/YAML), collections and executio
 
 ### **Automation Hub Token Usage**
 
-The Hub token (`32450248b843940858835016d91a447abb23f74d`) is already configured in:
+The Hub token (`YOUR_AUTOMATION_HUB_TOKEN`) is already configured in:
 - `scripts/fix_credentials_interactive.sh`
 - Used for Galaxy/Automation Hub credential type in AAP
 
@@ -661,11 +661,11 @@ To actually populate collections from remotes:
 ```bash
 # Sync community remote
 curl -sk -X POST \
-  -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+  -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   https://192.168.100.26/api/galaxy/pulp/api/v3/remotes/ansible/collection/REMOTE_ID/sync/
 
 # Monitor sync task
-curl -sk -H "Authorization: Token 32450248b843940858835016d91a447abb23f74d" \
+curl -sk -H "Authorization: Token YOUR_AUTOMATION_HUB_TOKEN" \
   https://192.168.100.26/api/galaxy/pulp/api/v3/tasks/TASK_ID/
 ```
 

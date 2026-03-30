@@ -221,7 +221,7 @@ System Settings
 
 ### **Automation Hub**
 - **URL:** https://192.168.100.26
-- **Token:** 32450248b843940858835016d91a447abb23f74d
+- **Token:** YOUR_AUTOMATION_HUB_TOKEN
 - **Namespaces:** 4 configured
 - **Status:** ✅ Configured
 
