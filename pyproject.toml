@@ -133,6 +133,24 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 
+[tool.bandit]
+exclude_dirs = [
+    "tests",
+    ".venv",
+    "venv",
+    ".tox",
+    "build",
+    "dist",
+]
+skips = [
+    "B101",  # assert_used - OK in tests
+    "B601",  # paramiko_calls - we don't use paramiko
+]
+# Security severity levels: LOW, MEDIUM, HIGH
+# Confidence levels: LOW, MEDIUM, HIGH
+severity = "MEDIUM"
+confidence = "MEDIUM"
+
 [tool.mypy]
 python_version = "3.12"
 warn_return_any = true
