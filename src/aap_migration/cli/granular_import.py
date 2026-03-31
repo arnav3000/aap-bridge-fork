@@ -2,19 +2,17 @@
 
 import asyncio
 import json
+import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
 from rich.console import Console
-from rich.live import Live
 from rich.panel import Panel
-from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
 from rich.prompt import Prompt
 from rich.table import Table
 
 from aap_migration.cli.utils import echo_error, echo_info, echo_success, echo_warning
-from aap_migration.migration.importer import create_importer
-from aap_migration.migration.state import MigrationState
 from aap_migration.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -170,8 +168,8 @@ class GranularImporter:
 
         return table
 
-    async def _import_micro_phase_async(self, micro_phase: dict) -> dict[str, Any]:
-        """Import a single micro-phase (async version).
+    def _import_micro_phase(self, micro_phase: dict) -> dict[str, Any]:
+        """Import a single micro-phase using the proven migrate command.
 
         Args:
             micro_phase: Micro-phase definition
@@ -185,121 +183,60 @@ class GranularImporter:
 
         self.console.print(f"\n[bold cyan]Phase {phase_id}: {name}[/bold cyan]\n")
 
-        # Load resources
+        # Check if we have resources to import
         resource_dir = self.input_dir / resource_type
         if not resource_dir.exists():
             echo_warning(f"No data found for {resource_type}")
             return {"total": 0, "completed": 0, "failed": 0, "skipped": 0}
 
-        all_resources = []
-        for file_path in sorted(resource_dir.glob(f"{resource_type}_*.json")):
-            try:
-                with open(file_path) as f:
-                    resources = json.load(f)
-                    if isinstance(resources, list):
-                        all_resources.extend(resources)
-                    else:
-                        all_resources.append(resources)
-            except Exception as e:
-                echo_error(f"Failed to load {file_path}: {e}")
+        # Get stats BEFORE import
+        stats_before = self.get_import_stats(resource_type)
 
-        if not all_resources:
-            echo_warning(f"No resources to import")
-            return {"total": 0, "completed": 0, "failed": 0, "skipped": 0}
+        # Build command using the proven migrate command
+        cmd = [
+            sys.executable, "-m", "aap_migration.cli.main",
+            "--config", str(self.ctx.config_path) if hasattr(self.ctx, 'config_path') and self.ctx.config_path else str(Path.cwd() / "config.yaml"),
+            "migrate",
+            "-r", resource_type,
+            "--skip-prep",
+            "--phase", "all"
+        ]
 
-        # Create importer
-        importer = create_importer(
-            resource_type,
-            self.ctx.target_client,
-            self.state,
-            self.ctx.config.performance,
-        )
+        echo_info(f"Importing {name}...")
 
-        # Import with progress
-        completed = 0
-        failed = 0
-        skipped = 0
+        try:
+            # Run the proven migrate command
+            result = subprocess.run(
+                cmd,
+                check=False,
+                capture_output=False,  # Show output in real-time
+                text=True
+            )
 
-        # Progress bar
-        progress = Progress(
-            SpinnerColumn(),
-            TextColumn("[bold blue]{task.description}"),
-            BarColumn(bar_width=30),
-            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-            TextColumn("•"),
-            TextColumn("[green]✓{task.fields[success_count]}"),
-            TextColumn("[red]✗{task.fields[fail_count]}"),
-        )
+            # Get stats AFTER import
+            stats_after = self.get_import_stats(resource_type)
 
-        task = progress.add_task(
-            f"Importing {name}...",
-            total=len(all_resources),
-            success_count=0,
-            fail_count=0,
-        )
+            completed = stats_after["completed"] - stats_before["completed"]
+            failed = stats_after["failed"] - stats_before["failed"]
 
-        # Import resources with progress display
-        with Live(progress, console=self.console):
-            for resource in all_resources:
-                source_id = resource.get("_source_id") or resource.get("id")
-                resource_name = resource.get("name", f"ID:{source_id}")
+            return {
+                "total": stats_after["total"],
+                "completed": completed,
+                "failed": failed,
+                "skipped": 0,
+            }
 
-                # Check if already imported
-                if self.state.is_migrated(resource_type, source_id):
-                    skipped += 1
-                    progress.update(task, advance=1)
-                    continue
+        except Exception as e:
+            echo_error(f"Failed to import {name}: {e}")
+            return {
+                "total": stats_before["total"],
+                "completed": 0,
+                "failed": 0,
+                "skipped": 0,
+            }
 
-                try:
-                    result = await importer.import_resource(
-                        resource_type,
-                        source_id,
-                        resource,
-                        resolve_dependencies=True,
-                    )
-
-                    if result:
-                        completed += 1
-                        progress.update(task, advance=1, success_count=completed)
-                    else:
-                        skipped += 1
-                        progress.update(task, advance=1)
-
-                except Exception as e:
-                    error_msg = str(e).lower()
-                    # Check if resource already exists on target
-                    if "already exists" in error_msg or ("400" in str(e) and (
-                        "username" in error_msg or
-                        "name" in error_msg or
-                        "duplicate" in error_msg
-                    )):
-                        # Resource already exists, count as success
-                        completed += 1
-                        progress.update(task, advance=1, success_count=completed)
-                        logger.info(
-                            f"Resource already exists on target, marking as completed: {resource_name}",
-                            resource_type=resource_type,
-                            source_id=source_id,
-                        )
-                    else:
-                        # Real failure
-                        failed += 1
-                        progress.update(task, advance=1, fail_count=failed)
-                        logger.error(
-                            f"Failed to import {resource_name}: {e}",
-                            resource_type=resource_type,
-                            source_id=source_id,
-                        )
-
-        return {
-            "total": len(all_resources),
-            "completed": completed,
-            "failed": failed,
-            "skipped": skipped,
-        }
-
-    async def run_async(self) -> None:
-        """Run granular import with step-by-step control (async version)."""
+    def run(self) -> None:
+        """Run granular import with step-by-step control."""
         self.console.clear()
         self.console.print(
             Panel.fit(
@@ -400,7 +337,7 @@ class GranularImporter:
                 echo_info("Retrying failed resources...")
 
             # Import this phase
-            result = await self._import_micro_phase_async(micro_phase)
+            result = self._import_micro_phase(micro_phase)
 
             # Show result
             self.console.print()
@@ -436,10 +373,6 @@ class GranularImporter:
         self.console.print(self.create_phase_table())
         self.console.print("\n")
 
-    def run(self) -> None:
-        """Run granular import with step-by-step control."""
-        asyncio.run(self.run_async())
-
 
 def granular_import_menu(ctx: Any, input_dir: Path | None = None) -> None:
     """Launch granular import menu.
@@ -452,21 +385,6 @@ def granular_import_menu(ctx: Any, input_dir: Path | None = None) -> None:
 
     if input_dir is None:
         input_dir = Path(ctx.obj.config.paths.transform_dir)
-
-    # CRITICAL: Reinitialize HTTP client before granular import
-    # The client may have been created outside an event loop context,
-    # making its AsyncClient and asyncio.Lock invalid. We need a fresh
-    # client for this asyncio.run() context.
-    from aap_migration.client.aap_target_client import AAPTargetClient
-
-    ctx.obj._target_client = AAPTargetClient(
-        config=ctx.obj.config.target,
-        rate_limit=ctx.obj.config.performance.rate_limit,
-        log_payloads=ctx.obj.config.logging.log_payloads,
-        max_payload_size=ctx.obj.config.logging.max_payload_size,
-        max_connections=ctx.obj.config.performance.http_max_connections,
-        max_keepalive_connections=ctx.obj.config.performance.http_max_keepalive_connections,
-    )
 
     importer = GranularImporter(ctx.obj, input_dir)
     importer.run()
