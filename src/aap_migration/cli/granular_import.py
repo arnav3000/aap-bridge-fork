@@ -227,15 +227,15 @@ class GranularImporter:
             BarColumn(bar_width=30),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
             TextColumn("•"),
-            TextColumn("[green]✓{task.fields[completed]}"),
-            TextColumn("[red]✗{task.fields[failed]}"),
+            TextColumn("[green]✓{task.fields[success_count]}"),
+            TextColumn("[red]✗{task.fields[fail_count]}"),
         )
 
         task = progress.add_task(
             f"Importing {name}...",
             total=len(all_resources),
-            completed=0,
-            failed=0,
+            success_count=0,
+            fail_count=0,
         )
 
         with Live(progress, console=self.console):
@@ -261,14 +261,14 @@ class GranularImporter:
 
                     if result:
                         completed += 1
-                        progress.update(task, advance=1, completed=completed)
+                        progress.update(task, advance=1, success_count=completed)
                     else:
                         skipped += 1
                         progress.update(task, advance=1)
 
                 except Exception as e:
                     failed += 1
-                    progress.update(task, advance=1, failed=failed)
+                    progress.update(task, advance=1, fail_count=failed)
                     logger.error(
                         f"Failed to import {resource_name}: {e}",
                         resource_type=resource_type,
