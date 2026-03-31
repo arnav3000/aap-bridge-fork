@@ -22,6 +22,7 @@ from aap_migration.cli.commands import migrate as migrate_commands
 from aap_migration.cli.commands import patch_projects as patch_projects_commands
 from aap_migration.cli.commands import prep as prep_commands
 from aap_migration.cli.commands import project_failures as project_failures_commands
+from aap_migration.cli.commands import retry as retry_commands
 from aap_migration.cli.commands import schema as schema_commands
 from aap_migration.cli.commands import state as state_commands
 from aap_migration.cli.commands import transform as transform_commands
@@ -124,6 +125,7 @@ cli.add_command(config_commands.config)
 cli.add_command(credentials_commands.credentials)
 cli.add_command(metadata_commands.metadata)
 cli.add_command(migrate_commands.migrate)
+cli.add_command(retry_commands.retry_group, name="retry")
 cli.add_command(schema_commands.schema_group)
 cli.add_command(state_commands.state)
 

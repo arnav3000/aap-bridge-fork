@@ -936,7 +936,15 @@ def import_cmd(
 
     # Dependency resolution (always enabled unless --skip-dependencies or importing all)
     if check_dependencies:
-        # Just show what would be imported and exit
+        # Pre-flight dependency validation
+        from aap_migration.validation import DependencyValidator
+
+        validator = DependencyValidator(ctx.migration_state, input_dir)
+        validation = validator.validate_all(requested_types if requested_types != available_types else None)
+        validator.display_validation_report(validation)
+
+        # Exit after showing validation report
+        return
         types_with_deps = build_dependency_closure(requested_types, available_types)
         missing_deps = get_missing_dependencies(types_with_deps, ctx.migration_state)
 
