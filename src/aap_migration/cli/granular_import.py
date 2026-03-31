@@ -315,18 +315,26 @@ class GranularImporter:
 
             elif choice == "v":
                 # View errors
-                query = """
-                SELECT source_id, source_name, error_message
-                FROM migration_progress
-                WHERE resource_type = ? AND status = 'failed'
-                LIMIT 10
-                """
-                cursor = self.state.conn.execute(query, (resource_type,))
-                errors = cursor.fetchall()
+                from aap_migration.migration.db import get_session, MigrationProgress
 
-                if errors:
+                with get_session(self.state.database_url) as session:
+                    error_records = (
+                        session.query(
+                            MigrationProgress.source_id,
+                            MigrationProgress.source_name,
+                            MigrationProgress.error_message
+                        )
+                        .filter(
+                            MigrationProgress.resource_type == resource_type,
+                            MigrationProgress.status == 'failed'
+                        )
+                        .limit(10)
+                        .all()
+                    )
+
+                if error_records:
                     self.console.print("\n[bold red]Failed Resources:[/bold red]")
-                    for err in errors:
+                    for err in error_records:
                         self.console.print(f"  • {err[1]} (ID:{err[0]}): {err[2]}")
                     self.console.print()
                 else:

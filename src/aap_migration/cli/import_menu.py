@@ -37,9 +37,8 @@ def show_import_status(ctx: Any) -> None:
     console = Console()
 
     try:
-        from aap_migration.migration.state import MigrationState
-
-        state = MigrationState()
+        # Use the migration state from context
+        state = ctx.obj.migration_state
 
         # Get all resource types with progress
         all_stats = []
@@ -129,27 +128,27 @@ def show_failed_resources(ctx: Any) -> None:
     console = Console()
 
     try:
-        from aap_migration.migration.state import MigrationState
+        # Use the migration state from context
+        from aap_migration.migration.db import get_session, MigrationProgress
 
-        state = MigrationState()
+        state = ctx.obj.migration_state
 
-        # Query failed resources
-        query = """
-        SELECT
-            resource_type,
-            source_id,
-            source_name,
-            error_message,
-            updated_at
-        FROM migration_progress
-        WHERE status = 'failed'
-        ORDER BY resource_type, source_id
-        """
+        # Query failed resources using proper session
+        with get_session(state.database_url) as session:
+            failed_records = (
+                session.query(
+                    MigrationProgress.resource_type,
+                    MigrationProgress.source_id,
+                    MigrationProgress.source_name,
+                    MigrationProgress.error_message,
+                    MigrationProgress.updated_at
+                )
+                .filter(MigrationProgress.status == 'failed')
+                .order_by(MigrationProgress.resource_type, MigrationProgress.source_id)
+                .all()
+            )
 
-        cursor = state.conn.execute(query)
-        failed = cursor.fetchall()
-
-        if not failed:
+        if not failed_records:
             console.print("\n[green]✓ No failed resources![/green]\n")
             return
 
@@ -160,7 +159,7 @@ def show_failed_resources(ctx: Any) -> None:
         table.add_column("Name", width=25)
         table.add_column("Error", width=50)
 
-        for row in failed:
+        for row in failed_records:
             error = row[3] if row[3] else "Unknown error"
             # Truncate long errors
             if len(error) > 47:
@@ -175,7 +174,7 @@ def show_failed_resources(ctx: Any) -> None:
 
         console.print("\n")
         console.print(table)
-        console.print(f"\n[bold red]Total Failed: {len(failed)}[/bold red]\n")
+        console.print(f"\n[bold red]Total Failed: {len(failed_records)}[/bold red]\n")
 
     except Exception as e:
         echo_error(f"Failed to get error details: {e}")

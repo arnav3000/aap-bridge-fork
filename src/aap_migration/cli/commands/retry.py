@@ -84,29 +84,25 @@ def retry_failed(
         input_dir = Path(ctx.config.paths.transform_dir)
 
     # Get failed resources from migration state
+    from aap_migration.migration.db import get_session, MigrationProgress
+
     state = ctx.migration_state
 
-    query = """
-    SELECT
-        resource_type,
-        source_id,
-        source_name,
-        error_message
-    FROM migration_progress
-    WHERE status = 'failed'
-    """
+    # Query failed resources using proper session
+    with get_session(state.database_url) as session:
+        query = session.query(
+            MigrationProgress.resource_type,
+            MigrationProgress.source_id,
+            MigrationProgress.source_name,
+            MigrationProgress.error_message
+        ).filter(MigrationProgress.status == 'failed')
 
-    if resource_type:
-        placeholders = ",".join("?" * len(resource_type))
-        query += f" AND resource_type IN ({placeholders})"
-        params = list(resource_type)
-    else:
-        params = []
+        if resource_type:
+            query = query.filter(MigrationProgress.resource_type.in_(resource_type))
 
-    query += " ORDER BY resource_type, source_id"
+        query = query.order_by(MigrationProgress.resource_type, MigrationProgress.source_id)
 
-    cursor = state.conn.execute(query, params)
-    failed_resources = cursor.fetchall()
+        failed_resources = query.all()
 
     if not failed_resources:
         echo_success("No failed resources to retry!")
@@ -162,14 +158,18 @@ def retry_failed(
     click.echo()
     echo_info("Clearing failed status to enable retry...")
 
-    for rtype, resources in grouped.items():
-        for resource in resources:
-            # Reset status from 'failed' to NULL to allow re-import
-            state.conn.execute(
-                "UPDATE migration_progress SET status = NULL WHERE resource_type = ? AND source_id = ?",
-                (rtype, resource["source_id"]),
-            )
-        state.conn.commit()
+    with get_session(state.database_url) as session:
+        for rtype, resources in grouped.items():
+            for resource in resources:
+                # Reset status from 'failed' to NULL to allow re-import
+                progress = (
+                    session.query(MigrationProgress)
+                    .filter_by(resource_type=rtype, source_id=resource["source_id"])
+                    .first()
+                )
+                if progress:
+                    progress.status = None
+            session.commit()
 
     echo_success(f"Cleared {len(failed_resources)} failed resource statuses")
 
@@ -244,29 +244,32 @@ def retry_status(ctx: MigrationContext, resource_type: tuple) -> None:
         # Show status for specific types
         aap-bridge retry status -r credentials -r projects
     """
+    from sqlalchemy import func
+    from aap_migration.migration.db import get_session, MigrationProgress
+
     console = Console()
     state = ctx.migration_state
 
-    # Get status summary
-    query = """
-    SELECT
-        resource_type,
-        status,
-        COUNT(*) as count
-    FROM migration_progress
-    """
+    # Get status summary using proper session
+    with get_session(state.database_url) as session:
+        query = session.query(
+            MigrationProgress.resource_type,
+            MigrationProgress.status,
+            func.count(MigrationProgress.id).label('count')
+        )
 
-    if resource_type:
-        placeholders = ",".join("?" * len(resource_type))
-        query += f" WHERE resource_type IN ({placeholders})"
-        params = list(resource_type)
-    else:
-        params = []
+        if resource_type:
+            query = query.filter(MigrationProgress.resource_type.in_(resource_type))
 
-    query += " GROUP BY resource_type, status ORDER BY resource_type, status"
+        query = query.group_by(
+            MigrationProgress.resource_type,
+            MigrationProgress.status
+        ).order_by(
+            MigrationProgress.resource_type,
+            MigrationProgress.status
+        )
 
-    cursor = state.conn.execute(query, params)
-    rows = cursor.fetchall()
+        rows = query.all()
 
     # Organize by resource type
     by_type = {}
