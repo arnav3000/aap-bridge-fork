@@ -9,6 +9,7 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
 
+from aap_migration.cli.granular_import import granular_import_menu
 from aap_migration.cli.utils import echo_error, echo_info, echo_success, echo_warning
 
 
@@ -190,12 +191,13 @@ def import_submenu(ctx: Any) -> None:
             Panel.fit(
                 "[bold cyan]Import Resources[/bold cyan]\n\n"
                 "1. Pre-flight Check (Validate Dependencies)\n"
-                "2. Import All Resources\n"
-                "3. Import Phase 1 (Base Resources)\n"
-                "4. Import Phase 2 (Projects + Automation)\n"
-                "5. Retry Failed Resources\n"
-                "6. View Import Status\n"
-                "7. View Failed Resources\n"
+                "2. Import All Resources (Automatic)\n"
+                "3. Granular Import (Step-by-Step Control)\n"
+                "4. Import Phase 1 (Base Resources)\n"
+                "5. Import Phase 2 (Projects + Automation)\n"
+                "6. Retry Failed Resources\n"
+                "7. View Import Status\n"
+                "8. View Failed Resources\n"
                 "b. Back to Main Menu",
                 title="Import Menu",
                 border_style="cyan",
@@ -204,7 +206,7 @@ def import_submenu(ctx: Any) -> None:
 
         choice = Prompt.ask(
             "Select an option",
-            choices=["1", "2", "3", "4", "5", "6", "7", "b"],
+            choices=["1", "2", "3", "4", "5", "6", "7", "8", "b"],
             default="b"
         )
 
@@ -226,33 +228,41 @@ def import_submenu(ctx: Any) -> None:
                 run_command(["import"])
 
         elif choice == "3":
+            # Granular step-by-step import
+            console.print("[yellow]Import resources one phase at a time with full control.[/yellow]")
+            console.print("[dim]You can skip, retry, or abort at any phase.[/dim]")
+            confirm = Prompt.ask("Continue?", choices=["y", "n"], default="n")
+            if confirm == "y":
+                granular_import_menu(ctx)
+
+        elif choice == "4":
             # Phase 1
             console.print("[yellow]Phase 1: Organizations, Users, Teams, Credentials, Projects, Inventories[/yellow]")
             confirm = Prompt.ask("Continue?", choices=["y", "n"], default="n")
             if confirm == "y":
                 run_command(["import", "--phase", "phase1"])
 
-        elif choice == "4":
+        elif choice == "5":
             # Phase 2
             console.print("[yellow]Phase 2: Job Templates, Workflows, Schedules[/yellow]")
             confirm = Prompt.ask("Continue?", choices=["y", "n"], default="n")
             if confirm == "y":
                 run_command(["import", "--phase", "phase2"])
 
-        elif choice == "5":
+        elif choice == "6":
             # Retry failed
             console.print("[yellow]This will retry all previously failed resources.[/yellow]")
             confirm = Prompt.ask("Continue?", choices=["y", "n"], default="n")
             if confirm == "y":
                 run_command(["retry", "failed", "-y"])
 
-        elif choice == "6":
+        elif choice == "7":
             # View status
             show_import_status(ctx)
 
-        elif choice == "7":
+        elif choice == "8":
             # View failed resources
             show_failed_resources(ctx)
 
-        if choice != "6" and choice != "7":
+        if choice not in ["7", "8"]:
             Prompt.ask("\nPress Enter to continue...")

@@ -36,12 +36,13 @@ Complete overhaul of the import experience with enhanced TUI, dependency validat
 ```
 Import Resources
 ├── 1. Pre-flight Check (Validate Dependencies)
-├── 2. Import All Resources
-├── 3. Import Phase 1 (Base Resources)
-├── 4. Import Phase 2 (Projects + Automation)
-├── 5. Retry Failed Resources
-├── 6. View Import Status
-├── 7. View Failed Resources
+├── 2. Import All Resources (Automatic)
+├── 3. Granular Import (Step-by-Step Control) ⭐ NEW!
+├── 4. Import Phase 1 (Base Resources)
+├── 5. Import Phase 2 (Projects + Automation)
+├── 6. Retry Failed Resources
+├── 7. View Import Status
+├── 8. View Failed Resources
 └── b. Back to Main Menu
 ```
 
@@ -189,7 +190,89 @@ Overall Progress:
   ✗ Failed: 20
 ```
 
-### 6. Failed Resources Report
+### 6. Granular Micro-Phase Import ⭐ NEW!
+
+**New option in Import submenu: "Granular Import (Step-by-Step Control)"**
+
+**What it does:**
+- Breaks import into 17 micro-phases
+- Shows progress table for all phases
+- User controls each phase individually
+- Can skip, retry, view errors, or abort at any phase
+
+**Micro-Phases:**
+
+**Phase 1: Infrastructure**
+- 1.1 Organizations
+- 1.2 Labels
+- 1.3 Users
+- 1.4 Teams
+- 1.5 Credential Types
+- 1.6 Credentials
+- 1.7 Execution Environments
+
+**Phase 2: Inventory**
+- 2.1 Inventories
+- 2.2 Inventory Sources
+- 2.3 Inventory Groups
+- 2.4 Hosts
+
+**Phase 3: Projects**
+- 3.1 Projects
+
+**Phase 4: Automation**
+- 4.1 Notification Templates
+- 4.2 Job Templates
+- 4.3 Workflow Templates
+- 4.4 Schedules
+- 4.5 Applications
+
+**Example Display:**
+
+```
+Import Progress
+
+Phase  Resource Type           Total  ✓    ✗   ⧗   Progress              Status
+──────────────────────────────────────────────────────────────────────────────
+1.1    Organizations            15   15   -   -   ███████████████ 100%  ✓ Done
+1.2    Labels                    0    -   -   -   ░░░░░░░░░░░░░░░   0%  ⧗ Pending
+1.3    Users                    32   32   -   -   ███████████████ 100%  ✓ Done
+1.4    Teams                    17   17   -   -   ███████████████ 100%  ✓ Done
+1.5    Credential Types          8    8   -   -   ███████████████ 100%  ✓ Done
+1.6    Credentials              50   42   8   -   ████████████░░░  84%  → Running
+1.7    Execution Environments   12    -   -  12   ░░░░░░░░░░░░░░░   0%  ⧗ Pending
+
+Phase 1.6: Credentials
+  Total: 50
+  Completed: 42
+  Failed: 8
+  Pending: 0
+
+Actions:
+  i - Import this phase
+  s - Skip this phase (continue to next)
+  r - Retry failed resources in this phase
+  v - View errors for this phase
+  a - Abort entire import
+
+Select action [i/s/r/v/a] (i):
+```
+
+**User Actions Per Phase:**
+- **i (Import)**: Import all resources in this phase
+- **s (Skip)**: Skip this phase and move to next
+- **r (Retry)**: Retry failed resources in this phase
+- **v (View)**: Show error details for failed resources
+- **a (Abort)**: Stop the entire import process
+
+**Benefits:**
+- 🎯 Fine-grained control over what gets imported
+- 👀 See exactly which phase is running
+- 🛑 Stop at any point if issues occur
+- 🔍 View errors without leaving the flow
+- ♻️ Retry only the problematic phase
+
+### 7. Failed Resources Report
 
 **New option in Import submenu: "View Failed Resources"**
 
@@ -213,42 +296,49 @@ job_templates  89         Deploy Application     Missing credential: 42
 
 ### New Files:
 
-1. **`src/aap_migration/cli/import_menu.py`** (262 lines)
-   - Enhanced import submenu
+1. **`src/aap_migration/cli/import_menu.py`** (270 lines)
+   - Enhanced import submenu with 8 options
    - Status and error viewers
    - Interactive import workflow
+   - Integrated granular import
 
-2. **`src/aap_migration/validation/dependency_validator.py`** (253 lines)
+2. **`src/aap_migration/cli/granular_import.py`** (438 lines) ⭐ NEW!
+   - Step-by-step micro-phase import
+   - 17 granular phases with full control
+   - Interactive phase-by-phase execution
+   - Skip/Retry/View/Abort per phase
+
+3. **`src/aap_migration/validation/dependency_validator.py`** (253 lines)
    - Pre-flight dependency validation
    - Dependency chain analysis
    - Formatted validation reports
 
-3. **`src/aap_migration/reporting/enhanced_progress.py`** (233 lines)
+4. **`src/aap_migration/reporting/enhanced_progress.py`** (233 lines)
    - Granular progress tracking
    - Error aggregation
    - Live display updates
 
-4. **`src/aap_migration/cli/commands/retry.py`** (370 lines)
+5. **`src/aap_migration/cli/commands/retry.py`** (370 lines)
    - Smart retry for failed resources
    - Resume capability
    - Status reporting
 
 ### Modified Files:
 
-5. **`src/aap_migration/cli/menu.py`**
+6. **`src/aap_migration/cli/menu.py`**
    - Integrated enhanced import submenu
    - Simplified main menu
    - Better flow
 
-6. **`src/aap_migration/cli/main.py`**
+7. **`src/aap_migration/cli/main.py`**
    - Registered retry command group
    - Imported retry commands
 
-7. **`src/aap_migration/cli/commands/export_import.py`**
+8. **`src/aap_migration/cli/commands/export_import.py`**
    - Integrated dependency validator
    - Enhanced --check-dependencies flag
 
-8. **`src/aap_migration/validation/__init__.py`**
+9. **`src/aap_migration/validation/__init__.py`**
    - Exported DependencyValidator
 
 ## User Experience Improvements
@@ -354,7 +444,8 @@ job_templates  89         Deploy Application     Missing credential: 42
 ```
 feat: comprehensive TUI improvements for import workflow
 
-- Add enhanced import submenu with 7 interactive options
+- Add enhanced import submenu with 8 interactive options
+- Add granular micro-phase import (17 phases, step-by-step control)
 - Implement pre-flight dependency validation
 - Add granular resource-level progress tracking with error details
 - Create smart retry system for failed resources only
@@ -380,6 +471,7 @@ New TUI screens:
 
 Files:
 - NEW: src/aap_migration/cli/import_menu.py
+- NEW: src/aap_migration/cli/granular_import.py ⭐
 - NEW: src/aap_migration/validation/dependency_validator.py
 - NEW: src/aap_migration/reporting/enhanced_progress.py
 - NEW: src/aap_migration/cli/commands/retry.py
@@ -388,7 +480,7 @@ Files:
 
 ---
 
-**Status:** ✅ Complete - All 4 priorities implemented
+**Status:** ✅ Complete - All 4 priorities + Granular Import implemented
 **Testing:** Ready for manual testing
 **Branch:** fix-tui
 **Ready to merge:** After testing
