@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Custom Monitoring System",
+    "description": "OAuth2 application for custom internal monitoring platform",
+    "client_id": "4O8pJHOjFXJ483Drw775cwhDRKcrkSt4n72KqAuu",
+    "client_type": "public",
+    "redirect_uris": "",
+    "authorization_grant_type": "password",
+    "skip_authorization": true,
+    "organization": 1,
+    "_source_id": 3,
+    "_migration_notes": {
+      "client_secret_action": "none",
+      "redirect_uris_action": "review_for_environment",
+      "external_systems_action": "update_with_new_client_id_secret"
+    }
+  },
+  {
+    "name": "Grafana Dashboard",
+    "description": "OAuth2 application for Grafana to display AAP metrics and dashboards",
+    "client_id": "BmFHCWZZyFGMsknarg0mRbI2h2H4cC9TeVVuoSfQ",
+    "client_secret": "***REDACTED_WILL_BE_REGENERATED***",
+    "client_type": "confidential",
+    "redirect_uris": "https://grafana.example.com/login/generic_oauth\nhttps://grafana.example.com/oauth/callback",
+    "authorization_grant_type": "authorization-code",
+    "skip_authorization": false,
+    "organization": 1,
+    "_source_id": 2,
+    "_requires_new_secret": true,
+    "_migration_notes": {
+      "client_secret_action": "will_be_auto_generated",
+      "redirect_uris_action": "review_for_environment",
+      "external_systems_action": "update_with_new_client_id_secret"
+    }
+  },
+  {
+    "name": "Prometheus Monitoring",
+    "description": "OAuth2 application for Prometheus to query AAP metrics and job status",
+    "client_id": "l7IpXhNAXgumUWuWc2M40F4Q2rFmGu7sLSpdalzd",
+    "client_secret": "***REDACTED_WILL_BE_REGENERATED***",
+    "client_type": "confidential",
+    "redirect_uris": "https://prometheus.example.com/oauth/callback",
+    "authorization_grant_type": "authorization-code",
+    "skip_authorization": false,
+    "organization": 1,
+    "_source_id": 1,
+    "_requires_new_secret": true,
+    "_migration_notes": {
+      "client_secret_action": "will_be_auto_generated",
+      "redirect_uris_action": "review_for_environment",
+      "external_systems_action": "update_with_new_client_id_secret"
+    }
+  }
+]

@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "hostname": "192.168.100.119",
+    "type": "instance",
+    "url": "/api/v2/instances/1/",
+    "related": {
+      "jobs": "/api/v2/instances/1/jobs/",
+      "instance_groups": "/api/v2/instances/1/instance_groups/",
+      "peers": "/api/v2/instances/1/peers/"
+    },
+    "summary_fields": {
+      "user_capabilities": {
+        "edit": false
+      }
+    },
+    "uuid": "2a3a1519-21a7-4c84-9c25-b6a9cf42bf34",
+    "created": "2026-03-02T20:34:56.953052Z",
+    "modified": "2026-03-02T20:34:56.953065Z",
+    "last_seen": "2026-04-01T12:18:26.595555Z",
+    "health_check_started": null,
+    "health_check_pending": false,
+    "last_health_check": "2026-04-01T12:18:26.595555Z",
+    "errors": "",
+    "capacity_adjustment": "1.00",
+    "version": "4.5.30",
+    "capacity": 136,
+    "consumed_capacity": 0,
+    "percent_capacity_remaining": 100.0,
+    "jobs_running": 0,
+    "jobs_total": 2583,
+    "cpu": "2.0",
+    "memory": 16497594368,
+    "cpu_capacity": 8,
+    "mem_capacity": 136,
+    "enabled": true,
+    "managed_by_policy": true,
+    "node_type": "hybrid",
+    "node_state": "ready",
+    "ip_address": "",
+    "listener_port": null,
+    "peers": [],
+    "peers_from_control_nodes": false,
+    "_source_id": 1
+  }
+]

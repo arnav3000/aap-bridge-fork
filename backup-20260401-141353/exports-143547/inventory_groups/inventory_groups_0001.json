@@ -1,0 +1,860 @@
+[
+  {
+    "id": 3,
+    "type": "group",
+    "url": "/api/v2/groups/3/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/3/variable_data/",
+      "hosts": "/api/v2/groups/3/hosts/",
+      "potential_children": "/api/v2/groups/3/potential_children/",
+      "children": "/api/v2/groups/3/children/",
+      "all_hosts": "/api/v2/groups/3/all_hosts/",
+      "job_events": "/api/v2/groups/3/job_events/",
+      "job_host_summaries": "/api/v2/groups/3/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/3/activity_stream/",
+      "inventory_sources": "/api/v2/groups/3/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/3/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/4/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 4,
+        "name": "Production Infrastructure",
+        "description": "Production servers and infrastructure",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:02:00.964030Z",
+    "modified": "2026-03-04T10:02:00.964035Z",
+    "name": "app_servers",
+    "description": "Production application servers",
+    "inventory": 4,
+    "variables": "{\"app_port\": 8080, \"jvm_heap_size\": \"4g\"}",
+    "_source_id": 3
+  },
+  {
+    "id": 6,
+    "type": "group",
+    "url": "/api/v2/groups/6/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/6/variable_data/",
+      "hosts": "/api/v2/groups/6/hosts/",
+      "potential_children": "/api/v2/groups/6/potential_children/",
+      "children": "/api/v2/groups/6/children/",
+      "all_hosts": "/api/v2/groups/6/all_hosts/",
+      "job_events": "/api/v2/groups/6/job_events/",
+      "job_host_summaries": "/api/v2/groups/6/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/6/activity_stream/",
+      "inventory_sources": "/api/v2/groups/6/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/6/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/6/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 6,
+        "name": "Cloud Resources",
+        "description": "Cloud-based infrastructure (AWS, Azure, GCP)",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:02:04.089863Z",
+    "modified": "2026-03-04T10:02:04.089868Z",
+    "name": "aws_instances",
+    "description": "AWS EC2 instances",
+    "inventory": 6,
+    "variables": "{\"cloud_provider\": \"aws\", \"region\": \"us-east-1\"}",
+    "_source_id": 6
+  },
+  {
+    "id": 7,
+    "type": "group",
+    "url": "/api/v2/groups/7/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/7/variable_data/",
+      "hosts": "/api/v2/groups/7/hosts/",
+      "potential_children": "/api/v2/groups/7/potential_children/",
+      "children": "/api/v2/groups/7/children/",
+      "all_hosts": "/api/v2/groups/7/all_hosts/",
+      "job_events": "/api/v2/groups/7/job_events/",
+      "job_host_summaries": "/api/v2/groups/7/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/7/activity_stream/",
+      "inventory_sources": "/api/v2/groups/7/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/7/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/6/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 6,
+        "name": "Cloud Resources",
+        "description": "Cloud-based infrastructure (AWS, Azure, GCP)",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:02:05.135114Z",
+    "modified": "2026-03-04T10:02:05.135118Z",
+    "name": "azure_instances",
+    "description": "Azure VMs",
+    "inventory": 6,
+    "variables": "{\"cloud_provider\": \"azure\", \"region\": \"eastus\"}",
+    "_source_id": 7
+  },
+  {
+    "id": 14,
+    "type": "group",
+    "url": "/api/v2/groups/14/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/14/variable_data/",
+      "hosts": "/api/v2/groups/14/hosts/",
+      "potential_children": "/api/v2/groups/14/potential_children/",
+      "children": "/api/v2/groups/14/children/",
+      "all_hosts": "/api/v2/groups/14/all_hosts/",
+      "job_events": "/api/v2/groups/14/job_events/",
+      "job_host_summaries": "/api/v2/groups/14/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/14/activity_stream/",
+      "inventory_sources": "/api/v2/groups/14/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/14/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/11/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 11,
+        "name": "E2E-Simple-Inventory",
+        "description": "Simple static inventory",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 10,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-24T06:01:40.155814Z",
+    "modified": "2026-03-24T06:01:40.155819Z",
+    "name": "databases",
+    "description": "",
+    "inventory": 11,
+    "variables": "{\"db_port\": 5432}",
+    "_source_id": 14
+  },
+  {
+    "id": 2,
+    "type": "group",
+    "url": "/api/v2/groups/2/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/2/variable_data/",
+      "hosts": "/api/v2/groups/2/hosts/",
+      "potential_children": "/api/v2/groups/2/potential_children/",
+      "children": "/api/v2/groups/2/children/",
+      "all_hosts": "/api/v2/groups/2/all_hosts/",
+      "job_events": "/api/v2/groups/2/job_events/",
+      "job_host_summaries": "/api/v2/groups/2/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/2/activity_stream/",
+      "inventory_sources": "/api/v2/groups/2/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/2/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/4/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 4,
+        "name": "Production Infrastructure",
+        "description": "Production servers and infrastructure",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:01:59.903036Z",
+    "modified": "2026-03-04T10:01:59.903041Z",
+    "name": "db_servers",
+    "description": "Production database servers",
+    "inventory": 4,
+    "variables": "{\"db_port\": 5432, \"backup_schedule\": \"0 2 * * *\", \"replication_enabled\": true}",
+    "_source_id": 2
+  },
+  {
+    "id": 5,
+    "type": "group",
+    "url": "/api/v2/groups/5/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/5/variable_data/",
+      "hosts": "/api/v2/groups/5/hosts/",
+      "potential_children": "/api/v2/groups/5/potential_children/",
+      "children": "/api/v2/groups/5/children/",
+      "all_hosts": "/api/v2/groups/5/all_hosts/",
+      "job_events": "/api/v2/groups/5/job_events/",
+      "job_host_summaries": "/api/v2/groups/5/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/5/activity_stream/",
+      "inventory_sources": "/api/v2/groups/5/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/5/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/5/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 5,
+        "name": "Development Environment",
+        "description": "Development and testing servers",
+        "has_active_failures": false,
+        "total_hosts": 3,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:02:03.061075Z",
+    "modified": "2026-03-04T10:02:03.061080Z",
+    "name": "dev_db",
+    "description": "Development databases",
+    "inventory": 5,
+    "variables": "{\"db_port\": 5432}",
+    "_source_id": 5
+  },
+  {
+    "id": 4,
+    "type": "group",
+    "url": "/api/v2/groups/4/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/4/variable_data/",
+      "hosts": "/api/v2/groups/4/hosts/",
+      "potential_children": "/api/v2/groups/4/potential_children/",
+      "children": "/api/v2/groups/4/children/",
+      "all_hosts": "/api/v2/groups/4/all_hosts/",
+      "job_events": "/api/v2/groups/4/job_events/",
+      "job_host_summaries": "/api/v2/groups/4/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/4/activity_stream/",
+      "inventory_sources": "/api/v2/groups/4/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/4/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/5/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 5,
+        "name": "Development Environment",
+        "description": "Development and testing servers",
+        "has_active_failures": false,
+        "total_hosts": 3,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:02:02.018752Z",
+    "modified": "2026-03-04T10:02:02.018757Z",
+    "name": "dev_web",
+    "description": "Development web servers",
+    "inventory": 5,
+    "variables": "{\"debug\": true}",
+    "_source_id": 4
+  },
+  {
+    "id": 10,
+    "type": "group",
+    "url": "/api/v2/groups/10/",
+    "related": {
+      "variable_data": "/api/v2/groups/10/variable_data/",
+      "hosts": "/api/v2/groups/10/hosts/",
+      "potential_children": "/api/v2/groups/10/potential_children/",
+      "children": "/api/v2/groups/10/children/",
+      "all_hosts": "/api/v2/groups/10/all_hosts/",
+      "job_events": "/api/v2/groups/10/job_events/",
+      "job_host_summaries": "/api/v2/groups/10/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/10/activity_stream/",
+      "inventory_sources": "/api/v2/groups/10/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/10/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/8/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 8,
+        "name": "Dynamic SCM Inventory",
+        "description": "Inventory sourced from Git repository",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:15:52.698716Z",
+    "modified": "2026-03-04T10:15:52.698721Z",
+    "name": "nginx",
+    "description": "imported",
+    "inventory": 8,
+    "variables": "{}",
+    "_source_id": 10
+  },
+  {
+    "id": 15,
+    "type": "group",
+    "url": "/api/v2/groups/15/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/15/variable_data/",
+      "hosts": "/api/v2/groups/15/hosts/",
+      "potential_children": "/api/v2/groups/15/potential_children/",
+      "children": "/api/v2/groups/15/children/",
+      "all_hosts": "/api/v2/groups/15/all_hosts/",
+      "job_events": "/api/v2/groups/15/job_events/",
+      "job_host_summaries": "/api/v2/groups/15/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/15/activity_stream/",
+      "inventory_sources": "/api/v2/groups/15/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/15/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/11/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 11,
+        "name": "E2E-Simple-Inventory",
+        "description": "Simple static inventory",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 10,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-24T06:01:41.201926Z",
+    "modified": "2026-03-24T06:01:41.201931Z",
+    "name": "production",
+    "description": "",
+    "inventory": 11,
+    "variables": "",
+    "_source_id": 15
+  },
+  {
+    "id": 9,
+    "type": "group",
+    "url": "/api/v2/groups/9/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/9/variable_data/",
+      "hosts": "/api/v2/groups/9/hosts/",
+      "potential_children": "/api/v2/groups/9/potential_children/",
+      "children": "/api/v2/groups/9/children/",
+      "all_hosts": "/api/v2/groups/9/all_hosts/",
+      "job_events": "/api/v2/groups/9/job_events/",
+      "job_host_summaries": "/api/v2/groups/9/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/9/activity_stream/",
+      "inventory_sources": "/api/v2/groups/9/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/9/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/7/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 7,
+        "name": "Network Devices",
+        "description": "Network switches, routers, and firewalls",
+        "has_active_failures": false,
+        "total_hosts": 3,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:02:07.293038Z",
+    "modified": "2026-03-04T10:02:07.293042Z",
+    "name": "routers",
+    "description": "Network routers",
+    "inventory": 7,
+    "variables": "{\"device_type\": \"router\"}",
+    "_source_id": 9
+  },
+  {
+    "id": 8,
+    "type": "group",
+    "url": "/api/v2/groups/8/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/8/variable_data/",
+      "hosts": "/api/v2/groups/8/hosts/",
+      "potential_children": "/api/v2/groups/8/potential_children/",
+      "children": "/api/v2/groups/8/children/",
+      "all_hosts": "/api/v2/groups/8/all_hosts/",
+      "job_events": "/api/v2/groups/8/job_events/",
+      "job_host_summaries": "/api/v2/groups/8/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/8/activity_stream/",
+      "inventory_sources": "/api/v2/groups/8/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/8/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/7/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 7,
+        "name": "Network Devices",
+        "description": "Network switches, routers, and firewalls",
+        "has_active_failures": false,
+        "total_hosts": 3,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:02:06.193747Z",
+    "modified": "2026-03-04T10:02:06.193752Z",
+    "name": "switches",
+    "description": "Network switches",
+    "inventory": 7,
+    "variables": "{\"device_type\": \"switch\"}",
+    "_source_id": 8
+  },
+  {
+    "id": 11,
+    "type": "group",
+    "url": "/api/v2/groups/11/",
+    "related": {
+      "variable_data": "/api/v2/groups/11/variable_data/",
+      "hosts": "/api/v2/groups/11/hosts/",
+      "potential_children": "/api/v2/groups/11/potential_children/",
+      "children": "/api/v2/groups/11/children/",
+      "all_hosts": "/api/v2/groups/11/all_hosts/",
+      "job_events": "/api/v2/groups/11/job_events/",
+      "job_host_summaries": "/api/v2/groups/11/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/11/activity_stream/",
+      "inventory_sources": "/api/v2/groups/11/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/11/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/8/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 8,
+        "name": "Dynamic SCM Inventory",
+        "description": "Inventory sourced from Git repository",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:15:52.700437Z",
+    "modified": "2026-03-04T10:15:52.700441Z",
+    "name": "testing",
+    "description": "imported",
+    "inventory": 8,
+    "variables": "{}",
+    "_source_id": 11
+  },
+  {
+    "id": 12,
+    "type": "group",
+    "url": "/api/v2/groups/12/",
+    "related": {
+      "variable_data": "/api/v2/groups/12/variable_data/",
+      "hosts": "/api/v2/groups/12/hosts/",
+      "potential_children": "/api/v2/groups/12/potential_children/",
+      "children": "/api/v2/groups/12/children/",
+      "all_hosts": "/api/v2/groups/12/all_hosts/",
+      "job_events": "/api/v2/groups/12/job_events/",
+      "job_host_summaries": "/api/v2/groups/12/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/12/activity_stream/",
+      "inventory_sources": "/api/v2/groups/12/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/12/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/8/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 8,
+        "name": "Dynamic SCM Inventory",
+        "description": "Inventory sourced from Git repository",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:15:52.701914Z",
+    "modified": "2026-03-04T10:15:52.701918Z",
+    "name": "webserver",
+    "description": "imported",
+    "inventory": 8,
+    "variables": "{}",
+    "_source_id": 12
+  },
+  {
+    "id": 1,
+    "type": "group",
+    "url": "/api/v2/groups/1/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/1/variable_data/",
+      "hosts": "/api/v2/groups/1/hosts/",
+      "potential_children": "/api/v2/groups/1/potential_children/",
+      "children": "/api/v2/groups/1/children/",
+      "all_hosts": "/api/v2/groups/1/all_hosts/",
+      "job_events": "/api/v2/groups/1/job_events/",
+      "job_host_summaries": "/api/v2/groups/1/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/1/activity_stream/",
+      "inventory_sources": "/api/v2/groups/1/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/1/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/4/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 4,
+        "name": "Production Infrastructure",
+        "description": "Production servers and infrastructure",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:01:58.893352Z",
+    "modified": "2026-03-04T10:01:58.893357Z",
+    "name": "web_servers",
+    "description": "Production web servers",
+    "inventory": 4,
+    "variables": "{\"http_port\": 80, \"https_port\": 443, \"ssl_enabled\": true}",
+    "_source_id": 1
+  },
+  {
+    "id": 13,
+    "type": "group",
+    "url": "/api/v2/groups/13/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/groups/13/variable_data/",
+      "hosts": "/api/v2/groups/13/hosts/",
+      "potential_children": "/api/v2/groups/13/potential_children/",
+      "children": "/api/v2/groups/13/children/",
+      "all_hosts": "/api/v2/groups/13/all_hosts/",
+      "job_events": "/api/v2/groups/13/job_events/",
+      "job_host_summaries": "/api/v2/groups/13/job_host_summaries/",
+      "activity_stream": "/api/v2/groups/13/activity_stream/",
+      "inventory_sources": "/api/v2/groups/13/inventory_sources/",
+      "ad_hoc_commands": "/api/v2/groups/13/ad_hoc_commands/",
+      "inventory": "/api/v2/inventories/11/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 11,
+        "name": "E2E-Simple-Inventory",
+        "description": "Simple static inventory",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 10,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-24T06:01:39.104027Z",
+    "modified": "2026-03-24T06:01:39.104031Z",
+    "name": "webservers",
+    "description": "",
+    "inventory": 11,
+    "variables": "{\"http_port\": 80}",
+    "_source_id": 13
+  }
+]

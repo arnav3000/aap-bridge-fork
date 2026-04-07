@@ -1,0 +1,238 @@
+[
+  {
+    "id": 20,
+    "type": "inventory_source",
+    "url": "/api/v2/inventory_sources/20/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "last_job": "/api/v2/inventory_updates/2580/",
+      "next_schedule": "/api/v2/schedules/12/",
+      "update": "/api/v2/inventory_sources/20/update/",
+      "inventory_updates": "/api/v2/inventory_sources/20/inventory_updates/",
+      "schedules": "/api/v2/inventory_sources/20/schedules/",
+      "activity_stream": "/api/v2/inventory_sources/20/activity_stream/",
+      "hosts": "/api/v2/inventory_sources/20/hosts/",
+      "groups": "/api/v2/inventory_sources/20/groups/",
+      "notification_templates_started": "/api/v2/inventory_sources/20/notification_templates_started/",
+      "notification_templates_success": "/api/v2/inventory_sources/20/notification_templates_success/",
+      "notification_templates_error": "/api/v2/inventory_sources/20/notification_templates_error/",
+      "inventory": "/api/v2/inventories/8/",
+      "source_project": "/api/v2/projects/19/",
+      "last_update": "/api/v2/inventory_updates/2580/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 4,
+        "name": "Engineering",
+        "description": "Software development and engineering teams"
+      },
+      "inventory": {
+        "id": 8,
+        "name": "Dynamic SCM Inventory",
+        "description": "Inventory sourced from Git repository",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "source_project": {
+        "id": 19,
+        "name": "Ansible Inventory Repository",
+        "description": "Git repository containing dynamic inventory files",
+        "status": "successful",
+        "scm_type": "git",
+        "allow_override": false
+      },
+      "last_job": {
+        "id": 2580,
+        "name": "Dynamic SCM Inventory - Git Inventory Source",
+        "description": "Pulls inventory from Git repository",
+        "finished": "2026-04-01T12:00:31.443258Z",
+        "status": "successful",
+        "failed": false,
+        "license_error": false
+      },
+      "last_update": {
+        "id": 2580,
+        "name": "Dynamic SCM Inventory - Git Inventory Source",
+        "description": "Pulls inventory from Git repository",
+        "status": "successful",
+        "failed": false,
+        "license_error": false
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "start": true,
+        "schedule": true
+      },
+      "credentials": []
+    },
+    "created": "2026-03-04T10:08:03.282177Z",
+    "modified": "2026-03-04T10:15:46.861184Z",
+    "name": "Git Inventory Source",
+    "description": "Pulls inventory from Git repository",
+    "source": "scm",
+    "source_path": "inventory.yaml",
+    "source_vars": "---",
+    "scm_branch": "",
+    "credential": null,
+    "enabled_var": "",
+    "enabled_value": "",
+    "host_filter": "",
+    "overwrite": true,
+    "overwrite_vars": true,
+    "custom_virtualenv": null,
+    "timeout": 0,
+    "verbosity": 1,
+    "limit": "",
+    "last_job_run": "2026-04-01T12:00:31.443258Z",
+    "last_job_failed": false,
+    "next_job_run": "2026-04-01T13:00:00Z",
+    "status": "successful",
+    "execution_environment": null,
+    "inventory": 8,
+    "update_on_launch": true,
+    "update_cache_timeout": 0,
+    "source_project": 19,
+    "last_update_failed": false,
+    "last_updated": "2026-04-01T12:00:31.443258Z",
+    "_source_id": 20
+  },
+  {
+    "id": 21,
+    "type": "inventory_source",
+    "url": "/api/v2/inventory_sources/21/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "last_job": "/api/v2/inventory_updates/2543/",
+      "next_schedule": "/api/v2/schedules/13/",
+      "update": "/api/v2/inventory_sources/21/update/",
+      "inventory_updates": "/api/v2/inventory_sources/21/inventory_updates/",
+      "schedules": "/api/v2/inventory_sources/21/schedules/",
+      "activity_stream": "/api/v2/inventory_sources/21/activity_stream/",
+      "hosts": "/api/v2/inventory_sources/21/hosts/",
+      "groups": "/api/v2/inventory_sources/21/groups/",
+      "notification_templates_started": "/api/v2/inventory_sources/21/notification_templates_started/",
+      "notification_templates_success": "/api/v2/inventory_sources/21/notification_templates_success/",
+      "notification_templates_error": "/api/v2/inventory_sources/21/notification_templates_error/",
+      "inventory": "/api/v2/inventories/10/",
+      "source_project": "/api/v2/projects/19/",
+      "last_update": "/api/v2/inventory_updates/2543/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 4,
+        "name": "Engineering",
+        "description": "Software development and engineering teams"
+      },
+      "inventory": {
+        "id": 10,
+        "name": "Project File Inventory",
+        "description": "Inventory from static file in project",
+        "has_active_failures": false,
+        "total_hosts": 1,
+        "hosts_with_active_failures": 0,
+        "total_groups": 0,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "source_project": {
+        "id": 19,
+        "name": "Ansible Inventory Repository",
+        "description": "Git repository containing dynamic inventory files",
+        "status": "successful",
+        "scm_type": "git",
+        "allow_override": false
+      },
+      "last_job": {
+        "id": 2543,
+        "name": "Project File Inventory - Project Inventory File Source",
+        "description": "Static inventory file from project",
+        "finished": "2026-04-01T03:00:33.516897Z",
+        "status": "successful",
+        "failed": false,
+        "license_error": false
+      },
+      "last_update": {
+        "id": 2543,
+        "name": "Project File Inventory - Project Inventory File Source",
+        "description": "Static inventory file from project",
+        "status": "successful",
+        "failed": false,
+        "license_error": false
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "start": true,
+        "schedule": true
+      },
+      "credentials": []
+    },
+    "created": "2026-03-04T10:08:06.809130Z",
+    "modified": "2026-03-04T10:08:06.809133Z",
+    "name": "Project Inventory File Source",
+    "description": "Static inventory file from project",
+    "source": "scm",
+    "source_path": "hosts",
+    "source_vars": "",
+    "scm_branch": "",
+    "credential": null,
+    "enabled_var": "",
+    "enabled_value": "",
+    "host_filter": "",
+    "overwrite": true,
+    "overwrite_vars": false,
+    "custom_virtualenv": null,
+    "timeout": 0,
+    "verbosity": 1,
+    "limit": "",
+    "last_job_run": "2026-04-01T03:00:33.516897Z",
+    "last_job_failed": false,
+    "next_job_run": "2026-04-02T03:00:00Z",
+    "status": "successful",
+    "execution_environment": null,
+    "inventory": 10,
+    "update_on_launch": true,
+    "update_cache_timeout": 0,
+    "source_project": 19,
+    "last_update_failed": false,
+    "last_updated": "2026-04-01T03:00:33.516897Z",
+    "_source_id": 21
+  }
+]

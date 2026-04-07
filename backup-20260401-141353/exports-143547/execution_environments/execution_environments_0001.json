@@ -1,0 +1,605 @@
+[
+  {
+    "id": 15,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/15/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/15/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/15/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/15/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:28:23.196467Z",
+    "modified": "2026-03-04T10:28:23.196471Z",
+    "name": "Minimal EE",
+    "description": "Minimal execution environment for simple tasks",
+    "organization": null,
+    "image": "quay.io/ansible/awx-minimal-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 15
+  },
+  {
+    "id": 14,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/14/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/14/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/14/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/14/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:28:22.645258Z",
+    "modified": "2026-03-04T10:28:22.645263Z",
+    "name": "Kubernetes EE",
+    "description": "Execution environment for Kubernetes/OpenShift",
+    "organization": null,
+    "image": "quay.io/ansible/kubernetes-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 14
+  },
+  {
+    "id": 13,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/13/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/13/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/13/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/13/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:28:22.118022Z",
+    "modified": "2026-03-04T10:28:22.118026Z",
+    "name": "Database Automation EE",
+    "description": "Execution environment for database operations",
+    "organization": null,
+    "image": "quay.io/ansible/awx-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 13
+  },
+  {
+    "id": 12,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/12/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/12/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/12/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/12/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:28:21.594986Z",
+    "modified": "2026-03-04T10:28:21.594990Z",
+    "name": "Windows Automation EE",
+    "description": "Execution environment for Windows automation",
+    "organization": null,
+    "image": "quay.io/ansible/awx-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 12
+  },
+  {
+    "id": 11,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/11/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/11/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/11/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/11/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:28:20.878800Z",
+    "modified": "2026-03-04T10:28:20.878805Z",
+    "name": "Security Scanning EE",
+    "description": "Execution environment for security scans",
+    "organization": null,
+    "image": "quay.io/ansible/awx-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 11
+  },
+  {
+    "id": 10,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/10/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/10/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/10/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/10/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:28:20.312868Z",
+    "modified": "2026-03-04T10:28:20.312873Z",
+    "name": "ServiceNow EE",
+    "description": "Execution environment with ServiceNow collections",
+    "organization": null,
+    "image": "quay.io/ansible/awx-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 10
+  },
+  {
+    "id": 9,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/9/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/9/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/9/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/9/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:28:19.624907Z",
+    "modified": "2026-03-04T10:28:19.624912Z",
+    "name": "Network Automation EE",
+    "description": "Execution environment for network automation",
+    "organization": null,
+    "image": "quay.io/ansible/network-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 9
+  },
+  {
+    "id": 8,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/8/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/8/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/8/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/8/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:20:39.232627Z",
+    "modified": "2026-03-04T10:20:39.232632Z",
+    "name": "Cloud EE",
+    "description": "Cloud operations execution environment",
+    "organization": null,
+    "image": "quay.io/ansible/awx-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 8
+  },
+  {
+    "id": 7,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/7/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/7/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/7/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/7/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:20:38.704121Z",
+    "modified": "2026-03-04T10:20:38.704126Z",
+    "name": "Security EE",
+    "description": "Security team execution environment",
+    "organization": null,
+    "image": "quay.io/ansible/awx-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 7
+  },
+  {
+    "id": 6,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/6/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/6/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/6/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/6/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:20:38.170037Z",
+    "modified": "2026-03-04T10:20:38.170041Z",
+    "name": "Operations EE",
+    "description": "Operations team execution environment",
+    "organization": null,
+    "image": "quay.io/ansible/awx-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 6
+  },
+  {
+    "id": 5,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/5/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/5/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/5/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/5/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:20:37.612776Z",
+    "modified": "2026-03-04T10:20:37.612780Z",
+    "name": "Engineering EE",
+    "description": "Engineering team execution environment",
+    "organization": null,
+    "image": "quay.io/ansible/creator-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 5
+  },
+  {
+    "id": 4,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/4/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "activity_stream": "/api/v2/execution_environments/4/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/4/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/4/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-04T10:20:37.088181Z",
+    "modified": "2026-03-04T10:20:37.088185Z",
+    "name": "Default EE",
+    "description": "Default execution environment",
+    "organization": null,
+    "image": "quay.io/ansible/awx-ee:latest",
+    "managed": false,
+    "credential": null,
+    "pull": "missing",
+    "_source_id": 4
+  },
+  {
+    "id": 3,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/3/",
+    "related": {
+      "activity_stream": "/api/v2/execution_environments/3/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/3/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/3/copy/",
+      "credential": "/api/v2/credentials/7/"
+    },
+    "summary_fields": {
+      "credential": {
+        "id": 7,
+        "name": "Automation Hub Container Registry",
+        "description": "",
+        "kind": "registry",
+        "cloud": false,
+        "kubernetes": false,
+        "credential_type_id": 18
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": false,
+        "copy": true
+      }
+    },
+    "created": "2026-03-02T20:40:05.509526Z",
+    "modified": "2026-03-02T20:40:05.516189Z",
+    "name": "Control Plane Execution Environment",
+    "description": "",
+    "organization": null,
+    "image": "192.168.100.26/ee-supported-rhel8:latest",
+    "managed": true,
+    "credential": 7,
+    "pull": "",
+    "_source_id": 3
+  },
+  {
+    "id": 2,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/2/",
+    "related": {
+      "activity_stream": "/api/v2/execution_environments/2/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/2/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/2/copy/",
+      "credential": "/api/v2/credentials/7/"
+    },
+    "summary_fields": {
+      "credential": {
+        "id": 7,
+        "name": "Automation Hub Container Registry",
+        "description": "",
+        "kind": "registry",
+        "cloud": false,
+        "kubernetes": false,
+        "credential_type_id": 18
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-02T20:40:05.496882Z",
+    "modified": "2026-03-02T20:40:05.503636Z",
+    "name": "Automation Hub Default execution environment",
+    "description": "",
+    "organization": null,
+    "image": "192.168.100.26/ee-supported-rhel8:latest",
+    "managed": false,
+    "credential": 7,
+    "pull": "",
+    "_source_id": 2
+  },
+  {
+    "id": 1,
+    "type": "execution_environment",
+    "url": "/api/v2/execution_environments/1/",
+    "related": {
+      "activity_stream": "/api/v2/execution_environments/1/activity_stream/",
+      "unified_job_templates": "/api/v2/execution_environments/1/unified_job_templates/",
+      "copy": "/api/v2/execution_environments/1/copy/",
+      "credential": "/api/v2/credentials/7/"
+    },
+    "summary_fields": {
+      "credential": {
+        "id": 7,
+        "name": "Automation Hub Container Registry",
+        "description": "",
+        "kind": "registry",
+        "cloud": false,
+        "kubernetes": false,
+        "credential_type_id": 18
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "copy": true
+      }
+    },
+    "created": "2026-03-02T20:40:05.467959Z",
+    "modified": "2026-03-02T20:40:05.491936Z",
+    "name": "Automation Hub Minimal execution environment",
+    "description": "",
+    "organization": null,
+    "image": "192.168.100.26/ee-minimal-rhel8:latest",
+    "managed": false,
+    "credential": 7,
+    "pull": "",
+    "_source_id": 1
+  }
+]

@@ -1,0 +1,262 @@
+[
+  {
+    "id": 1,
+    "type": "instance_group",
+    "url": "/api/v2/instance_groups/1/",
+    "related": {
+      "jobs": "/api/v2/instance_groups/1/jobs/",
+      "instances": "/api/v2/instance_groups/1/instances/",
+      "access_list": "/api/v2/instance_groups/1/access_list/",
+      "object_roles": "/api/v2/instance_groups/1/object_roles/"
+    },
+    "name": "controlplane",
+    "created": "2026-03-02T20:34:58.278580Z",
+    "modified": "2026-03-02T20:34:58.301010Z",
+    "capacity": 136,
+    "consumed_capacity": 0,
+    "percent_capacity_remaining": 100.0,
+    "jobs_running": 0,
+    "max_concurrent_jobs": 0,
+    "max_forks": 0,
+    "jobs_total": 992,
+    "instances": 1,
+    "is_container_group": false,
+    "credential": null,
+    "policy_instance_percentage": 100,
+    "policy_instance_minimum": 0,
+    "policy_instance_list": [],
+    "pod_spec_override": "",
+    "summary_fields": {
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the instance group",
+          "name": "Admin",
+          "id": 2
+        },
+        "use_role": {
+          "description": "Can use the instance group in a job template",
+          "name": "Use",
+          "id": 3
+        },
+        "read_role": {
+          "description": "May view settings for the instance group",
+          "name": "Read",
+          "id": 4
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": false
+      }
+    },
+    "_source_id": 1
+  },
+  {
+    "id": 2,
+    "type": "instance_group",
+    "url": "/api/v2/instance_groups/2/",
+    "related": {
+      "jobs": "/api/v2/instance_groups/2/jobs/",
+      "instances": "/api/v2/instance_groups/2/instances/",
+      "access_list": "/api/v2/instance_groups/2/access_list/",
+      "object_roles": "/api/v2/instance_groups/2/object_roles/"
+    },
+    "name": "default",
+    "created": "2026-03-02T20:34:59.734998Z",
+    "modified": "2026-03-02T20:34:59.756062Z",
+    "capacity": 136,
+    "consumed_capacity": 0,
+    "percent_capacity_remaining": 100.0,
+    "jobs_running": 0,
+    "max_concurrent_jobs": 0,
+    "max_forks": 0,
+    "jobs_total": 1591,
+    "instances": 1,
+    "is_container_group": false,
+    "credential": null,
+    "policy_instance_percentage": 100,
+    "policy_instance_minimum": 0,
+    "policy_instance_list": [],
+    "pod_spec_override": "",
+    "summary_fields": {
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the instance group",
+          "name": "Admin",
+          "id": 6
+        },
+        "use_role": {
+          "description": "Can use the instance group in a job template",
+          "name": "Use",
+          "id": 7
+        },
+        "read_role": {
+          "description": "May view settings for the instance group",
+          "name": "Read",
+          "id": 8
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": false
+      }
+    },
+    "_source_id": 2
+  },
+  {
+    "id": 3,
+    "type": "instance_group",
+    "url": "/api/v2/instance_groups/3/",
+    "related": {
+      "jobs": "/api/v2/instance_groups/3/jobs/",
+      "instances": "/api/v2/instance_groups/3/instances/",
+      "access_list": "/api/v2/instance_groups/3/access_list/",
+      "object_roles": "/api/v2/instance_groups/3/object_roles/"
+    },
+    "name": "Production Execution Group",
+    "created": "2026-03-04T10:00:54.582134Z",
+    "modified": "2026-03-04T10:00:54.582146Z",
+    "capacity": 136,
+    "consumed_capacity": 0,
+    "percent_capacity_remaining": 100.0,
+    "jobs_running": 0,
+    "max_concurrent_jobs": 0,
+    "max_forks": 0,
+    "jobs_total": 0,
+    "instances": 1,
+    "is_container_group": false,
+    "credential": null,
+    "policy_instance_percentage": 100,
+    "policy_instance_minimum": 0,
+    "policy_instance_list": [],
+    "pod_spec_override": "",
+    "summary_fields": {
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the instance group",
+          "name": "Admin",
+          "id": 163
+        },
+        "use_role": {
+          "description": "Can use the instance group in a job template",
+          "name": "Use",
+          "id": 164
+        },
+        "read_role": {
+          "description": "May view settings for the instance group",
+          "name": "Read",
+          "id": 165
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "_source_id": 3
+  },
+  {
+    "id": 4,
+    "type": "instance_group",
+    "url": "/api/v2/instance_groups/4/",
+    "related": {
+      "jobs": "/api/v2/instance_groups/4/jobs/",
+      "instances": "/api/v2/instance_groups/4/instances/",
+      "access_list": "/api/v2/instance_groups/4/access_list/",
+      "object_roles": "/api/v2/instance_groups/4/object_roles/"
+    },
+    "name": "Development Execution Group",
+    "created": "2026-03-04T10:00:55.108483Z",
+    "modified": "2026-03-04T10:00:55.108498Z",
+    "capacity": 136,
+    "consumed_capacity": 0,
+    "percent_capacity_remaining": 100.0,
+    "jobs_running": 0,
+    "max_concurrent_jobs": 0,
+    "max_forks": 0,
+    "jobs_total": 0,
+    "instances": 1,
+    "is_container_group": false,
+    "credential": null,
+    "policy_instance_percentage": 50,
+    "policy_instance_minimum": 0,
+    "policy_instance_list": [],
+    "pod_spec_override": "",
+    "summary_fields": {
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the instance group",
+          "name": "Admin",
+          "id": 166
+        },
+        "use_role": {
+          "description": "Can use the instance group in a job template",
+          "name": "Use",
+          "id": 167
+        },
+        "read_role": {
+          "description": "May view settings for the instance group",
+          "name": "Read",
+          "id": 168
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "_source_id": 4
+  },
+  {
+    "id": 5,
+    "type": "instance_group",
+    "url": "/api/v2/instance_groups/5/",
+    "related": {
+      "jobs": "/api/v2/instance_groups/5/jobs/",
+      "instances": "/api/v2/instance_groups/5/instances/",
+      "access_list": "/api/v2/instance_groups/5/access_list/",
+      "object_roles": "/api/v2/instance_groups/5/object_roles/"
+    },
+    "name": "QA Execution Group",
+    "created": "2026-03-04T10:00:55.633250Z",
+    "modified": "2026-03-04T10:00:55.633263Z",
+    "capacity": 136,
+    "consumed_capacity": 0,
+    "percent_capacity_remaining": 100.0,
+    "jobs_running": 0,
+    "max_concurrent_jobs": 0,
+    "max_forks": 0,
+    "jobs_total": 0,
+    "instances": 1,
+    "is_container_group": false,
+    "credential": null,
+    "policy_instance_percentage": 75,
+    "policy_instance_minimum": 1,
+    "policy_instance_list": [],
+    "pod_spec_override": "",
+    "summary_fields": {
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the instance group",
+          "name": "Admin",
+          "id": 169
+        },
+        "use_role": {
+          "description": "Can use the instance group in a job template",
+          "name": "Use",
+          "id": 170
+        },
+        "read_role": {
+          "description": "May view settings for the instance group",
+          "name": "Read",
+          "id": 171
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "_source_id": 5
+  }
+]

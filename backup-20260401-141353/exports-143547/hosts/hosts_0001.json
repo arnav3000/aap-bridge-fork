@@ -1,0 +1,1951 @@
+[
+  {
+    "id": 27,
+    "type": "host",
+    "url": "/api/v2/hosts/27/",
+    "related": {
+      "variable_data": "/api/v2/hosts/27/variable_data/",
+      "groups": "/api/v2/hosts/27/groups/",
+      "all_groups": "/api/v2/hosts/27/all_groups/",
+      "job_events": "/api/v2/hosts/27/job_events/",
+      "job_host_summaries": "/api/v2/hosts/27/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/27/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/27/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/27/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/27/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/27/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/27/ansible_facts/",
+      "inventory": "/api/v2/inventories/10/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 10,
+        "name": "Project File Inventory",
+        "description": "Inventory from static file in project",
+        "has_active_failures": false,
+        "total_hosts": 1,
+        "hosts_with_active_failures": 0,
+        "total_groups": 0,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-24T13:28:36.374126Z",
+    "modified": "2026-03-24T13:28:36.374131Z",
+    "name": "a.example.com",
+    "description": "imported",
+    "inventory": 10,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{}",
+    "has_active_failures": false,
+    "has_inventory_sources": true,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 27
+  },
+  {
+    "id": 26,
+    "type": "host",
+    "url": "/api/v2/hosts/26/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/26/variable_data/",
+      "groups": "/api/v2/hosts/26/groups/",
+      "all_groups": "/api/v2/hosts/26/all_groups/",
+      "job_events": "/api/v2/hosts/26/job_events/",
+      "job_host_summaries": "/api/v2/hosts/26/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/26/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/26/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/26/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/26/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/26/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/26/ansible_facts/",
+      "inventory": "/api/v2/inventories/11/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 11,
+        "name": "E2E-Simple-Inventory",
+        "description": "Simple static inventory",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 10,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-24T06:01:46.460062Z",
+    "modified": "2026-03-24T06:01:46.460067Z",
+    "name": "app1.test.local",
+    "description": "",
+    "inventory": 11,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 26
+  },
+  {
+    "id": 12,
+    "type": "host",
+    "url": "/api/v2/hosts/12/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/12/variable_data/",
+      "groups": "/api/v2/hosts/12/groups/",
+      "all_groups": "/api/v2/hosts/12/all_groups/",
+      "job_events": "/api/v2/hosts/12/job_events/",
+      "job_host_summaries": "/api/v2/hosts/12/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/12/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/12/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/12/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/12/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/12/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/12/ansible_facts/",
+      "inventory": "/api/v2/inventories/6/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 6,
+        "name": "Cloud Resources",
+        "description": "Cloud-based infrastructure (AWS, Azure, GCP)",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 6,
+            "name": "aws_instances"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:17.595265Z",
+    "modified": "2026-03-04T10:02:17.595270Z",
+    "name": "aws-db-01.compute.amazonaws.com",
+    "description": "AWS RDS database",
+    "inventory": 6,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"10.0.2.20\", \"ansible_user\": \"ec2-user\", \"cloud_provider\": \"aws\", \"instance_type\": \"db.r5.xlarge\", \"region\": \"us-east-1\"}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 12
+  },
+  {
+    "id": 11,
+    "type": "host",
+    "url": "/api/v2/hosts/11/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/11/variable_data/",
+      "groups": "/api/v2/hosts/11/groups/",
+      "all_groups": "/api/v2/hosts/11/all_groups/",
+      "job_events": "/api/v2/hosts/11/job_events/",
+      "job_host_summaries": "/api/v2/hosts/11/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/11/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/11/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/11/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/11/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/11/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/11/ansible_facts/",
+      "inventory": "/api/v2/inventories/6/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 6,
+        "name": "Cloud Resources",
+        "description": "Cloud-based infrastructure (AWS, Azure, GCP)",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 6,
+            "name": "aws_instances"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:16.622116Z",
+    "modified": "2026-03-04T10:02:16.622120Z",
+    "name": "aws-web-01.compute.amazonaws.com",
+    "description": "AWS EC2 web server",
+    "inventory": 6,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"10.0.1.10\", \"ansible_user\": \"ec2-user\", \"cloud_provider\": \"aws\", \"instance_type\": \"t3.large\", \"region\": \"us-east-1\", \"availability_zone\": \"us-east-1a\"}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 11
+  },
+  {
+    "id": 14,
+    "type": "host",
+    "url": "/api/v2/hosts/14/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/14/variable_data/",
+      "groups": "/api/v2/hosts/14/groups/",
+      "all_groups": "/api/v2/hosts/14/all_groups/",
+      "job_events": "/api/v2/hosts/14/job_events/",
+      "job_host_summaries": "/api/v2/hosts/14/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/14/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/14/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/14/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/14/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/14/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/14/ansible_facts/",
+      "inventory": "/api/v2/inventories/6/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 6,
+        "name": "Cloud Resources",
+        "description": "Cloud-based infrastructure (AWS, Azure, GCP)",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 7,
+            "name": "azure_instances"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:19.600982Z",
+    "modified": "2026-03-04T10:02:19.600987Z",
+    "name": "azure-app-01.cloudapp.azure.com",
+    "description": "Azure VM application server",
+    "inventory": 6,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"10.1.1.20\", \"ansible_user\": \"azureuser\", \"cloud_provider\": \"azure\", \"vm_size\": \"Standard_D8s_v3\", \"region\": \"eastus\"}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 14
+  },
+  {
+    "id": 13,
+    "type": "host",
+    "url": "/api/v2/hosts/13/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/13/variable_data/",
+      "groups": "/api/v2/hosts/13/groups/",
+      "all_groups": "/api/v2/hosts/13/all_groups/",
+      "job_events": "/api/v2/hosts/13/job_events/",
+      "job_host_summaries": "/api/v2/hosts/13/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/13/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/13/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/13/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/13/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/13/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/13/ansible_facts/",
+      "inventory": "/api/v2/inventories/6/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 6,
+        "name": "Cloud Resources",
+        "description": "Cloud-based infrastructure (AWS, Azure, GCP)",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 7,
+            "name": "azure_instances"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:18.546484Z",
+    "modified": "2026-03-04T10:02:18.546489Z",
+    "name": "azure-web-01.cloudapp.azure.com",
+    "description": "Azure VM web server",
+    "inventory": 6,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"10.1.1.10\", \"ansible_user\": \"azureuser\", \"cloud_provider\": \"azure\", \"vm_size\": \"Standard_D4s_v3\", \"region\": \"eastus\"}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 13
+  },
+  {
+    "id": 24,
+    "type": "host",
+    "url": "/api/v2/hosts/24/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/24/variable_data/",
+      "groups": "/api/v2/hosts/24/groups/",
+      "all_groups": "/api/v2/hosts/24/all_groups/",
+      "job_events": "/api/v2/hosts/24/job_events/",
+      "job_host_summaries": "/api/v2/hosts/24/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/24/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/24/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/24/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/24/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/24/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/24/ansible_facts/",
+      "inventory": "/api/v2/inventories/11/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 11,
+        "name": "E2E-Simple-Inventory",
+        "description": "Simple static inventory",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 10,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-24T06:01:44.367414Z",
+    "modified": "2026-03-24T06:01:44.367419Z",
+    "name": "db1.test.local",
+    "description": "",
+    "inventory": 11,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.1.20\"}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 24
+  },
+  {
+    "id": 25,
+    "type": "host",
+    "url": "/api/v2/hosts/25/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/25/variable_data/",
+      "groups": "/api/v2/hosts/25/groups/",
+      "all_groups": "/api/v2/hosts/25/all_groups/",
+      "job_events": "/api/v2/hosts/25/job_events/",
+      "job_host_summaries": "/api/v2/hosts/25/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/25/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/25/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/25/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/25/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/25/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/25/ansible_facts/",
+      "inventory": "/api/v2/inventories/11/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 11,
+        "name": "E2E-Simple-Inventory",
+        "description": "Simple static inventory",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 10,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-24T06:01:45.412911Z",
+    "modified": "2026-03-24T06:01:45.412916Z",
+    "name": "db2.test.local",
+    "description": "",
+    "inventory": 11,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.1.21\"}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 25
+  },
+  {
+    "id": 10,
+    "type": "host",
+    "url": "/api/v2/hosts/10/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/10/variable_data/",
+      "groups": "/api/v2/hosts/10/groups/",
+      "all_groups": "/api/v2/hosts/10/all_groups/",
+      "job_events": "/api/v2/hosts/10/job_events/",
+      "job_host_summaries": "/api/v2/hosts/10/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/10/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/10/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/10/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/10/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/10/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/10/ansible_facts/",
+      "inventory": "/api/v2/inventories/5/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 5,
+        "name": "Development Environment",
+        "description": "Development and testing servers",
+        "has_active_failures": false,
+        "total_hosts": 3,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:15.598170Z",
+    "modified": "2026-03-04T10:02:15.598174Z",
+    "name": "dev-app-01.example.com",
+    "description": "Development application server",
+    "inventory": 5,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.2.30\", \"ansible_user\": \"devops\", \"server_role\": \"application\", \"cpu_cores\": 2, \"memory_gb\": 8}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 10
+  },
+  {
+    "id": 9,
+    "type": "host",
+    "url": "/api/v2/hosts/9/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/9/variable_data/",
+      "groups": "/api/v2/hosts/9/groups/",
+      "all_groups": "/api/v2/hosts/9/all_groups/",
+      "job_events": "/api/v2/hosts/9/job_events/",
+      "job_host_summaries": "/api/v2/hosts/9/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/9/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/9/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/9/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/9/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/9/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/9/ansible_facts/",
+      "inventory": "/api/v2/inventories/5/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 5,
+        "name": "Development Environment",
+        "description": "Development and testing servers",
+        "has_active_failures": false,
+        "total_hosts": 3,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:14.629038Z",
+    "modified": "2026-03-04T10:02:14.629043Z",
+    "name": "dev-db-01.example.com",
+    "description": "Development database",
+    "inventory": 5,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.2.20\", \"ansible_user\": \"devops\", \"server_role\": \"database\", \"cpu_cores\": 4, \"memory_gb\": 8}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 9
+  },
+  {
+    "id": 8,
+    "type": "host",
+    "url": "/api/v2/hosts/8/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/8/variable_data/",
+      "groups": "/api/v2/hosts/8/groups/",
+      "all_groups": "/api/v2/hosts/8/all_groups/",
+      "job_events": "/api/v2/hosts/8/job_events/",
+      "job_host_summaries": "/api/v2/hosts/8/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/8/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/8/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/8/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/8/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/8/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/8/ansible_facts/",
+      "inventory": "/api/v2/inventories/5/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 5,
+        "name": "Development Environment",
+        "description": "Development and testing servers",
+        "has_active_failures": false,
+        "total_hosts": 3,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:13.582148Z",
+    "modified": "2026-03-04T10:02:13.582153Z",
+    "name": "dev-web-01.example.com",
+    "description": "Development web server",
+    "inventory": 5,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.2.10\", \"ansible_user\": \"devops\", \"server_role\": \"web\", \"cpu_cores\": 2, \"memory_gb\": 8}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 8
+  },
+  {
+    "id": 1,
+    "type": "host",
+    "url": "/api/v2/hosts/1/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/1/variable_data/",
+      "groups": "/api/v2/hosts/1/groups/",
+      "all_groups": "/api/v2/hosts/1/all_groups/",
+      "job_events": "/api/v2/hosts/1/job_events/",
+      "job_host_summaries": "/api/v2/hosts/1/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/1/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/1/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/1/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/1/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/1/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/1/ansible_facts/",
+      "inventory": "/api/v2/inventories/1/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 1,
+        "name": "Demo Inventory",
+        "description": "",
+        "has_active_failures": false,
+        "total_hosts": 0,
+        "hosts_with_active_failures": 0,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 1,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-02T20:40:04.169445Z",
+    "modified": "2026-03-02T20:40:04.169450Z",
+    "name": "localhost",
+    "description": "",
+    "inventory": 1,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "ansible_connection: local\nansible_python_interpreter: '{{ ansible_playbook_python }}'",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 1
+  },
+  {
+    "id": 7,
+    "type": "host",
+    "url": "/api/v2/hosts/7/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/7/variable_data/",
+      "groups": "/api/v2/hosts/7/groups/",
+      "all_groups": "/api/v2/hosts/7/all_groups/",
+      "job_events": "/api/v2/hosts/7/job_events/",
+      "job_host_summaries": "/api/v2/hosts/7/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/7/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/7/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/7/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/7/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/7/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/7/ansible_facts/",
+      "inventory": "/api/v2/inventories/4/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 4,
+        "name": "Production Infrastructure",
+        "description": "Production servers and infrastructure",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 3,
+            "name": "app_servers"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:12.544759Z",
+    "modified": "2026-03-04T10:02:12.544763Z",
+    "name": "prod-app-01.example.com",
+    "description": "Production application server 1",
+    "inventory": 4,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.1.30\", \"ansible_user\": \"ansible\", \"server_role\": \"application\", \"cpu_cores\": 8, \"memory_gb\": 16}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 7
+  },
+  {
+    "id": 5,
+    "type": "host",
+    "url": "/api/v2/hosts/5/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/5/variable_data/",
+      "groups": "/api/v2/hosts/5/groups/",
+      "all_groups": "/api/v2/hosts/5/all_groups/",
+      "job_events": "/api/v2/hosts/5/job_events/",
+      "job_host_summaries": "/api/v2/hosts/5/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/5/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/5/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/5/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/5/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/5/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/5/ansible_facts/",
+      "inventory": "/api/v2/inventories/4/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 4,
+        "name": "Production Infrastructure",
+        "description": "Production servers and infrastructure",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 2,
+            "name": "db_servers"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:10.448830Z",
+    "modified": "2026-03-04T10:02:10.448834Z",
+    "name": "prod-db-01.example.com",
+    "description": "Production database primary",
+    "inventory": 4,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.1.20\", \"ansible_user\": \"ansible\", \"server_role\": \"database\", \"db_role\": \"primary\", \"cpu_cores\": 8, \"memory_gb\": 32}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 5
+  },
+  {
+    "id": 6,
+    "type": "host",
+    "url": "/api/v2/hosts/6/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/6/variable_data/",
+      "groups": "/api/v2/hosts/6/groups/",
+      "all_groups": "/api/v2/hosts/6/all_groups/",
+      "job_events": "/api/v2/hosts/6/job_events/",
+      "job_host_summaries": "/api/v2/hosts/6/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/6/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/6/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/6/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/6/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/6/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/6/ansible_facts/",
+      "inventory": "/api/v2/inventories/4/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 4,
+        "name": "Production Infrastructure",
+        "description": "Production servers and infrastructure",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 2,
+            "name": "db_servers"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:11.497437Z",
+    "modified": "2026-03-04T10:02:11.497442Z",
+    "name": "prod-db-02.example.com",
+    "description": "Production database replica",
+    "inventory": 4,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.1.21\", \"ansible_user\": \"ansible\", \"server_role\": \"database\", \"db_role\": \"replica\", \"cpu_cores\": 8, \"memory_gb\": 32}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 6
+  },
+  {
+    "id": 3,
+    "type": "host",
+    "url": "/api/v2/hosts/3/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/3/variable_data/",
+      "groups": "/api/v2/hosts/3/groups/",
+      "all_groups": "/api/v2/hosts/3/all_groups/",
+      "job_events": "/api/v2/hosts/3/job_events/",
+      "job_host_summaries": "/api/v2/hosts/3/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/3/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/3/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/3/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/3/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/3/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/3/ansible_facts/",
+      "inventory": "/api/v2/inventories/4/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 4,
+        "name": "Production Infrastructure",
+        "description": "Production servers and infrastructure",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 1,
+            "name": "web_servers"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:08.455984Z",
+    "modified": "2026-03-04T10:02:08.455988Z",
+    "name": "prod-web-01.example.com",
+    "description": "Production web server 1",
+    "inventory": 4,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.1.10\", \"ansible_user\": \"ansible\", \"server_role\": \"web\", \"cpu_cores\": 4, \"memory_gb\": 16}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 3
+  },
+  {
+    "id": 4,
+    "type": "host",
+    "url": "/api/v2/hosts/4/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/4/variable_data/",
+      "groups": "/api/v2/hosts/4/groups/",
+      "all_groups": "/api/v2/hosts/4/all_groups/",
+      "job_events": "/api/v2/hosts/4/job_events/",
+      "job_host_summaries": "/api/v2/hosts/4/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/4/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/4/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/4/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/4/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/4/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/4/ansible_facts/",
+      "inventory": "/api/v2/inventories/4/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 4,
+        "name": "Production Infrastructure",
+        "description": "Production servers and infrastructure",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 1,
+            "name": "web_servers"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:09.511079Z",
+    "modified": "2026-03-04T10:02:09.511083Z",
+    "name": "prod-web-02.example.com",
+    "description": "Production web server 2",
+    "inventory": 4,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.1.11\", \"ansible_user\": \"ansible\", \"server_role\": \"web\", \"cpu_cores\": 4, \"memory_gb\": 16}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 4
+  },
+  {
+    "id": 17,
+    "type": "host",
+    "url": "/api/v2/hosts/17/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/17/variable_data/",
+      "groups": "/api/v2/hosts/17/groups/",
+      "all_groups": "/api/v2/hosts/17/all_groups/",
+      "job_events": "/api/v2/hosts/17/job_events/",
+      "job_host_summaries": "/api/v2/hosts/17/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/17/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/17/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/17/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/17/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/17/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/17/ansible_facts/",
+      "inventory": "/api/v2/inventories/7/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 7,
+        "name": "Network Devices",
+        "description": "Network switches, routers, and firewalls",
+        "has_active_failures": false,
+        "total_hosts": 3,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 9,
+            "name": "routers"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:22.799529Z",
+    "modified": "2026-03-04T10:02:22.799534Z",
+    "name": "router-edge-01.example.com",
+    "description": "Edge router 1",
+    "inventory": 7,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.100.10\", \"ansible_network_os\": \"cisco.ios.ios\", \"device_type\": \"router\", \"model\": \"ISR 4451\"}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 17
+  },
+  {
+    "id": 15,
+    "type": "host",
+    "url": "/api/v2/hosts/15/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/15/variable_data/",
+      "groups": "/api/v2/hosts/15/groups/",
+      "all_groups": "/api/v2/hosts/15/all_groups/",
+      "job_events": "/api/v2/hosts/15/job_events/",
+      "job_host_summaries": "/api/v2/hosts/15/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/15/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/15/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/15/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/15/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/15/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/15/ansible_facts/",
+      "inventory": "/api/v2/inventories/7/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 7,
+        "name": "Network Devices",
+        "description": "Network switches, routers, and firewalls",
+        "has_active_failures": false,
+        "total_hosts": 3,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 8,
+            "name": "switches"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:20.767307Z",
+    "modified": "2026-03-04T10:02:20.767313Z",
+    "name": "switch-core-01.example.com",
+    "description": "Core network switch 1",
+    "inventory": 7,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.100.1\", \"ansible_network_os\": \"cisco.ios.ios\", \"device_type\": \"switch\", \"model\": \"Catalyst 9300\", \"ports\": 48}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 15
+  },
+  {
+    "id": 16,
+    "type": "host",
+    "url": "/api/v2/hosts/16/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/16/variable_data/",
+      "groups": "/api/v2/hosts/16/groups/",
+      "all_groups": "/api/v2/hosts/16/all_groups/",
+      "job_events": "/api/v2/hosts/16/job_events/",
+      "job_host_summaries": "/api/v2/hosts/16/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/16/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/16/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/16/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/16/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/16/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/16/ansible_facts/",
+      "inventory": "/api/v2/inventories/7/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 7,
+        "name": "Network Devices",
+        "description": "Network switches, routers, and firewalls",
+        "has_active_failures": false,
+        "total_hosts": 3,
+        "hosts_with_active_failures": 0,
+        "total_groups": 2,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 8,
+            "name": "switches"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:02:21.808160Z",
+    "modified": "2026-03-04T10:02:21.808164Z",
+    "name": "switch-core-02.example.com",
+    "description": "Core network switch 2",
+    "inventory": 7,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.100.2\", \"ansible_network_os\": \"cisco.ios.ios\", \"device_type\": \"switch\", \"model\": \"Catalyst 9300\", \"ports\": 48}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 16
+  },
+  {
+    "id": 2,
+    "type": "host",
+    "url": "/api/v2/hosts/2/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/2/variable_data/",
+      "groups": "/api/v2/hosts/2/groups/",
+      "all_groups": "/api/v2/hosts/2/all_groups/",
+      "job_events": "/api/v2/hosts/2/job_events/",
+      "job_host_summaries": "/api/v2/hosts/2/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/2/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/2/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/2/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/2/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/2/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/2/ansible_facts/",
+      "inventory": "/api/v2/inventories/2/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 2,
+        "name": "inv_a",
+        "description": "",
+        "has_active_failures": false,
+        "total_hosts": 1,
+        "hosts_with_active_failures": 0,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 2,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-03T20:09:55.602695Z",
+    "modified": "2026-03-03T20:09:55.602704Z",
+    "name": "testa.com",
+    "description": "",
+    "inventory": 2,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "---",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 2
+  },
+  {
+    "id": 18,
+    "type": "host",
+    "url": "/api/v2/hosts/18/",
+    "related": {
+      "variable_data": "/api/v2/hosts/18/variable_data/",
+      "groups": "/api/v2/hosts/18/groups/",
+      "all_groups": "/api/v2/hosts/18/all_groups/",
+      "job_events": "/api/v2/hosts/18/job_events/",
+      "job_host_summaries": "/api/v2/hosts/18/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/18/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/18/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/18/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/18/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/18/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/18/ansible_facts/",
+      "inventory": "/api/v2/inventories/8/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 8,
+        "name": "Dynamic SCM Inventory",
+        "description": "Inventory sourced from Git repository",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:15:52.705054Z",
+    "modified": "2026-03-04T10:15:52.705059Z",
+    "name": "testa.com",
+    "description": "imported",
+    "inventory": 8,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{}",
+    "has_active_failures": false,
+    "has_inventory_sources": true,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 18
+  },
+  {
+    "id": 19,
+    "type": "host",
+    "url": "/api/v2/hosts/19/",
+    "related": {
+      "variable_data": "/api/v2/hosts/19/variable_data/",
+      "groups": "/api/v2/hosts/19/groups/",
+      "all_groups": "/api/v2/hosts/19/all_groups/",
+      "job_events": "/api/v2/hosts/19/job_events/",
+      "job_host_summaries": "/api/v2/hosts/19/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/19/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/19/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/19/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/19/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/19/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/19/ansible_facts/",
+      "inventory": "/api/v2/inventories/8/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 8,
+        "name": "Dynamic SCM Inventory",
+        "description": "Inventory sourced from Git repository",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 12,
+            "name": "webserver"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:15:52.706860Z",
+    "modified": "2026-03-04T10:15:52.706865Z",
+    "name": "testb.com",
+    "description": "imported",
+    "inventory": 8,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{}",
+    "has_active_failures": false,
+    "has_inventory_sources": true,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 19
+  },
+  {
+    "id": 20,
+    "type": "host",
+    "url": "/api/v2/hosts/20/",
+    "related": {
+      "variable_data": "/api/v2/hosts/20/variable_data/",
+      "groups": "/api/v2/hosts/20/groups/",
+      "all_groups": "/api/v2/hosts/20/all_groups/",
+      "job_events": "/api/v2/hosts/20/job_events/",
+      "job_host_summaries": "/api/v2/hosts/20/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/20/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/20/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/20/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/20/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/20/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/20/ansible_facts/",
+      "inventory": "/api/v2/inventories/8/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 8,
+        "name": "Dynamic SCM Inventory",
+        "description": "Inventory sourced from Git repository",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 10,
+            "name": "nginx"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:15:52.708472Z",
+    "modified": "2026-03-04T10:15:52.708476Z",
+    "name": "testc.com",
+    "description": "imported",
+    "inventory": 8,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{}",
+    "has_active_failures": false,
+    "has_inventory_sources": true,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 20
+  },
+  {
+    "id": 21,
+    "type": "host",
+    "url": "/api/v2/hosts/21/",
+    "related": {
+      "variable_data": "/api/v2/hosts/21/variable_data/",
+      "groups": "/api/v2/hosts/21/groups/",
+      "all_groups": "/api/v2/hosts/21/all_groups/",
+      "job_events": "/api/v2/hosts/21/job_events/",
+      "job_host_summaries": "/api/v2/hosts/21/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/21/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/21/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/21/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/21/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/21/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/21/ansible_facts/",
+      "inventory": "/api/v2/inventories/8/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 8,
+        "name": "Dynamic SCM Inventory",
+        "description": "Inventory sourced from Git repository",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 1,
+        "results": [
+          {
+            "id": 11,
+            "name": "testing"
+          }
+        ]
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-04T10:15:52.710074Z",
+    "modified": "2026-03-04T10:15:52.710078Z",
+    "name": "testd.com",
+    "description": "imported",
+    "inventory": 8,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{}",
+    "has_active_failures": false,
+    "has_inventory_sources": true,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 21
+  },
+  {
+    "id": 22,
+    "type": "host",
+    "url": "/api/v2/hosts/22/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/22/variable_data/",
+      "groups": "/api/v2/hosts/22/groups/",
+      "all_groups": "/api/v2/hosts/22/all_groups/",
+      "job_events": "/api/v2/hosts/22/job_events/",
+      "job_host_summaries": "/api/v2/hosts/22/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/22/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/22/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/22/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/22/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/22/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/22/ansible_facts/",
+      "inventory": "/api/v2/inventories/11/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 11,
+        "name": "E2E-Simple-Inventory",
+        "description": "Simple static inventory",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 10,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-24T06:01:42.272414Z",
+    "modified": "2026-03-24T06:01:42.272419Z",
+    "name": "web1.test.local",
+    "description": "",
+    "inventory": 11,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.1.10\"}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 22
+  },
+  {
+    "id": 23,
+    "type": "host",
+    "url": "/api/v2/hosts/23/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "variable_data": "/api/v2/hosts/23/variable_data/",
+      "groups": "/api/v2/hosts/23/groups/",
+      "all_groups": "/api/v2/hosts/23/all_groups/",
+      "job_events": "/api/v2/hosts/23/job_events/",
+      "job_host_summaries": "/api/v2/hosts/23/job_host_summaries/",
+      "activity_stream": "/api/v2/hosts/23/activity_stream/",
+      "inventory_sources": "/api/v2/hosts/23/inventory_sources/",
+      "smart_inventories": "/api/v2/hosts/23/smart_inventories/",
+      "ad_hoc_commands": "/api/v2/hosts/23/ad_hoc_commands/",
+      "ad_hoc_command_events": "/api/v2/hosts/23/ad_hoc_command_events/",
+      "ansible_facts": "/api/v2/hosts/23/ansible_facts/",
+      "inventory": "/api/v2/inventories/11/"
+    },
+    "summary_fields": {
+      "inventory": {
+        "id": 11,
+        "name": "E2E-Simple-Inventory",
+        "description": "Simple static inventory",
+        "has_active_failures": false,
+        "total_hosts": 5,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 10,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      },
+      "groups": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-24T06:01:43.314109Z",
+    "modified": "2026-03-24T06:01:43.314114Z",
+    "name": "web2.test.local",
+    "description": "",
+    "inventory": 11,
+    "enabled": true,
+    "instance_id": "",
+    "variables": "{\"ansible_host\": \"192.168.1.11\"}",
+    "has_active_failures": false,
+    "has_inventory_sources": false,
+    "last_job": null,
+    "last_job_host_summary": null,
+    "ansible_facts_modified": null,
+    "_source_id": 23
+  }
+]

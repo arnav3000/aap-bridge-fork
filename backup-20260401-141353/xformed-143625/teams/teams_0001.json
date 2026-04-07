@@ -1,0 +1,128 @@
+[
+  {
+    "name": "Cloud Automation",
+    "description": "Cloud automation and orchestration",
+    "organization": 8,
+    "_source_id": 9
+  },
+  {
+    "name": "Cloud Infrastructure",
+    "description": "Multi-cloud infrastructure team",
+    "organization": 8,
+    "_source_id": 8
+  },
+  {
+    "name": "E2E-Empty-Team",
+    "description": "Empty team",
+    "organization": 1,
+    "_source_id": 19
+  },
+  {
+    "name": "E2E-Multi-User-Team",
+    "description": "Team with multiple users",
+    "organization": 1,
+    "_source_id": 18
+  },
+  {
+    "name": "E2E-Permissions-Team",
+    "description": "Team with various permissions",
+    "organization": 1,
+    "_source_id": 20
+  },
+  {
+    "name": "E2E-Role-Team",
+    "description": "Team with organization roles",
+    "organization": 1,
+    "_source_id": 21
+  },
+  {
+    "name": "E2E-Simple-Team",
+    "description": "Simple team",
+    "organization": 1,
+    "_source_id": 17
+  },
+  {
+    "name": "Platform Engineering",
+    "description": "Platform and tooling engineers",
+    "organization": 9,
+    "_source_id": 10
+  },
+  {
+    "name": "Site Reliability Engineering",
+    "description": "SRE and production operations",
+    "organization": 9,
+    "_source_id": 11
+  },
+  {
+    "name": "E2E-Empty-Team",
+    "description": "Empty team",
+    "organization": 10,
+    "_source_id": 14
+  },
+  {
+    "name": "E2E-Multi-User-Team",
+    "description": "Team with multiple users",
+    "organization": 10,
+    "_source_id": 13
+  },
+  {
+    "name": "E2E-Permissions-Team",
+    "description": "Team with various permissions",
+    "organization": 10,
+    "_source_id": 15
+  },
+  {
+    "name": "E2E-Role-Team",
+    "description": "Team with organization roles",
+    "organization": 10,
+    "_source_id": 16
+  },
+  {
+    "name": "E2E-Simple-Team",
+    "description": "Simple team",
+    "organization": 10,
+    "_source_id": 12
+  },
+  {
+    "name": "Backend Development",
+    "description": "Backend developers and API engineers",
+    "organization": 5,
+    "_source_id": 2
+  },
+  {
+    "name": "Frontend Development",
+    "description": "Frontend and UI/UX developers",
+    "organization": 5,
+    "_source_id": 3
+  },
+  {
+    "name": "Infrastructure Team",
+    "description": "Infrastructure and systems administrators",
+    "organization": 6,
+    "_source_id": 4
+  },
+  {
+    "name": "Network Operations",
+    "description": "Network engineers and administrators",
+    "organization": 6,
+    "_source_id": 5
+  },
+  {
+    "name": "team_B",
+    "description": "",
+    "organization": 3,
+    "_source_id": 1
+  },
+  {
+    "name": "Compliance Team",
+    "description": "Compliance and audit specialists",
+    "organization": 7,
+    "_source_id": 7
+  },
+  {
+    "name": "Security Operations",
+    "description": "Security operations center team",
+    "organization": 7,
+    "_source_id": 6
+  }
+]

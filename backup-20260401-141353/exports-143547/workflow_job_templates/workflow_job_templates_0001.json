@@ -1,0 +1,1397 @@
+[
+  {
+    "id": 37,
+    "type": "workflow_job_template",
+    "url": "/api/v2/workflow_job_templates/37/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "workflow_jobs": "/api/v2/workflow_job_templates/37/workflow_jobs/",
+      "schedules": "/api/v2/workflow_job_templates/37/schedules/",
+      "launch": "/api/v2/workflow_job_templates/37/launch/",
+      "webhook_key": "/api/v2/workflow_job_templates/37/webhook_key/",
+      "webhook_receiver": "",
+      "workflow_nodes": "/api/v2/workflow_job_templates/37/workflow_nodes/",
+      "labels": "/api/v2/workflow_job_templates/37/labels/",
+      "activity_stream": "/api/v2/workflow_job_templates/37/activity_stream/",
+      "notification_templates_started": "/api/v2/workflow_job_templates/37/notification_templates_started/",
+      "notification_templates_success": "/api/v2/workflow_job_templates/37/notification_templates_success/",
+      "notification_templates_error": "/api/v2/workflow_job_templates/37/notification_templates_error/",
+      "notification_templates_approvals": "/api/v2/workflow_job_templates/37/notification_templates_approvals/",
+      "access_list": "/api/v2/workflow_job_templates/37/access_list/",
+      "object_roles": "/api/v2/workflow_job_templates/37/object_roles/",
+      "survey_spec": "/api/v2/workflow_job_templates/37/survey_spec/",
+      "copy": "/api/v2/workflow_job_templates/37/copy/",
+      "organization": "/api/v2/organizations/10/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 10,
+        "name": "E2E-Test-Simple-Org",
+        "description": "Simple test organization"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the workflow job template",
+          "name": "Admin",
+          "id": 582
+        },
+        "execute_role": {
+          "description": "May run the workflow job template",
+          "name": "Execute",
+          "id": 583
+        },
+        "read_role": {
+          "description": "May view settings for the workflow job template",
+          "name": "Read",
+          "id": 584
+        },
+        "approval_role": {
+          "description": "Can approve or deny a workflow approval node",
+          "name": "Approve",
+          "id": 585
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "start": true,
+        "schedule": true,
+        "copy": true
+      },
+      "labels": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-24T06:01:52.140746Z",
+    "modified": "2026-03-24T06:01:52.140751Z",
+    "name": "E2E-Complex-Workflow",
+    "description": "Complex workflow with conditions",
+    "last_job_run": null,
+    "last_job_failed": false,
+    "next_job_run": null,
+    "status": "never updated",
+    "extra_vars": "",
+    "organization": 10,
+    "survey_enabled": false,
+    "allow_simultaneous": false,
+    "ask_variables_on_launch": false,
+    "inventory": null,
+    "limit": null,
+    "scm_branch": null,
+    "ask_inventory_on_launch": false,
+    "ask_scm_branch_on_launch": false,
+    "ask_limit_on_launch": false,
+    "webhook_service": "",
+    "webhook_credential": null,
+    "ask_labels_on_launch": false,
+    "ask_skip_tags_on_launch": false,
+    "ask_tags_on_launch": false,
+    "skip_tags": null,
+    "job_tags": null,
+    "nodes": [],
+    "_source_id": 37
+  },
+  {
+    "id": 44,
+    "type": "workflow_job_template",
+    "url": "/api/v2/workflow_job_templates/44/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "workflow_jobs": "/api/v2/workflow_job_templates/44/workflow_jobs/",
+      "schedules": "/api/v2/workflow_job_templates/44/schedules/",
+      "launch": "/api/v2/workflow_job_templates/44/launch/",
+      "webhook_key": "/api/v2/workflow_job_templates/44/webhook_key/",
+      "webhook_receiver": "",
+      "workflow_nodes": "/api/v2/workflow_job_templates/44/workflow_nodes/",
+      "labels": "/api/v2/workflow_job_templates/44/labels/",
+      "activity_stream": "/api/v2/workflow_job_templates/44/activity_stream/",
+      "notification_templates_started": "/api/v2/workflow_job_templates/44/notification_templates_started/",
+      "notification_templates_success": "/api/v2/workflow_job_templates/44/notification_templates_success/",
+      "notification_templates_error": "/api/v2/workflow_job_templates/44/notification_templates_error/",
+      "notification_templates_approvals": "/api/v2/workflow_job_templates/44/notification_templates_approvals/",
+      "access_list": "/api/v2/workflow_job_templates/44/access_list/",
+      "object_roles": "/api/v2/workflow_job_templates/44/object_roles/",
+      "survey_spec": "/api/v2/workflow_job_templates/44/survey_spec/",
+      "copy": "/api/v2/workflow_job_templates/44/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the workflow job template",
+          "name": "Admin",
+          "id": 638
+        },
+        "execute_role": {
+          "description": "May run the workflow job template",
+          "name": "Execute",
+          "id": 639
+        },
+        "read_role": {
+          "description": "May view settings for the workflow job template",
+          "name": "Read",
+          "id": 640
+        },
+        "approval_role": {
+          "description": "Can approve or deny a workflow approval node",
+          "name": "Approve",
+          "id": 641
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "start": true,
+        "schedule": true,
+        "copy": true
+      },
+      "labels": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-31T09:13:35.501412Z",
+    "modified": "2026-03-31T09:13:35.501417Z",
+    "name": "E2E-Complex-Workflow",
+    "description": "Complex workflow with conditions",
+    "last_job_run": null,
+    "last_job_failed": false,
+    "next_job_run": null,
+    "status": "never updated",
+    "extra_vars": "",
+    "organization": null,
+    "survey_enabled": false,
+    "allow_simultaneous": false,
+    "ask_variables_on_launch": false,
+    "inventory": null,
+    "limit": null,
+    "scm_branch": null,
+    "ask_inventory_on_launch": false,
+    "ask_scm_branch_on_launch": false,
+    "ask_limit_on_launch": false,
+    "webhook_service": "",
+    "webhook_credential": null,
+    "ask_labels_on_launch": false,
+    "ask_skip_tags_on_launch": false,
+    "ask_tags_on_launch": false,
+    "skip_tags": null,
+    "job_tags": null,
+    "nodes": [],
+    "_source_id": 44
+  },
+  {
+    "id": 36,
+    "type": "workflow_job_template",
+    "url": "/api/v2/workflow_job_templates/36/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "workflow_jobs": "/api/v2/workflow_job_templates/36/workflow_jobs/",
+      "schedules": "/api/v2/workflow_job_templates/36/schedules/",
+      "launch": "/api/v2/workflow_job_templates/36/launch/",
+      "webhook_key": "/api/v2/workflow_job_templates/36/webhook_key/",
+      "webhook_receiver": "",
+      "workflow_nodes": "/api/v2/workflow_job_templates/36/workflow_nodes/",
+      "labels": "/api/v2/workflow_job_templates/36/labels/",
+      "activity_stream": "/api/v2/workflow_job_templates/36/activity_stream/",
+      "notification_templates_started": "/api/v2/workflow_job_templates/36/notification_templates_started/",
+      "notification_templates_success": "/api/v2/workflow_job_templates/36/notification_templates_success/",
+      "notification_templates_error": "/api/v2/workflow_job_templates/36/notification_templates_error/",
+      "notification_templates_approvals": "/api/v2/workflow_job_templates/36/notification_templates_approvals/",
+      "access_list": "/api/v2/workflow_job_templates/36/access_list/",
+      "object_roles": "/api/v2/workflow_job_templates/36/object_roles/",
+      "survey_spec": "/api/v2/workflow_job_templates/36/survey_spec/",
+      "copy": "/api/v2/workflow_job_templates/36/copy/",
+      "organization": "/api/v2/organizations/10/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 10,
+        "name": "E2E-Test-Simple-Org",
+        "description": "Simple test organization"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the workflow job template",
+          "name": "Admin",
+          "id": 578
+        },
+        "execute_role": {
+          "description": "May run the workflow job template",
+          "name": "Execute",
+          "id": 579
+        },
+        "read_role": {
+          "description": "May view settings for the workflow job template",
+          "name": "Read",
+          "id": 580
+        },
+        "approval_role": {
+          "description": "Can approve or deny a workflow approval node",
+          "name": "Approve",
+          "id": 581
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "start": true,
+        "schedule": true,
+        "copy": true
+      },
+      "labels": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-24T06:01:51.092670Z",
+    "modified": "2026-03-24T06:01:51.092675Z",
+    "name": "E2E-Simple-Workflow",
+    "description": "Simple workflow template",
+    "last_job_run": null,
+    "last_job_failed": false,
+    "next_job_run": null,
+    "status": "never updated",
+    "extra_vars": "",
+    "organization": 10,
+    "survey_enabled": false,
+    "allow_simultaneous": false,
+    "ask_variables_on_launch": false,
+    "inventory": null,
+    "limit": null,
+    "scm_branch": null,
+    "ask_inventory_on_launch": false,
+    "ask_scm_branch_on_launch": false,
+    "ask_limit_on_launch": false,
+    "webhook_service": "",
+    "webhook_credential": null,
+    "ask_labels_on_launch": false,
+    "ask_skip_tags_on_launch": false,
+    "ask_tags_on_launch": false,
+    "skip_tags": null,
+    "job_tags": null,
+    "nodes": [],
+    "_source_id": 36
+  },
+  {
+    "id": 43,
+    "type": "workflow_job_template",
+    "url": "/api/v2/workflow_job_templates/43/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "workflow_jobs": "/api/v2/workflow_job_templates/43/workflow_jobs/",
+      "schedules": "/api/v2/workflow_job_templates/43/schedules/",
+      "launch": "/api/v2/workflow_job_templates/43/launch/",
+      "webhook_key": "/api/v2/workflow_job_templates/43/webhook_key/",
+      "webhook_receiver": "",
+      "workflow_nodes": "/api/v2/workflow_job_templates/43/workflow_nodes/",
+      "labels": "/api/v2/workflow_job_templates/43/labels/",
+      "activity_stream": "/api/v2/workflow_job_templates/43/activity_stream/",
+      "notification_templates_started": "/api/v2/workflow_job_templates/43/notification_templates_started/",
+      "notification_templates_success": "/api/v2/workflow_job_templates/43/notification_templates_success/",
+      "notification_templates_error": "/api/v2/workflow_job_templates/43/notification_templates_error/",
+      "notification_templates_approvals": "/api/v2/workflow_job_templates/43/notification_templates_approvals/",
+      "access_list": "/api/v2/workflow_job_templates/43/access_list/",
+      "object_roles": "/api/v2/workflow_job_templates/43/object_roles/",
+      "survey_spec": "/api/v2/workflow_job_templates/43/survey_spec/",
+      "copy": "/api/v2/workflow_job_templates/43/copy/"
+    },
+    "summary_fields": {
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the workflow job template",
+          "name": "Admin",
+          "id": 634
+        },
+        "execute_role": {
+          "description": "May run the workflow job template",
+          "name": "Execute",
+          "id": 635
+        },
+        "read_role": {
+          "description": "May view settings for the workflow job template",
+          "name": "Read",
+          "id": 636
+        },
+        "approval_role": {
+          "description": "Can approve or deny a workflow approval node",
+          "name": "Approve",
+          "id": 637
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "start": true,
+        "schedule": true,
+        "copy": true
+      },
+      "labels": {
+        "count": 0,
+        "results": []
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-31T09:13:35.316481Z",
+    "modified": "2026-03-31T09:13:35.316486Z",
+    "name": "E2E-Simple-Workflow",
+    "description": "Simple workflow template",
+    "last_job_run": null,
+    "last_job_failed": false,
+    "next_job_run": null,
+    "status": "never updated",
+    "extra_vars": "",
+    "organization": null,
+    "survey_enabled": false,
+    "allow_simultaneous": false,
+    "ask_variables_on_launch": false,
+    "inventory": null,
+    "limit": null,
+    "scm_branch": null,
+    "ask_inventory_on_launch": false,
+    "ask_scm_branch_on_launch": false,
+    "ask_limit_on_launch": false,
+    "webhook_service": "",
+    "webhook_credential": null,
+    "ask_labels_on_launch": false,
+    "ask_skip_tags_on_launch": false,
+    "ask_tags_on_launch": false,
+    "skip_tags": null,
+    "job_tags": null,
+    "nodes": [],
+    "_source_id": 43
+  },
+  {
+    "id": 38,
+    "type": "workflow_job_template",
+    "url": "/api/v2/workflow_job_templates/38/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "workflow_jobs": "/api/v2/workflow_job_templates/38/workflow_jobs/",
+      "schedules": "/api/v2/workflow_job_templates/38/schedules/",
+      "launch": "/api/v2/workflow_job_templates/38/launch/",
+      "webhook_key": "/api/v2/workflow_job_templates/38/webhook_key/",
+      "webhook_receiver": "",
+      "workflow_nodes": "/api/v2/workflow_job_templates/38/workflow_nodes/",
+      "labels": "/api/v2/workflow_job_templates/38/labels/",
+      "activity_stream": "/api/v2/workflow_job_templates/38/activity_stream/",
+      "notification_templates_started": "/api/v2/workflow_job_templates/38/notification_templates_started/",
+      "notification_templates_success": "/api/v2/workflow_job_templates/38/notification_templates_success/",
+      "notification_templates_error": "/api/v2/workflow_job_templates/38/notification_templates_error/",
+      "notification_templates_approvals": "/api/v2/workflow_job_templates/38/notification_templates_approvals/",
+      "access_list": "/api/v2/workflow_job_templates/38/access_list/",
+      "object_roles": "/api/v2/workflow_job_templates/38/object_roles/",
+      "survey_spec": "/api/v2/workflow_job_templates/38/survey_spec/",
+      "copy": "/api/v2/workflow_job_templates/38/copy/",
+      "organization": "/api/v2/organizations/13/",
+      "inventory": "/api/v2/inventories/8/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 13,
+        "name": "E2E-Test-CustomEE-Org",
+        "description": "Org with custom EE"
+      },
+      "inventory": {
+        "id": 8,
+        "name": "Dynamic SCM Inventory",
+        "description": "Inventory sourced from Git repository",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the workflow job template",
+          "name": "Admin",
+          "id": 586
+        },
+        "execute_role": {
+          "description": "May run the workflow job template",
+          "name": "Execute",
+          "id": 587
+        },
+        "read_role": {
+          "description": "May view settings for the workflow job template",
+          "name": "Read",
+          "id": 588
+        },
+        "approval_role": {
+          "description": "Can approve or deny a workflow approval node",
+          "name": "Approve",
+          "id": 589
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "start": true,
+        "schedule": true,
+        "copy": true
+      },
+      "labels": {
+        "count": 0,
+        "results": []
+      },
+      "survey": {
+        "title": "",
+        "description": ""
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-25T05:49:49.949627Z",
+    "modified": "2026-03-25T05:51:07.739661Z",
+    "name": "wt_arnav_test",
+    "description": "",
+    "last_job_run": null,
+    "last_job_failed": false,
+    "next_job_run": null,
+    "status": "never updated",
+    "extra_vars": "---",
+    "organization": 13,
+    "survey_enabled": true,
+    "allow_simultaneous": true,
+    "ask_variables_on_launch": false,
+    "inventory": 8,
+    "limit": null,
+    "scm_branch": null,
+    "ask_inventory_on_launch": false,
+    "ask_scm_branch_on_launch": false,
+    "ask_limit_on_launch": true,
+    "webhook_service": "",
+    "webhook_credential": null,
+    "ask_labels_on_launch": false,
+    "ask_skip_tags_on_launch": false,
+    "ask_tags_on_launch": false,
+    "skip_tags": null,
+    "job_tags": null,
+    "nodes": [
+      {
+        "id": 1,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/1/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/1/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/1/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/1/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/1/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/1/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/1/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/1/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/13/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/38/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 38,
+            "name": "wt_arnav_test",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 13,
+            "name": "Deploy Web Application",
+            "description": "Deploy web application to target servers",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T05:50:41.744581Z",
+        "modified": "2026-03-25T05:50:41.744587Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 38,
+        "unified_job_template": 13,
+        "success_nodes": [],
+        "failure_nodes": [],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "20068314-ba88-412e-9a3c-14aad3d91a68"
+      },
+      {
+        "id": 2,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/2/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/2/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/2/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/2/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/2/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/2/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/2/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/2/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/14/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/38/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 38,
+            "name": "wt_arnav_test",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 14,
+            "name": "Configure Infrastructure",
+            "description": "Configure infrastructure components",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T05:50:41.746826Z",
+        "modified": "2026-03-25T05:50:41.746831Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 38,
+        "unified_job_template": 14,
+        "success_nodes": [
+          3
+        ],
+        "failure_nodes": [
+          4
+        ],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "573587dc-e06f-490f-a78d-082ce0741afb"
+      },
+      {
+        "id": 3,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/3/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/3/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/3/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/3/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/3/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/3/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/3/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/3/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/7/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/38/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 38,
+            "name": "wt_arnav_test",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 7,
+            "name": "Demo Job Template",
+            "description": "",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T05:50:41.758796Z",
+        "modified": "2026-03-25T05:50:41.758803Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 38,
+        "unified_job_template": 7,
+        "success_nodes": [
+          5
+        ],
+        "failure_nodes": [
+          1
+        ],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "7e016e1a-b77c-42ee-9fcb-8eef7fb68ae4"
+      },
+      {
+        "id": 4,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/4/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/4/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/4/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/4/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/4/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/4/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/4/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/4/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/13/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/38/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 38,
+            "name": "wt_arnav_test",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 13,
+            "name": "Deploy Web Application",
+            "description": "Deploy web application to target servers",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T05:50:41.758740Z",
+        "modified": "2026-03-25T05:50:41.758745Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 38,
+        "unified_job_template": 13,
+        "success_nodes": [
+          6
+        ],
+        "failure_nodes": [],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "a0b41319-4029-48a0-b871-bf1a17a1a4fc"
+      },
+      {
+        "id": 5,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/5/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/5/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/5/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/5/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/5/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/5/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/5/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/5/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/33/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/38/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 38,
+            "name": "wt_arnav_test",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 33,
+            "name": "E2E-Basic-Job-Template",
+            "description": "",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T05:50:41.790309Z",
+        "modified": "2026-03-25T05:50:41.790314Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 38,
+        "unified_job_template": 33,
+        "success_nodes": [],
+        "failure_nodes": [],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "41791922-6b6b-44bf-ad63-311399a2a73c"
+      },
+      {
+        "id": 6,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/6/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/6/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/6/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/6/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/6/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/6/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/6/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/6/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/15/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/38/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 38,
+            "name": "wt_arnav_test",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 15,
+            "name": "Database Backup and Restore",
+            "description": "Backup and restore database operations",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T05:50:41.995949Z",
+        "modified": "2026-03-25T05:50:41.995954Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 38,
+        "unified_job_template": 15,
+        "success_nodes": [],
+        "failure_nodes": [],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "91a85e56-f664-4d1a-b490-9d6dc4d99590"
+      }
+    ],
+    "survey_spec": {
+      "name": "",
+      "spec": [
+        {
+          "max": 1024,
+          "min": 0,
+          "type": "text",
+          "choices": "",
+          "default": "",
+          "required": true,
+          "variable": "arnav",
+          "new_question": true,
+          "question_name": "what is the name",
+          "question_description": ""
+        }
+      ],
+      "description": ""
+    },
+    "_source_id": 38
+  },
+  {
+    "id": 39,
+    "type": "workflow_job_template",
+    "url": "/api/v2/workflow_job_templates/39/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "workflow_jobs": "/api/v2/workflow_job_templates/39/workflow_jobs/",
+      "schedules": "/api/v2/workflow_job_templates/39/schedules/",
+      "launch": "/api/v2/workflow_job_templates/39/launch/",
+      "webhook_key": "/api/v2/workflow_job_templates/39/webhook_key/",
+      "webhook_receiver": "",
+      "workflow_nodes": "/api/v2/workflow_job_templates/39/workflow_nodes/",
+      "labels": "/api/v2/workflow_job_templates/39/labels/",
+      "activity_stream": "/api/v2/workflow_job_templates/39/activity_stream/",
+      "notification_templates_started": "/api/v2/workflow_job_templates/39/notification_templates_started/",
+      "notification_templates_success": "/api/v2/workflow_job_templates/39/notification_templates_success/",
+      "notification_templates_error": "/api/v2/workflow_job_templates/39/notification_templates_error/",
+      "notification_templates_approvals": "/api/v2/workflow_job_templates/39/notification_templates_approvals/",
+      "access_list": "/api/v2/workflow_job_templates/39/access_list/",
+      "object_roles": "/api/v2/workflow_job_templates/39/object_roles/",
+      "survey_spec": "/api/v2/workflow_job_templates/39/survey_spec/",
+      "copy": "/api/v2/workflow_job_templates/39/copy/",
+      "organization": "/api/v2/organizations/13/",
+      "inventory": "/api/v2/inventories/8/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 13,
+        "name": "E2E-Test-CustomEE-Org",
+        "description": "Org with custom EE"
+      },
+      "inventory": {
+        "id": 8,
+        "name": "Dynamic SCM Inventory",
+        "description": "Inventory sourced from Git repository",
+        "has_active_failures": false,
+        "total_hosts": 4,
+        "hosts_with_active_failures": 0,
+        "total_groups": 3,
+        "has_inventory_sources": true,
+        "total_inventory_sources": 1,
+        "inventory_sources_with_failures": 0,
+        "organization_id": 4,
+        "kind": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the workflow job template",
+          "name": "Admin",
+          "id": 590
+        },
+        "execute_role": {
+          "description": "May run the workflow job template",
+          "name": "Execute",
+          "id": 591
+        },
+        "read_role": {
+          "description": "May view settings for the workflow job template",
+          "name": "Read",
+          "id": 592
+        },
+        "approval_role": {
+          "description": "Can approve or deny a workflow approval node",
+          "name": "Approve",
+          "id": 593
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true,
+        "start": true,
+        "schedule": true,
+        "copy": true
+      },
+      "labels": {
+        "count": 0,
+        "results": []
+      },
+      "survey": {
+        "title": "",
+        "description": ""
+      },
+      "recent_jobs": []
+    },
+    "created": "2026-03-25T11:47:47.751720Z",
+    "modified": "2026-03-25T11:48:15.274767Z",
+    "name": "wt_arnav_test-2",
+    "description": "",
+    "last_job_run": null,
+    "last_job_failed": false,
+    "next_job_run": null,
+    "status": "never updated",
+    "extra_vars": "---\naap-test: false",
+    "organization": 13,
+    "survey_enabled": true,
+    "allow_simultaneous": true,
+    "ask_variables_on_launch": false,
+    "inventory": 8,
+    "limit": null,
+    "scm_branch": null,
+    "ask_inventory_on_launch": false,
+    "ask_scm_branch_on_launch": false,
+    "ask_limit_on_launch": true,
+    "webhook_service": "",
+    "webhook_credential": null,
+    "ask_labels_on_launch": false,
+    "ask_skip_tags_on_launch": false,
+    "ask_tags_on_launch": false,
+    "skip_tags": null,
+    "job_tags": null,
+    "nodes": [
+      {
+        "id": 7,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/7/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/7/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/7/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/7/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/7/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/7/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/7/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/7/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/13/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/39/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 39,
+            "name": "wt_arnav_test-2",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 13,
+            "name": "Deploy Web Application",
+            "description": "Deploy web application to target servers",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T11:47:47.843388Z",
+        "modified": "2026-03-25T11:47:47.922972Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 39,
+        "unified_job_template": 13,
+        "success_nodes": [
+          13
+        ],
+        "failure_nodes": [],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "20068314-ba88-412e-9a3c-14aad3d91a68"
+      },
+      {
+        "id": 8,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/8/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/8/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/8/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/8/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/8/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/8/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/8/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/8/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/14/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/39/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 39,
+            "name": "wt_arnav_test-2",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 14,
+            "name": "Configure Infrastructure",
+            "description": "Configure infrastructure components",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T11:47:47.850685Z",
+        "modified": "2026-03-25T11:47:47.926316Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 39,
+        "unified_job_template": 14,
+        "success_nodes": [
+          9
+        ],
+        "failure_nodes": [
+          10
+        ],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "573587dc-e06f-490f-a78d-082ce0741afb"
+      },
+      {
+        "id": 9,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/9/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/9/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/9/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/9/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/9/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/9/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/9/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/9/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/7/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/39/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 39,
+            "name": "wt_arnav_test-2",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 7,
+            "name": "Demo Job Template",
+            "description": "",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T11:47:47.857289Z",
+        "modified": "2026-03-25T11:47:47.929597Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 39,
+        "unified_job_template": 7,
+        "success_nodes": [
+          11
+        ],
+        "failure_nodes": [
+          7
+        ],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "7e016e1a-b77c-42ee-9fcb-8eef7fb68ae4"
+      },
+      {
+        "id": 10,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/10/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/10/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/10/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/10/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/10/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/10/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/10/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/10/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/13/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/39/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 39,
+            "name": "wt_arnav_test-2",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 13,
+            "name": "Deploy Web Application",
+            "description": "Deploy web application to target servers",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T11:47:47.863743Z",
+        "modified": "2026-03-25T11:47:47.932905Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 39,
+        "unified_job_template": 13,
+        "success_nodes": [
+          12
+        ],
+        "failure_nodes": [],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "a0b41319-4029-48a0-b871-bf1a17a1a4fc"
+      },
+      {
+        "id": 11,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/11/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/11/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/11/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/11/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/11/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/11/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/11/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/11/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/33/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/39/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 39,
+            "name": "wt_arnav_test-2",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 33,
+            "name": "E2E-Basic-Job-Template",
+            "description": "",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T11:47:47.870119Z",
+        "modified": "2026-03-25T11:47:47.936153Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 39,
+        "unified_job_template": 33,
+        "success_nodes": [
+          13
+        ],
+        "failure_nodes": [],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "41791922-6b6b-44bf-ad63-311399a2a73c"
+      },
+      {
+        "id": 12,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/12/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/12/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/12/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/12/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/12/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/12/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/12/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/12/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/15/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/39/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 39,
+            "name": "wt_arnav_test-2",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 15,
+            "name": "Database Backup and Restore",
+            "description": "Backup and restore database operations",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T11:47:47.876523Z",
+        "modified": "2026-03-25T11:47:47.939366Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 39,
+        "unified_job_template": 15,
+        "success_nodes": [
+          13
+        ],
+        "failure_nodes": [],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "91a85e56-f664-4d1a-b490-9d6dc4d99590"
+      },
+      {
+        "id": 13,
+        "type": "workflow_job_template_node",
+        "url": "/api/v2/workflow_job_template_nodes/13/",
+        "related": {
+          "labels": "/api/v2/workflow_job_template_nodes/13/labels/",
+          "credentials": "/api/v2/workflow_job_template_nodes/13/credentials/",
+          "instance_groups": "/api/v2/workflow_job_template_nodes/13/instance_groups/",
+          "create_approval_template": "/api/v2/workflow_job_template_nodes/13/create_approval_template/",
+          "success_nodes": "/api/v2/workflow_job_template_nodes/13/success_nodes/",
+          "failure_nodes": "/api/v2/workflow_job_template_nodes/13/failure_nodes/",
+          "always_nodes": "/api/v2/workflow_job_template_nodes/13/always_nodes/",
+          "unified_job_template": "/api/v2/job_templates/13/",
+          "workflow_job_template": "/api/v2/workflow_job_templates/39/"
+        },
+        "summary_fields": {
+          "workflow_job_template": {
+            "id": 39,
+            "name": "wt_arnav_test-2",
+            "description": ""
+          },
+          "unified_job_template": {
+            "id": 13,
+            "name": "Deploy Web Application",
+            "description": "Deploy web application to target servers",
+            "unified_job_type": "job"
+          }
+        },
+        "created": "2026-03-25T11:52:30.701268Z",
+        "modified": "2026-03-25T11:52:30.701273Z",
+        "extra_data": {},
+        "inventory": null,
+        "scm_branch": null,
+        "job_type": null,
+        "job_tags": null,
+        "skip_tags": null,
+        "limit": null,
+        "diff_mode": null,
+        "verbosity": null,
+        "execution_environment": null,
+        "forks": null,
+        "job_slice_count": null,
+        "timeout": null,
+        "workflow_job_template": 39,
+        "unified_job_template": 13,
+        "success_nodes": [],
+        "failure_nodes": [],
+        "always_nodes": [],
+        "all_parents_must_converge": false,
+        "identifier": "995a0263-f001-4ed3-a137-610c3bbeb032"
+      }
+    ],
+    "survey_spec": {
+      "name": "",
+      "spec": [
+        {
+          "max": 1024,
+          "min": 0,
+          "type": "text",
+          "choices": "",
+          "default": "",
+          "required": true,
+          "variable": "arnav",
+          "new_question": true,
+          "question_name": "what is the name",
+          "question_description": ""
+        }
+      ],
+      "description": ""
+    },
+    "_source_id": 39
+  }
+]

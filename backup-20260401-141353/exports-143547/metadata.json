@@ -1,0 +1,12 @@
+{
+  "export_timestamp": "2026-04-01T12:28:18.917440",
+  "source_url": "https://localhost:8443/api/v2",
+  "total_resources": 1,
+  "records_per_file": 1000,
+  "resource_types": {
+    "settings": {
+      "count": 1,
+      "files": 1
+    }
+  }
+}

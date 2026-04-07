@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Cleanup Activity Stream",
+    "description": "Remove activity stream history",
+    "execution_environment": null,
+    "job_type": "cleanup_activitystream",
+    "_source_id": 2
+  },
+  {
+    "name": "Cleanup Expired OAuth 2 Tokens",
+    "description": "Cleanup expired OAuth 2 access and refresh tokens",
+    "execution_environment": null,
+    "job_type": "cleanup_tokens",
+    "_source_id": 5
+  },
+  {
+    "name": "Cleanup Expired Sessions",
+    "description": "Cleans out expired browser sessions",
+    "execution_environment": null,
+    "job_type": "cleanup_sessions",
+    "_source_id": 4
+  },
+  {
+    "name": "Cleanup Job Details",
+    "description": "Remove job history",
+    "execution_environment": null,
+    "job_type": "cleanup_jobs",
+    "_source_id": 1
+  }
+]

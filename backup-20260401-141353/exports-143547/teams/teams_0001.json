@@ -1,0 +1,1325 @@
+[
+  {
+    "id": 9,
+    "type": "team",
+    "url": "/api/v2/teams/9/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/9/projects/",
+      "users": "/api/v2/teams/9/users/",
+      "credentials": "/api/v2/teams/9/credentials/",
+      "roles": "/api/v2/teams/9/roles/",
+      "object_roles": "/api/v2/teams/9/object_roles/",
+      "activity_stream": "/api/v2/teams/9/activity_stream/",
+      "access_list": "/api/v2/teams/9/access_list/",
+      "organization": "/api/v2/organizations/8/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 8,
+        "name": "Cloud Services",
+        "description": "Multi-cloud infrastructure and services"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 297
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 298
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 299
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-04T10:21:17.541846Z",
+    "modified": "2026-03-04T10:21:17.541851Z",
+    "name": "Cloud Automation",
+    "description": "Cloud automation and orchestration",
+    "organization": 8,
+    "_source_id": 9
+  },
+  {
+    "id": 8,
+    "type": "team",
+    "url": "/api/v2/teams/8/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/8/projects/",
+      "users": "/api/v2/teams/8/users/",
+      "credentials": "/api/v2/teams/8/credentials/",
+      "roles": "/api/v2/teams/8/roles/",
+      "object_roles": "/api/v2/teams/8/object_roles/",
+      "activity_stream": "/api/v2/teams/8/activity_stream/",
+      "access_list": "/api/v2/teams/8/access_list/",
+      "organization": "/api/v2/organizations/8/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 8,
+        "name": "Cloud Services",
+        "description": "Multi-cloud infrastructure and services"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 294
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 295
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 296
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-04T10:21:16.483769Z",
+    "modified": "2026-03-04T10:21:16.483773Z",
+    "name": "Cloud Infrastructure",
+    "description": "Multi-cloud infrastructure team",
+    "organization": 8,
+    "_source_id": 8
+  },
+  {
+    "id": 19,
+    "type": "team",
+    "url": "/api/v2/teams/19/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/19/projects/",
+      "users": "/api/v2/teams/19/users/",
+      "credentials": "/api/v2/teams/19/credentials/",
+      "roles": "/api/v2/teams/19/roles/",
+      "object_roles": "/api/v2/teams/19/object_roles/",
+      "activity_stream": "/api/v2/teams/19/activity_stream/",
+      "access_list": "/api/v2/teams/19/access_list/",
+      "organization": "/api/v2/organizations/1/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 1,
+        "name": "Default",
+        "description": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 613
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 614
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 615
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-31T09:13:32.677714Z",
+    "modified": "2026-03-31T09:13:32.677719Z",
+    "name": "E2E-Empty-Team",
+    "description": "Empty team",
+    "organization": 1,
+    "_source_id": 19
+  },
+  {
+    "id": 18,
+    "type": "team",
+    "url": "/api/v2/teams/18/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/18/projects/",
+      "users": "/api/v2/teams/18/users/",
+      "credentials": "/api/v2/teams/18/credentials/",
+      "roles": "/api/v2/teams/18/roles/",
+      "object_roles": "/api/v2/teams/18/object_roles/",
+      "activity_stream": "/api/v2/teams/18/activity_stream/",
+      "access_list": "/api/v2/teams/18/access_list/",
+      "organization": "/api/v2/organizations/1/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 1,
+        "name": "Default",
+        "description": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 610
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 611
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 612
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-31T09:13:32.525566Z",
+    "modified": "2026-03-31T09:13:32.525573Z",
+    "name": "E2E-Multi-User-Team",
+    "description": "Team with multiple users",
+    "organization": 1,
+    "_source_id": 18
+  },
+  {
+    "id": 20,
+    "type": "team",
+    "url": "/api/v2/teams/20/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/20/projects/",
+      "users": "/api/v2/teams/20/users/",
+      "credentials": "/api/v2/teams/20/credentials/",
+      "roles": "/api/v2/teams/20/roles/",
+      "object_roles": "/api/v2/teams/20/object_roles/",
+      "activity_stream": "/api/v2/teams/20/activity_stream/",
+      "access_list": "/api/v2/teams/20/access_list/",
+      "organization": "/api/v2/organizations/1/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 1,
+        "name": "Default",
+        "description": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 616
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 617
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 618
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-31T09:13:32.865775Z",
+    "modified": "2026-03-31T09:13:32.865780Z",
+    "name": "E2E-Permissions-Team",
+    "description": "Team with various permissions",
+    "organization": 1,
+    "_source_id": 20
+  },
+  {
+    "id": 21,
+    "type": "team",
+    "url": "/api/v2/teams/21/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/21/projects/",
+      "users": "/api/v2/teams/21/users/",
+      "credentials": "/api/v2/teams/21/credentials/",
+      "roles": "/api/v2/teams/21/roles/",
+      "object_roles": "/api/v2/teams/21/object_roles/",
+      "activity_stream": "/api/v2/teams/21/activity_stream/",
+      "access_list": "/api/v2/teams/21/access_list/",
+      "organization": "/api/v2/organizations/1/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 1,
+        "name": "Default",
+        "description": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 619
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 620
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 621
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-31T09:13:33.020737Z",
+    "modified": "2026-03-31T09:13:33.020742Z",
+    "name": "E2E-Role-Team",
+    "description": "Team with organization roles",
+    "organization": 1,
+    "_source_id": 21
+  },
+  {
+    "id": 17,
+    "type": "team",
+    "url": "/api/v2/teams/17/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/17/projects/",
+      "users": "/api/v2/teams/17/users/",
+      "credentials": "/api/v2/teams/17/credentials/",
+      "roles": "/api/v2/teams/17/roles/",
+      "object_roles": "/api/v2/teams/17/object_roles/",
+      "activity_stream": "/api/v2/teams/17/activity_stream/",
+      "access_list": "/api/v2/teams/17/access_list/",
+      "organization": "/api/v2/organizations/1/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 1,
+        "name": "Default",
+        "description": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 607
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 608
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 609
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-31T09:13:32.264966Z",
+    "modified": "2026-03-31T09:13:32.264971Z",
+    "name": "E2E-Simple-Team",
+    "description": "Simple team",
+    "organization": 1,
+    "_source_id": 17
+  },
+  {
+    "id": 10,
+    "type": "team",
+    "url": "/api/v2/teams/10/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/10/projects/",
+      "users": "/api/v2/teams/10/users/",
+      "credentials": "/api/v2/teams/10/credentials/",
+      "roles": "/api/v2/teams/10/roles/",
+      "object_roles": "/api/v2/teams/10/object_roles/",
+      "activity_stream": "/api/v2/teams/10/activity_stream/",
+      "access_list": "/api/v2/teams/10/access_list/",
+      "organization": "/api/v2/organizations/9/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 9,
+        "name": "DevOps Platform",
+        "description": "DevOps and CI/CD platform team"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 300
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 301
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 302
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-04T10:21:18.522825Z",
+    "modified": "2026-03-04T10:21:18.522829Z",
+    "name": "Platform Engineering",
+    "description": "Platform and tooling engineers",
+    "organization": 9,
+    "_source_id": 10
+  },
+  {
+    "id": 11,
+    "type": "team",
+    "url": "/api/v2/teams/11/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/11/projects/",
+      "users": "/api/v2/teams/11/users/",
+      "credentials": "/api/v2/teams/11/credentials/",
+      "roles": "/api/v2/teams/11/roles/",
+      "object_roles": "/api/v2/teams/11/object_roles/",
+      "activity_stream": "/api/v2/teams/11/activity_stream/",
+      "access_list": "/api/v2/teams/11/access_list/",
+      "organization": "/api/v2/organizations/9/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 9,
+        "name": "DevOps Platform",
+        "description": "DevOps and CI/CD platform team"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 303
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 304
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 305
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-04T10:21:19.525212Z",
+    "modified": "2026-03-04T10:21:19.525217Z",
+    "name": "Site Reliability Engineering",
+    "description": "SRE and production operations",
+    "organization": 9,
+    "_source_id": 11
+  },
+  {
+    "id": 14,
+    "type": "team",
+    "url": "/api/v2/teams/14/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/14/projects/",
+      "users": "/api/v2/teams/14/users/",
+      "credentials": "/api/v2/teams/14/credentials/",
+      "roles": "/api/v2/teams/14/roles/",
+      "object_roles": "/api/v2/teams/14/object_roles/",
+      "activity_stream": "/api/v2/teams/14/activity_stream/",
+      "access_list": "/api/v2/teams/14/access_list/",
+      "organization": "/api/v2/organizations/10/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 10,
+        "name": "E2E-Test-Simple-Org",
+        "description": "Simple test organization"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 521
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 522
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 523
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-24T06:01:22.330804Z",
+    "modified": "2026-03-24T06:01:22.330808Z",
+    "name": "E2E-Empty-Team",
+    "description": "Empty team",
+    "organization": 10,
+    "_source_id": 14
+  },
+  {
+    "id": 13,
+    "type": "team",
+    "url": "/api/v2/teams/13/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/13/projects/",
+      "users": "/api/v2/teams/13/users/",
+      "credentials": "/api/v2/teams/13/credentials/",
+      "roles": "/api/v2/teams/13/roles/",
+      "object_roles": "/api/v2/teams/13/object_roles/",
+      "activity_stream": "/api/v2/teams/13/activity_stream/",
+      "access_list": "/api/v2/teams/13/access_list/",
+      "organization": "/api/v2/organizations/10/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 10,
+        "name": "E2E-Test-Simple-Org",
+        "description": "Simple test organization"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 518
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 519
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 520
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-24T06:01:21.285132Z",
+    "modified": "2026-03-24T06:01:21.285137Z",
+    "name": "E2E-Multi-User-Team",
+    "description": "Team with multiple users",
+    "organization": 10,
+    "_source_id": 13
+  },
+  {
+    "id": 15,
+    "type": "team",
+    "url": "/api/v2/teams/15/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/15/projects/",
+      "users": "/api/v2/teams/15/users/",
+      "credentials": "/api/v2/teams/15/credentials/",
+      "roles": "/api/v2/teams/15/roles/",
+      "object_roles": "/api/v2/teams/15/object_roles/",
+      "activity_stream": "/api/v2/teams/15/activity_stream/",
+      "access_list": "/api/v2/teams/15/access_list/",
+      "organization": "/api/v2/organizations/10/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 10,
+        "name": "E2E-Test-Simple-Org",
+        "description": "Simple test organization"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 524
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 525
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 526
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-24T06:01:23.375688Z",
+    "modified": "2026-03-24T06:01:23.375692Z",
+    "name": "E2E-Permissions-Team",
+    "description": "Team with various permissions",
+    "organization": 10,
+    "_source_id": 15
+  },
+  {
+    "id": 16,
+    "type": "team",
+    "url": "/api/v2/teams/16/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/16/projects/",
+      "users": "/api/v2/teams/16/users/",
+      "credentials": "/api/v2/teams/16/credentials/",
+      "roles": "/api/v2/teams/16/roles/",
+      "object_roles": "/api/v2/teams/16/object_roles/",
+      "activity_stream": "/api/v2/teams/16/activity_stream/",
+      "access_list": "/api/v2/teams/16/access_list/",
+      "organization": "/api/v2/organizations/10/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 10,
+        "name": "E2E-Test-Simple-Org",
+        "description": "Simple test organization"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 527
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 528
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 529
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-24T06:01:24.428880Z",
+    "modified": "2026-03-24T06:01:24.428885Z",
+    "name": "E2E-Role-Team",
+    "description": "Team with organization roles",
+    "organization": 10,
+    "_source_id": 16
+  },
+  {
+    "id": 12,
+    "type": "team",
+    "url": "/api/v2/teams/12/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/12/projects/",
+      "users": "/api/v2/teams/12/users/",
+      "credentials": "/api/v2/teams/12/credentials/",
+      "roles": "/api/v2/teams/12/roles/",
+      "object_roles": "/api/v2/teams/12/object_roles/",
+      "activity_stream": "/api/v2/teams/12/activity_stream/",
+      "access_list": "/api/v2/teams/12/access_list/",
+      "organization": "/api/v2/organizations/10/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 10,
+        "name": "E2E-Test-Simple-Org",
+        "description": "Simple test organization"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 515
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 516
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 517
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-24T06:01:20.242758Z",
+    "modified": "2026-03-24T06:01:20.242763Z",
+    "name": "E2E-Simple-Team",
+    "description": "Simple team",
+    "organization": 10,
+    "_source_id": 12
+  },
+  {
+    "id": 2,
+    "type": "team",
+    "url": "/api/v2/teams/2/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/2/projects/",
+      "users": "/api/v2/teams/2/users/",
+      "credentials": "/api/v2/teams/2/credentials/",
+      "roles": "/api/v2/teams/2/roles/",
+      "object_roles": "/api/v2/teams/2/object_roles/",
+      "activity_stream": "/api/v2/teams/2/activity_stream/",
+      "access_list": "/api/v2/teams/2/access_list/",
+      "organization": "/api/v2/organizations/5/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 5,
+        "name": "Global Engineering",
+        "description": "Global engineering and development organization"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 276
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 277
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 278
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-04T10:21:09.815567Z",
+    "modified": "2026-03-04T10:21:09.815571Z",
+    "name": "Backend Development",
+    "description": "Backend developers and API engineers",
+    "organization": 5,
+    "_source_id": 2
+  },
+  {
+    "id": 3,
+    "type": "team",
+    "url": "/api/v2/teams/3/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/3/projects/",
+      "users": "/api/v2/teams/3/users/",
+      "credentials": "/api/v2/teams/3/credentials/",
+      "roles": "/api/v2/teams/3/roles/",
+      "object_roles": "/api/v2/teams/3/object_roles/",
+      "activity_stream": "/api/v2/teams/3/activity_stream/",
+      "access_list": "/api/v2/teams/3/access_list/",
+      "organization": "/api/v2/organizations/5/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 5,
+        "name": "Global Engineering",
+        "description": "Global engineering and development organization"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 279
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 280
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 281
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-04T10:21:10.955410Z",
+    "modified": "2026-03-04T10:21:10.955414Z",
+    "name": "Frontend Development",
+    "description": "Frontend and UI/UX developers",
+    "organization": 5,
+    "_source_id": 3
+  },
+  {
+    "id": 4,
+    "type": "team",
+    "url": "/api/v2/teams/4/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/4/projects/",
+      "users": "/api/v2/teams/4/users/",
+      "credentials": "/api/v2/teams/4/credentials/",
+      "roles": "/api/v2/teams/4/roles/",
+      "object_roles": "/api/v2/teams/4/object_roles/",
+      "activity_stream": "/api/v2/teams/4/activity_stream/",
+      "access_list": "/api/v2/teams/4/access_list/",
+      "organization": "/api/v2/organizations/6/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 6,
+        "name": "IT Operations",
+        "description": "IT operations and infrastructure management"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 282
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 283
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 284
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-04T10:21:12.032884Z",
+    "modified": "2026-03-04T10:21:12.032889Z",
+    "name": "Infrastructure Team",
+    "description": "Infrastructure and systems administrators",
+    "organization": 6,
+    "_source_id": 4
+  },
+  {
+    "id": 5,
+    "type": "team",
+    "url": "/api/v2/teams/5/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/5/projects/",
+      "users": "/api/v2/teams/5/users/",
+      "credentials": "/api/v2/teams/5/credentials/",
+      "roles": "/api/v2/teams/5/roles/",
+      "object_roles": "/api/v2/teams/5/object_roles/",
+      "activity_stream": "/api/v2/teams/5/activity_stream/",
+      "access_list": "/api/v2/teams/5/access_list/",
+      "organization": "/api/v2/organizations/6/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 6,
+        "name": "IT Operations",
+        "description": "IT operations and infrastructure management"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 285
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 286
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 287
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-04T10:21:13.489590Z",
+    "modified": "2026-03-04T10:21:13.489594Z",
+    "name": "Network Operations",
+    "description": "Network engineers and administrators",
+    "organization": 6,
+    "_source_id": 5
+  },
+  {
+    "id": 1,
+    "type": "team",
+    "url": "/api/v2/teams/1/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/1/projects/",
+      "users": "/api/v2/teams/1/users/",
+      "credentials": "/api/v2/teams/1/credentials/",
+      "roles": "/api/v2/teams/1/roles/",
+      "object_roles": "/api/v2/teams/1/object_roles/",
+      "activity_stream": "/api/v2/teams/1/activity_stream/",
+      "access_list": "/api/v2/teams/1/access_list/",
+      "organization": "/api/v2/organizations/3/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 3,
+        "name": "org_B",
+        "description": ""
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 81
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 82
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 83
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-03T20:08:49.651104Z",
+    "modified": "2026-03-03T20:08:49.651109Z",
+    "name": "team_B",
+    "description": "",
+    "organization": 3,
+    "_source_id": 1
+  },
+  {
+    "id": 7,
+    "type": "team",
+    "url": "/api/v2/teams/7/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/7/projects/",
+      "users": "/api/v2/teams/7/users/",
+      "credentials": "/api/v2/teams/7/credentials/",
+      "roles": "/api/v2/teams/7/roles/",
+      "object_roles": "/api/v2/teams/7/object_roles/",
+      "activity_stream": "/api/v2/teams/7/activity_stream/",
+      "access_list": "/api/v2/teams/7/access_list/",
+      "organization": "/api/v2/organizations/7/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 7,
+        "name": "Security & Compliance",
+        "description": "Security operations and compliance team"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 291
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 292
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 293
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-04T10:21:15.443234Z",
+    "modified": "2026-03-04T10:21:15.443238Z",
+    "name": "Compliance Team",
+    "description": "Compliance and audit specialists",
+    "organization": 7,
+    "_source_id": 7
+  },
+  {
+    "id": 6,
+    "type": "team",
+    "url": "/api/v2/teams/6/",
+    "related": {
+      "created_by": "/api/v2/users/1/",
+      "modified_by": "/api/v2/users/1/",
+      "projects": "/api/v2/teams/6/projects/",
+      "users": "/api/v2/teams/6/users/",
+      "credentials": "/api/v2/teams/6/credentials/",
+      "roles": "/api/v2/teams/6/roles/",
+      "object_roles": "/api/v2/teams/6/object_roles/",
+      "activity_stream": "/api/v2/teams/6/activity_stream/",
+      "access_list": "/api/v2/teams/6/access_list/",
+      "organization": "/api/v2/organizations/7/"
+    },
+    "summary_fields": {
+      "organization": {
+        "id": 7,
+        "name": "Security & Compliance",
+        "description": "Security operations and compliance team"
+      },
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "modified_by": {
+        "id": 1,
+        "username": "admin",
+        "first_name": "",
+        "last_name": ""
+      },
+      "object_roles": {
+        "admin_role": {
+          "description": "Can manage all aspects of the team",
+          "name": "Admin",
+          "id": 288
+        },
+        "member_role": {
+          "description": "User is a member of the team",
+          "name": "Member",
+          "id": 289
+        },
+        "read_role": {
+          "description": "May view settings for the team",
+          "name": "Read",
+          "id": 290
+        }
+      },
+      "user_capabilities": {
+        "edit": true,
+        "delete": true
+      }
+    },
+    "created": "2026-03-04T10:21:14.537120Z",
+    "modified": "2026-03-04T10:21:14.537124Z",
+    "name": "Security Operations",
+    "description": "Security operations center team",
+    "organization": 7,
+    "_source_id": 6
+  }
+]

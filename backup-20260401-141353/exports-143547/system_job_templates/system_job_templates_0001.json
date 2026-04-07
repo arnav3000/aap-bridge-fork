@@ -1,0 +1,174 @@
+[
+  {
+    "id": 2,
+    "type": "system_job_template",
+    "url": "/api/v2/system_job_templates/2/",
+    "related": {
+      "last_job": "/api/v2/system_jobs/2517/",
+      "next_schedule": "/api/v2/schedules/2/",
+      "jobs": "/api/v2/system_job_templates/2/jobs/",
+      "schedules": "/api/v2/system_job_templates/2/schedules/",
+      "launch": "/api/v2/system_job_templates/2/launch/",
+      "notification_templates_started": "/api/v2/system_job_templates/2/notification_templates_started/",
+      "notification_templates_success": "/api/v2/system_job_templates/2/notification_templates_success/",
+      "notification_templates_error": "/api/v2/system_job_templates/2/notification_templates_error/"
+    },
+    "summary_fields": {
+      "last_job": {
+        "id": 2517,
+        "name": "Cleanup Activity Stream",
+        "description": "Remove activity stream history",
+        "finished": "2026-03-31T20:32:56.780305Z",
+        "status": "successful",
+        "failed": false
+      },
+      "last_update": {
+        "id": 2517,
+        "name": "Cleanup Activity Stream",
+        "description": "Remove activity stream history",
+        "status": "successful",
+        "failed": false
+      }
+    },
+    "created": "2026-03-02T20:32:47.687866Z",
+    "modified": "2026-03-02T20:32:47.687866Z",
+    "name": "Cleanup Activity Stream",
+    "description": "Remove activity stream history",
+    "last_job_run": "2026-03-31T20:32:56.780305Z",
+    "last_job_failed": false,
+    "next_job_run": "2026-04-07T20:32:47Z",
+    "status": "successful",
+    "execution_environment": null,
+    "job_type": "cleanup_activitystream",
+    "_source_id": 2
+  },
+  {
+    "id": 5,
+    "type": "system_job_template",
+    "url": "/api/v2/system_job_templates/5/",
+    "related": {
+      "last_job": "/api/v2/system_jobs/2423/",
+      "next_schedule": "/api/v2/schedules/5/",
+      "jobs": "/api/v2/system_job_templates/5/jobs/",
+      "schedules": "/api/v2/system_job_templates/5/schedules/",
+      "launch": "/api/v2/system_job_templates/5/launch/",
+      "notification_templates_started": "/api/v2/system_job_templates/5/notification_templates_started/",
+      "notification_templates_success": "/api/v2/system_job_templates/5/notification_templates_success/",
+      "notification_templates_error": "/api/v2/system_job_templates/5/notification_templates_error/"
+    },
+    "summary_fields": {
+      "last_job": {
+        "id": 2423,
+        "name": "Cleanup Expired OAuth 2 Tokens",
+        "description": "Cleanup expired OAuth 2 access and refresh tokens",
+        "finished": "2026-03-30T20:33:30.519822Z",
+        "status": "successful",
+        "failed": false
+      },
+      "last_update": {
+        "id": 2423,
+        "name": "Cleanup Expired OAuth 2 Tokens",
+        "description": "Cleanup expired OAuth 2 access and refresh tokens",
+        "status": "successful",
+        "failed": false
+      }
+    },
+    "created": "2026-03-02T20:33:14.363660Z",
+    "modified": "2026-03-02T20:33:14.363660Z",
+    "name": "Cleanup Expired OAuth 2 Tokens",
+    "description": "Cleanup expired OAuth 2 access and refresh tokens",
+    "last_job_run": "2026-03-30T20:33:30.519822Z",
+    "last_job_failed": false,
+    "next_job_run": "2026-04-06T20:33:14Z",
+    "status": "successful",
+    "execution_environment": null,
+    "job_type": "cleanup_tokens",
+    "_source_id": 5
+  },
+  {
+    "id": 4,
+    "type": "system_job_template",
+    "url": "/api/v2/system_job_templates/4/",
+    "related": {
+      "last_job": "/api/v2/system_jobs/2422/",
+      "next_schedule": "/api/v2/schedules/4/",
+      "jobs": "/api/v2/system_job_templates/4/jobs/",
+      "schedules": "/api/v2/system_job_templates/4/schedules/",
+      "launch": "/api/v2/system_job_templates/4/launch/",
+      "notification_templates_started": "/api/v2/system_job_templates/4/notification_templates_started/",
+      "notification_templates_success": "/api/v2/system_job_templates/4/notification_templates_success/",
+      "notification_templates_error": "/api/v2/system_job_templates/4/notification_templates_error/"
+    },
+    "summary_fields": {
+      "last_job": {
+        "id": 2422,
+        "name": "Cleanup Expired Sessions",
+        "description": "Cleans out expired browser sessions",
+        "finished": "2026-03-30T20:33:26.616670Z",
+        "status": "successful",
+        "failed": false
+      },
+      "last_update": {
+        "id": 2422,
+        "name": "Cleanup Expired Sessions",
+        "description": "Cleans out expired browser sessions",
+        "status": "successful",
+        "failed": false
+      }
+    },
+    "created": "2026-03-02T20:33:14.319693Z",
+    "modified": "2026-03-02T20:33:14.319693Z",
+    "name": "Cleanup Expired Sessions",
+    "description": "Cleans out expired browser sessions",
+    "last_job_run": "2026-03-30T20:33:26.616670Z",
+    "last_job_failed": false,
+    "next_job_run": "2026-04-06T20:33:14Z",
+    "status": "successful",
+    "execution_environment": null,
+    "job_type": "cleanup_sessions",
+    "_source_id": 4
+  },
+  {
+    "id": 1,
+    "type": "system_job_template",
+    "url": "/api/v2/system_job_templates/1/",
+    "related": {
+      "last_job": "/api/v2/system_jobs/2331/",
+      "next_schedule": "/api/v2/schedules/1/",
+      "jobs": "/api/v2/system_job_templates/1/jobs/",
+      "schedules": "/api/v2/system_job_templates/1/schedules/",
+      "launch": "/api/v2/system_job_templates/1/launch/",
+      "notification_templates_started": "/api/v2/system_job_templates/1/notification_templates_started/",
+      "notification_templates_success": "/api/v2/system_job_templates/1/notification_templates_success/",
+      "notification_templates_error": "/api/v2/system_job_templates/1/notification_templates_error/"
+    },
+    "summary_fields": {
+      "last_job": {
+        "id": 2331,
+        "name": "Cleanup Job Details",
+        "description": "Remove job history",
+        "finished": "2026-03-29T20:32:56.784607Z",
+        "status": "successful",
+        "failed": false
+      },
+      "last_update": {
+        "id": 2331,
+        "name": "Cleanup Job Details",
+        "description": "Remove job history",
+        "status": "successful",
+        "failed": false
+      }
+    },
+    "created": "2026-03-02T20:32:47.687866Z",
+    "modified": "2026-03-02T20:32:47.687866Z",
+    "name": "Cleanup Job Details",
+    "description": "Remove job history",
+    "last_job_run": "2026-03-29T20:32:56.784607Z",
+    "last_job_failed": false,
+    "next_job_run": "2026-04-05T20:32:47Z",
+    "status": "successful",
+    "execution_environment": null,
+    "job_type": "cleanup_jobs",
+    "_source_id": 1
+  }
+]

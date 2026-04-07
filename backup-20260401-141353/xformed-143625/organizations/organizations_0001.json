@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Cloud Services",
+    "description": "Multi-cloud infrastructure and services",
+    "max_hosts": 1500,
+    "custom_virtualenv": null,
+    "default_environment": 8,
+    "_source_id": 8
+  },
+  {
+    "name": "Default",
+    "description": "",
+    "max_hosts": 0,
+    "custom_virtualenv": null,
+    "default_environment": null,
+    "_source_id": 1
+  },
+  {
+    "name": "DevOps Platform",
+    "description": "DevOps and CI/CD platform team",
+    "max_hosts": 800,
+    "custom_virtualenv": null,
+    "default_environment": 4,
+    "_source_id": 9
+  },
+  {
+    "name": "E2E-Test-CustomEE-Org",
+    "description": "Org with custom EE",
+    "max_hosts": 0,
+    "custom_virtualenv": null,
+    "default_environment": null,
+    "_source_id": 13
+  },
+  {
+    "name": "E2E-Test-Galaxy-Org",
+    "description": "Org with galaxy credential",
+    "max_hosts": 0,
+    "custom_virtualenv": null,
+    "default_environment": null,
+    "_source_id": 11
+  },
+  {
+    "name": "E2E-Test-Limited-Org",
+    "description": "Org with host limit",
+    "max_hosts": 100,
+    "custom_virtualenv": null,
+    "default_environment": null,
+    "_source_id": 12
+  },
+  {
+    "name": "E2E-Test-MultiPurpose-Org",
+    "description": "Multi-purpose organization",
+    "max_hosts": 0,
+    "custom_virtualenv": null,
+    "default_environment": null,
+    "_source_id": 14
+  },
+  {
+    "name": "E2E-Test-Simple-Org",
+    "description": "Simple test organization",
+    "max_hosts": 0,
+    "custom_virtualenv": null,
+    "default_environment": null,
+    "_source_id": 10
+  },
+  {
+    "name": "Engineering",
+    "description": "Software development and engineering teams",
+    "max_hosts": 0,
+    "custom_virtualenv": null,
+    "default_environment": null,
+    "_source_id": 4
+  },
+  {
+    "name": "Global Engineering",
+    "description": "Global engineering and development organization",
+    "max_hosts": 1000,
+    "custom_virtualenv": null,
+    "default_environment": 5,
+    "_source_id": 5
+  },
+  {
+    "name": "IT Operations",
+    "description": "IT operations and infrastructure management",
+    "max_hosts": 2000,
+    "custom_virtualenv": null,
+    "default_environment": 6,
+    "_source_id": 6
+  },
+  {
+    "name": "org_A",
+    "description": "",
+    "max_hosts": 0,
+    "custom_virtualenv": null,
+    "default_environment": null,
+    "_source_id": 2
+  },
+  {
+    "name": "org_B",
+    "description": "",
+    "max_hosts": 0,
+    "custom_virtualenv": null,
+    "default_environment": 1,
+    "_source_id": 3
+  },
+  {
+    "name": "Security & Compliance",
+    "description": "Security operations and compliance team",
+    "max_hosts": 500,
+    "custom_virtualenv": null,
+    "default_environment": 7,
+    "_source_id": 7
+  },
+  {
+    "name": "testb",
+    "description": "",
+    "max_hosts": 0,
+    "custom_virtualenv": null,
+    "default_environment": 3,
+    "_source_id": 15
+  }
+]
