@@ -333,6 +333,18 @@ def _run_migration_workflow(
         org_filters = asyncio.run(resolve_orgs())
         ctx.organization_filters = org_filters
 
+        # CRITICAL: Reinitialize source_client after asyncio.run()
+        # The previous event loop is closed, so the httpx client is invalid
+        from aap_migration.client.aap_source_client import AAPSourceClient
+        ctx._source_client = AAPSourceClient(
+            config=ctx.config.source,
+            rate_limit=ctx.config.performance.rate_limit,
+            log_payloads=ctx.config.logging.log_payloads,
+            max_payload_size=ctx.config.logging.max_payload_size,
+            max_connections=ctx.config.performance.http_max_connections,
+            max_keepalive_connections=ctx.config.performance.http_max_keepalive_connections,
+        )
+
         if org_filters:
             echo_info(f"Organization filter(s) applied:")
             for org_name, org_id in org_filters.items():
