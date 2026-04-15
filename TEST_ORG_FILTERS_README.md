@@ -12,30 +12,53 @@ This script tests AAP API organization filtering capabilities to determine what 
 
 ## How to Run
 
-### Step 1: Set Environment Variables
+### Option 1: Using Existing .env File (Easiest)
+
+The script automatically loads `SOURCE__URL` and `SOURCE__TOKEN` from `.env` file!
+
+**Run directly:**
+```bash
+# Test by organization ID (Default org is usually ID 1)
+./run_org_filter_test.sh --org-id 1
+
+# Test by organization name
+./run_org_filter_test.sh --org-name "Default"
+```
+
+### Option 2: Manual Environment Variables
+
+If you want to override .env or test different credentials:
 
 ```bash
 # Set your source AAP credentials
-export SOURCE__URL=https://your-aap-24-instance
+export SOURCE__URL=https://your-aap-24-instance/api/v2
 export SOURCE__TOKEN=your_api_token_here
+
+# Run test
+./run_org_filter_test.sh --org-name "Engineering"
 ```
 
-### Step 2: Run Test Script
+### Option 3: Run in Container
 
-**Test by organization name:**
+If running in the container environment:
+
 ```bash
-python test_organization_filters.py --org-name "Engineering"
+# Inside container
+cd /app/aap-bridge
+python3 test_organization_filters.py --org-id 1
 ```
 
-**Test by organization ID:**
+### Option 4: Direct Python (if dependencies installed)
+
 ```bash
-python test_organization_filters.py --org-id 5
+# Activate venv if you have one
+source .venv/bin/activate  # or source venv/bin/activate
+
+# Run test
+python3 test_organization_filters.py --org-name "Engineering"
 ```
 
-**Custom output file:**
-```bash
-python test_organization_filters.py --org-name "Engineering" --output my_test_results.md
-```
+**Note:** The script needs `httpx`, `python-dotenv`, and other aap-migration dependencies.
 
 ## What It Tests
 
