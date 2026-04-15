@@ -979,7 +979,7 @@ class CredentialTypeImporter(ResourceImporter):
                         message="No fields to patch - mapping only",
                     )
 
-                result = {"id": target_id, "name": name, "_patched": bool(patch_data)}
+                result = {"id": target_id, "name": name, "_patched": bool(patch_data), "_is_managed": True}
 
             else:
                 # Not found - CREATE new
@@ -999,7 +999,9 @@ class CredentialTypeImporter(ResourceImporter):
                     "credential_type_creating",
                     name=name,
                     source_id=source_id,
-                    message="Creating new credential type",
+                    managed=data.get("managed", False),
+                    kind=data.get("kind", "unknown"),
+                    message="Creating new custom credential type",
                 )
 
                 # Resolve dependencies (organization)
@@ -1018,7 +1020,9 @@ class CredentialTypeImporter(ResourceImporter):
                     name=name,
                     source_id=source_id,
                     target_id=target_id,
+                    managed=data.get("managed", False),
                 )
+                result["_is_managed"] = False
 
             # Save mapping
             self.state.save_id_mapping(
@@ -1062,11 +1066,10 @@ class CredentialTypeImporter(ResourceImporter):
         credential_types: list[dict[str, Any]],
         progress_callback: Callable[[int, int, int], None] | None = None,
     ) -> list[dict[str, Any]]:
-        """Import multiple credential types by PATCHing pre-existing resources.
+        """Import multiple credential types by PATCHing or CREATing them.
 
-        Credential types are pre-created in the target environment before migration.
-        This method finds each credential type by name and PATCHes it with
-        organization and description from the source.
+        Managed (built-in) credential types are PATCHed if they exist in target.
+        Custom credential types are CREATed if they don't exist in target.
 
         Args:
             credential_types: List of credential type data
@@ -1074,25 +1077,39 @@ class CredentialTypeImporter(ResourceImporter):
                 Called after each credential type with (success_count, failed_count).
 
         Returns:
-            List of patched credential type data
+            List of patched/created credential type data
         """
+        # Separate managed and custom types for better logging
+        managed_types = [ct for ct in credential_types if ct.get("managed")]
+        custom_types = [ct for ct in credential_types if not ct.get("managed")]
+
         logger.info(
             "credential_types_import_starting",
             total_count=len(credential_types),
-            names=[ct.get("name") for ct in credential_types],
-            message="PATCHing pre-created credential types in target",
+            managed_count=len(managed_types),
+            custom_count=len(custom_types),
+            managed_names=[ct.get("name") for ct in managed_types],
+            custom_names=[ct.get("name") for ct in custom_types],
+            message=f"Importing {len(managed_types)} managed and {len(custom_types)} custom credential types",
         )
 
-        # All credential types go through the same PATCH flow via import_resource()
+        # All credential types go through the same flow via import_resource()
+        # Managed types are PATCHed, custom types are CREATed
         results = await self._import_parallel(
             "credential_types", credential_types, progress_callback
         )
 
+        # Count results by type
+        managed_results = [r for r in results if r and r.get("_is_managed")]
+        custom_results = [r for r in results if r and not r.get("_is_managed")]
+
         logger.info(
             "credential_types_import_completed",
             total_input=len(credential_types),
-            patched_count=len(results),
-            skipped_or_failed=len(credential_types) - len(results),
+            total_results=len(results),
+            managed_processed=len(managed_results),
+            custom_processed=len(custom_results),
+            failed_or_skipped=len(credential_types) - len(results),
         )
 
         return results
@@ -1765,6 +1782,7 @@ class InventorySourceImporter(ResourceImporter):
 
         Handles multiple dependencies (inventory, project, credential).
         Preserves source configuration (source_vars, update options, etc.).
+        Validates that SCM inventory sources have SCM projects.
 
         Args:
             sources: List of inventory source data
@@ -1774,9 +1792,57 @@ class InventorySourceImporter(ResourceImporter):
         Returns:
             List of created inventory source data
         """
+        # Validate and filter sources before import
+        valid_sources = []
+        skipped_count = 0
+
+        for source in sources:
+            source_id = source.get("_source_id", source.get("id"))
+            source_name = source.get("name", "unknown")
+            source_type = source.get("source")
+            source_project_id = source.get("source_project")
+
+            # Validate SCM inventory sources have SCM projects
+            if source_type in ("scm", "scm_inventory_file") and source_project_id:
+                # Check if the project is mapped (exists in target)
+                target_project_id = self.state.get_mapped_id("projects", source_project_id)
+
+                if not target_project_id:
+                    logger.warning(
+                        "inventory_source_skipped_missing_project",
+                        source_id=source_id,
+                        name=source_name,
+                        source_type=source_type,
+                        source_project_id=source_project_id,
+                        message="SCM inventory source skipped - project not migrated or not found",
+                    )
+                    # Mark as failed so it shows in migration report
+                    self.state.mark_failed(
+                        resource_type="inventory_sources",
+                        source_id=source_id,
+                        error="SCM inventory source requires project, but project not found in migration",
+                        source_name=source_name,
+                    )
+                    skipped_count += 1
+                    continue
+
+                # TODO: Could add additional validation here to check if project is SCM-based
+                # For now, we trust AAP API validation to reject manual projects with SCM sources
+
+            valid_sources.append(source)
+
+        if skipped_count > 0:
+            logger.info(
+                "inventory_sources_validation_skipped",
+                total_input=len(sources),
+                valid=len(valid_sources),
+                skipped=skipped_count,
+                message=f"Skipped {skipped_count} inventory sources due to validation failures",
+            )
+
         # Extract schedules before import
         sources_with_schedules = []
-        for source in sources:
+        for source in valid_sources:
             schedules = source.pop("schedules", None)
             if schedules:
                 source_id = source.get("_source_id", source.get("id"))
@@ -1785,8 +1851,8 @@ class InventorySourceImporter(ResourceImporter):
                     "schedules": schedules,
                 })
 
-        # Import inventory sources
-        results = await self._import_parallel("inventory_sources", sources, progress_callback)
+        # Import inventory sources (only valid ones)
+        results = await self._import_parallel("inventory_sources", valid_sources, progress_callback)
 
         # Import schedules for successfully imported inventory sources
         if sources_with_schedules:

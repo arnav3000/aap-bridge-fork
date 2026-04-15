@@ -200,11 +200,11 @@ RESOURCE_REGISTRY: dict[str, ResourceTypeInfo] = {
     "instances": ResourceTypeInfo(
         name="instances",
         endpoint="instances/",
-        description="Instances (AAP Controller Nodes)",
+        description="Instances (AAP Controller Nodes) - Infrastructure-specific, not migrated",
         migration_order=121,  # After hosts (120), before instance_groups (125)
         cleanup_order=88,  # After instance_groups (87) - delete dependents first
         has_exporter=True,
-        has_importer=True,
+        has_importer=False,  # Instances are environment-specific (not migrated)
         has_transformer=False,
         batch_size=50,
     ),
