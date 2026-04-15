@@ -1820,8 +1820,7 @@ class InventorySourceImporter(ResourceImporter):
                     self.state.mark_failed(
                         resource_type="inventory_sources",
                         source_id=source_id,
-                        error="SCM inventory source requires project, but project not found in migration",
-                        source_name=source_name,
+                        error_message="SCM inventory source requires project, but project not found in migration",
                     )
                     skipped_count += 1
                     continue
