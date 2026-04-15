@@ -38,6 +38,7 @@ class MigrationContext:
     config_path: Path | None = None
     log_level: str = "INFO"
     log_file: Path | None = None
+    organization_filters: dict[str, int] | None = None  # {org_name: org_id}
 
     # Lazy-loaded attributes
     _config: MigrationConfig | None = field(default=None, init=False, repr=False)

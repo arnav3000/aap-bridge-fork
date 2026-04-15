@@ -35,6 +35,58 @@ from aap_migration.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
+
+async def resolve_organization_filters(
+    source_client, org_names: tuple[str, ...]
+) -> dict[str, int] | None:
+    """Resolve organization names to IDs.
+
+    Args:
+        source_client: AAP source client
+        org_names: Tuple of organization names from CLI
+
+    Returns:
+        Dictionary mapping org_name → org_id
+        None if no organizations specified
+
+    Raises:
+        click.ClickException: If organization not found or duplicate names exist
+    """
+    if not org_names:
+        return None
+
+    org_filters = {}
+
+    for org_name in org_names:
+        # Query source AAP for organization
+        response = await source_client.get(
+            "organizations/", params={"name": org_name, "page_size": 2}
+        )
+        results = response.get("results", [])
+
+        # Validation
+        if not results:
+            raise click.ClickException(
+                f"Organization '{org_name}' not found in source AAP"
+            )
+
+        if len(results) > 1:
+            raise click.ClickException(
+                f"Multiple organizations found with name '{org_name}'. "
+                f"Organization names must be unique. Found IDs: "
+                f"{', '.join(str(r['id']) for r in results)}"
+            )
+
+        org_id = results[0]["id"]
+        org_filters[org_name] = org_id
+
+        logger.info(
+            "organization_filter_resolved", name=org_name, org_id=org_id
+        )
+
+    return org_filters
+
+
 # Migration phase order - use centralized registry
 MIGRATION_PHASES = ALL_RESOURCE_TYPES
 
@@ -192,6 +244,7 @@ def _run_migration_workflow(
     resume: bool,
     skip_prep: bool = False,
     phase: str = "all",
+    organization_names: tuple[str, ...] = (),
 ) -> None:
     """Execute the four-phase migration workflow: prep → export → transform → import.
 
@@ -206,6 +259,7 @@ def _run_migration_workflow(
         resume: Resume from checkpoint
         skip_prep: Skip the prep phase (use existing schemas)
         phase: Import phase - "phase1" (up to projects), "phase2" (patching), "phase3" (job_templates), or "all"
+        organization_names: Organization name(s) to filter migration
     """
     from aap_migration.cli.commands.export_import import export, import_cmd
     from aap_migration.cli.commands.patch_projects import patch_project_scm_details
@@ -265,6 +319,27 @@ def _run_migration_workflow(
     for rtype in resource_types:
         click.echo(f"  - {rtype}")
     click.echo()
+
+    # ============================================
+    # ORGANIZATION FILTER RESOLUTION
+    # ============================================
+    if organization_names:
+        echo_info(f"Resolving organization filter(s): {', '.join(organization_names)}")
+
+        # Resolve organization names to IDs (requires async)
+        async def resolve_orgs():
+            return await resolve_organization_filters(ctx.source_client, organization_names)
+
+        org_filters = asyncio.run(resolve_orgs())
+        ctx.organization_filters = org_filters
+
+        if org_filters:
+            echo_info(f"Organization filter(s) applied:")
+            for org_name, org_id in org_filters.items():
+                click.echo(f"  - {org_name} (ID: {org_id})")
+        click.echo()
+    else:
+        ctx.organization_filters = None
 
     # ============================================
     # PHASE 1: EXPORT
@@ -580,8 +655,16 @@ def _run_migration_workflow(
     default="all",
     help="Import phase: phase1 (up to projects), phase2 (patch projects and automation definitions), all (complete)",
 )
+@click.option(
+    "-o",
+    "--organization",
+    "organization_names",
+    multiple=True,
+    type=str,
+    help="Filter migration by organization name(s). Only migrates resources in specified organization(s).",
+)
 @click.pass_context
-def migrate(ctx, resource_type, force, resume, skip_prep, phase) -> None:
+def migrate(ctx, resource_type, force, resume, skip_prep, phase, organization_names) -> None:
     """Execute migration from AAP 2.3 to 2.6.
 
     Runs the complete four-phase workflow:
@@ -612,6 +695,18 @@ def migrate(ctx, resource_type, force, resume, skip_prep, phase) -> None:
         aap-bridge migrate -r organizations -r projects
 
         \b
+        # Migrate specific organization only
+        aap-bridge migrate -o "Engineering"
+
+        \b
+        # Migrate multiple organizations
+        aap-bridge migrate -o "Engineering" -o "QA" -o "Production"
+
+        \b
+        # Combine organization filter with resource types
+        aap-bridge migrate -o "Engineering" -r projects -r inventories
+
+        \b
         # Force re-discovery and re-export
         aap-bridge migrate --force
 
@@ -638,6 +733,7 @@ def migrate(ctx, resource_type, force, resume, skip_prep, phase) -> None:
         resume=resume,
         skip_prep=skip_prep,
         phase=phase,
+        organization_names=organization_names,
     )
 
 

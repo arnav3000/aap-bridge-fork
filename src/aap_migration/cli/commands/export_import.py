@@ -31,6 +31,7 @@ from aap_migration.reporting.live_progress import MigrationProgressDisplay
 from aap_migration.resources import (
     MANUAL_MIGRATION_ENDPOINTS,
     ORGANIZATION_SCOPED_RESOURCES,
+    PARENT_SCOPED_RESOURCES,
     READ_ONLY_ENDPOINTS,
     RESOURCE_REGISTRY,
     RUNTIME_DATA_ENDPOINTS,
@@ -42,6 +43,165 @@ from aap_migration.resources import (
 from aap_migration.utils.logging import get_logger
 
 logger = get_logger(__name__)
+
+
+# ============================================
+# Organization Filter Helper Functions
+# ============================================
+
+
+def build_organization_filters(
+    resource_type: str, org_filter_ids: dict[str, int] | None
+) -> dict[str, str]:
+    """Build API filters for organization-based export.
+
+    Args:
+        resource_type: Type of resource being exported
+        org_filter_ids: Organization filters from context {name: id}
+
+    Returns:
+        Dictionary of API filter parameters
+    """
+    if not org_filter_ids:
+        return {}
+
+    org_ids = list(org_filter_ids.values())
+    filters = {}
+
+    # 1. Organizations themselves
+    if resource_type == "organizations":
+        if len(org_ids) == 1:
+            filters["id"] = str(org_ids[0])
+        else:
+            filters["id__in"] = ",".join(str(id) for id in org_ids)
+
+    # 2. Organization-scoped resources (direct organization field)
+    elif resource_type in ORGANIZATION_SCOPED_RESOURCES:
+        # Note: Credentials handled separately (see two-pass export logic)
+        if resource_type != "credentials":
+            if len(org_ids) == 1:
+                filters["organization"] = str(org_ids[0])
+            else:
+                filters["organization__in"] = ",".join(str(id) for id in org_ids)
+
+    # 3. Parent-scoped resources (nested organization via parent)
+    elif resource_type in PARENT_SCOPED_RESOURCES:
+        # Hosts, groups, inventory_sources - filter by inventory__organization
+        parent_field = PARENT_SCOPED_RESOURCES[resource_type]
+        if parent_field == "inventory":
+            if len(org_ids) == 1:
+                filters["inventory__organization"] = str(org_ids[0])
+            else:
+                filters["inventory__organization__in"] = ",".join(str(id) for id in org_ids)
+
+    # 4. Schedules (special case)
+    elif resource_type == "schedules":
+        if len(org_ids) == 1:
+            filters["unified_job_template__organization"] = str(org_ids[0])
+        else:
+            filters["unified_job_template__organization__in"] = ",".join(
+                str(id) for id in org_ids
+            )
+
+    # 5. Users and global resources (no filter - export all)
+    # credential_types, execution_environments, labels, etc.
+    else:
+        # No filter - export all
+        pass
+
+    return filters
+
+
+async def export_credentials_with_globals(
+    exporter,
+    org_filter_ids: dict[str, int] | None,
+    endpoint: str,
+    page_size: int,
+    max_concurrent_pages: int,
+):
+    """Export credentials in two passes: org-scoped + global.
+
+    When organization filters are active, we need to export both:
+    1. Credentials in the specified organizations
+    2. Global credentials (organization=null) that might be used by org resources
+
+    This prevents missing credential dependencies.
+
+    Args:
+        exporter: Credential exporter instance
+        org_filter_ids: Organization filters {name: id}
+        endpoint: API endpoint
+        page_size: Items per page
+        max_concurrent_pages: Concurrent page fetches
+
+    Yields:
+        Credential resources (deduplicated)
+    """
+    if not org_filter_ids:
+        # No org filter - export all normally
+        async for cred in exporter.export_parallel(
+            resource_type="credentials",
+            endpoint=endpoint,
+            page_size=page_size,
+            max_concurrent_pages=max_concurrent_pages,
+        ):
+            yield cred
+        return
+
+    # Track credential IDs to avoid duplicates
+    seen_ids = set()
+
+    # Pass 1: Org-scoped credentials
+    org_ids = list(org_filter_ids.values())
+    if len(org_ids) == 1:
+        org_filter = {"organization": str(org_ids[0])}
+    else:
+        org_filter = {"organization__in": ",".join(str(id) for id in org_ids)}
+
+    logger.info(
+        "credential_export_pass1_org_scoped",
+        org_filter=org_filter,
+        message="Exporting organization-scoped credentials",
+    )
+
+    async for cred in exporter.export_parallel(
+        resource_type="credentials",
+        endpoint=endpoint,
+        page_size=page_size,
+        max_concurrent_pages=max_concurrent_pages,
+        filters=org_filter,
+    ):
+        cred_id = cred.get("id")
+        if cred_id and cred_id not in seen_ids:
+            seen_ids.add(cred_id)
+            yield cred
+
+    # Pass 2: Global credentials
+    global_filter = {"organization__isnull": "true"}
+
+    logger.info(
+        "credential_export_pass2_global",
+        global_filter=global_filter,
+        message="Exporting global credentials (organization=null)",
+    )
+
+    async for cred in exporter.export_parallel(
+        resource_type="credentials",
+        endpoint=endpoint,
+        page_size=page_size,
+        max_concurrent_pages=max_concurrent_pages,
+        filters=global_filter,
+    ):
+        cred_id = cred.get("id")
+        if cred_id and cred_id not in seen_ids:
+            seen_ids.add(cred_id)
+            yield cred
+
+    logger.info(
+        "credential_export_complete",
+        total_exported=len(seen_ids),
+        message="Two-pass credential export complete",
+    )
 
 
 # ============================================
@@ -441,6 +601,17 @@ def export(
 
                 # Build filters dict for count query
                 count_filters: dict[str, str] = {}
+
+                # Add organization filters if specified
+                org_count_filters = build_organization_filters(rtype, ctx.organization_filters)
+                if org_count_filters:
+                    count_filters.update(org_count_filters)
+                    logger.info(
+                        "export_count_applying_org_filter",
+                        resource_type=rtype,
+                        org_filters=org_count_filters,
+                    )
+
                 if rtype == "hosts" and ctx.config.export.skip_dynamic_hosts:
                     count_filters["inventory_sources__isnull"] = "true"
                     logger.info(
@@ -459,9 +630,28 @@ def export(
                     )
 
                 # Get count from API WITH FILTERS
-                count = await temp_exporter.get_count(
-                    endpoint, filters=count_filters if count_filters else None
-                )
+                # Special handling for credentials with org filters (two-pass count)
+                if rtype == "credentials" and ctx.organization_filters:
+                    # Count org-scoped credentials
+                    org_count = await temp_exporter.get_count(
+                        endpoint, filters=count_filters if count_filters else None
+                    )
+                    # Count global credentials
+                    global_count = await temp_exporter.get_count(
+                        endpoint, filters={"organization__isnull": "true"}
+                    )
+                    count = org_count + global_count
+                    logger.info(
+                        "credential_count_two_pass",
+                        org_scoped=org_count,
+                        global_creds=global_count,
+                        total=count,
+                    )
+                else:
+                    count = await temp_exporter.get_count(
+                        endpoint, filters=count_filters if count_filters else None
+                    )
+
                 description = rtype.replace("_", " ").title()
                 phases.append((rtype, description, count))
                 logger.debug(f"Fetched count for {description}: {count} resources")
@@ -583,16 +773,39 @@ def export(
                         # Get endpoint for this resource type
                         endpoint = get_endpoint(rtype)
 
+                        # Build organization filters if specified
+                        org_filters = build_organization_filters(rtype, ctx.organization_filters)
+                        if org_filters:
+                            logger.info(
+                                "export_filtered_by_organization",
+                                resource_type=rtype,
+                                filters=org_filters,
+                            )
+
                         # Use parallel page fetching for faster export
                         max_concurrent_pages = ctx.config.performance.max_concurrent_pages
                         page_size = ctx.config.performance.batch_sizes.get(rtype, 200)
 
-                        async for resource in exporter.export_parallel(
-                            resource_type=rtype,
-                            endpoint=endpoint,
-                            page_size=page_size,
-                            max_concurrent_pages=max_concurrent_pages,
-                        ):
+                        # Special handling for credentials with organization filters
+                        # Use two-pass export (org credentials + global credentials)
+                        if rtype == "credentials" and ctx.organization_filters:
+                            resource_iterator = export_credentials_with_globals(
+                                exporter,
+                                ctx.organization_filters,
+                                endpoint,
+                                page_size,
+                                max_concurrent_pages,
+                            )
+                        else:
+                            resource_iterator = exporter.export_parallel(
+                                resource_type=rtype,
+                                endpoint=endpoint,
+                                page_size=page_size,
+                                max_concurrent_pages=max_concurrent_pages,
+                                filters=org_filters if org_filters else None,
+                            )
+
+                        async for resource in resource_iterator:
                             try:
                                 # Store ID mapping in database BEFORE transformation
                                 source_id = resource.get("id")
