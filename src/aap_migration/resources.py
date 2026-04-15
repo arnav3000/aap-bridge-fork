@@ -446,7 +446,12 @@ def _load_discovered_endpoints() -> dict[str, str] | None:
     try:
         with open(endpoints_file) as f:
             data = json.load(f)
-        return {name: info["url"] for name, info in data.get("endpoints", {}).items()}
+        # Normalize endpoint names to internal resource type names
+        # (e.g., "inventory" → "inventories", "groups" → "inventory_groups")
+        return {
+            normalize_resource_type(name): info["url"]
+            for name, info in data.get("endpoints", {}).items()
+        }
     except Exception:
         return None
 
@@ -550,7 +555,11 @@ def get_importable_types(use_discovered: bool = False) -> list[str]:
             try:
                 with open(target_file) as f:
                     data = json.load(f)
-                return list(data.get("endpoints", {}).keys())
+                # Normalize endpoint names to internal resource type names
+                # (e.g., "inventory" → "inventories", "groups" → "inventory_groups")
+                return [
+                    normalize_resource_type(ep) for ep in data.get("endpoints", {}).keys()
+                ]
             except Exception:
                 pass
 
