@@ -51,13 +51,14 @@ logger = get_logger(__name__)
 
 
 def build_organization_filters(
-    resource_type: str, org_filter_ids: dict[str, int] | None
+    resource_type: str, org_filter_ids: dict[str, int] | None, skip_ldap_users: bool = True
 ) -> dict[str, str]:
     """Build API filters for organization-based export.
 
     Args:
         resource_type: Type of resource being exported
         org_filter_ids: Organization filters from context {name: id}
+        skip_ldap_users: Whether to skip LDAP users (default: True)
 
     Returns:
         Dictionary of API filter parameters
@@ -103,7 +104,22 @@ def build_organization_filters(
                 str(id) for id in org_ids
             )
 
-    # 5. Users and global resources (no filter - export all)
+    # 5. Users - filter by organization if they have it
+    elif resource_type == "users":
+        # Users in AAP 2.6 have an organization field (for local users)
+        # Filter by organization
+        if len(org_ids) == 1:
+            filters["organization"] = str(org_ids[0])
+        else:
+            filters["organization__in"] = ",".join(str(id) for id in org_ids)
+
+        # Optionally skip LDAP users (only migrate local users)
+        # LDAP users have ldap_dn field set
+        # This is configurable to support different customer requirements
+        if skip_ldap_users:
+            filters["ldap_dn__isnull"] = "true"
+
+    # 6. Global resources (no filter - export all)
     # credential_types, execution_environments, labels, etc.
     else:
         # No filter - export all
