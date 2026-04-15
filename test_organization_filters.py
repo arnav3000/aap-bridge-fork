@@ -18,6 +18,17 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+# Load .env file if it exists
+try:
+    from dotenv import load_dotenv
+    env_file = Path(__file__).parent / ".env"
+    if env_file.exists():
+        load_dotenv(env_file)
+        print(f"✓ Loaded environment from: {env_file}")
+except ImportError:
+    # dotenv not installed, will use existing environment variables
+    pass
+
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
