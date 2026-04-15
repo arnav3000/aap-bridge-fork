@@ -291,6 +291,29 @@ def _run_migration_workflow(
         click.echo()
         echo_success("Phase 0 complete: Prep finished")
         click.echo()
+
+        # CRITICAL: Reinitialize clients after prep phase
+        # The prep command uses asyncio.run() which closes the event loop
+        # leaving both source_client and target_client tied to dead loops
+        from aap_migration.client.aap_source_client import AAPSourceClient
+        from aap_migration.client.aap_target_client import AAPTargetClient
+
+        ctx._source_client = AAPSourceClient(
+            config=ctx.config.source,
+            rate_limit=ctx.config.performance.rate_limit,
+            log_payloads=ctx.config.logging.log_payloads,
+            max_payload_size=ctx.config.logging.max_payload_size,
+            max_connections=ctx.config.performance.http_max_connections,
+            max_keepalive_connections=ctx.config.performance.http_max_keepalive_connections,
+        )
+        ctx._target_client = AAPTargetClient(
+            config=ctx.config.target,
+            rate_limit=ctx.config.performance.rate_limit,
+            log_payloads=ctx.config.logging.log_payloads,
+            max_payload_size=ctx.config.logging.max_payload_size,
+            max_connections=ctx.config.performance.http_max_connections,
+            max_keepalive_connections=ctx.config.performance.http_max_keepalive_connections,
+        )
     else:
         echo_info("Skipping prep phase (--skip-prep)")
         click.echo()
