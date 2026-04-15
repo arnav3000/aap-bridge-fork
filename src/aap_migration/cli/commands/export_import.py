@@ -119,10 +119,19 @@ def build_organization_filters(
         if skip_ldap_users:
             filters["ldap_dn__isnull"] = "true"
 
-    # 6. Global resources (no filter - export all)
-    # credential_types, execution_environments, labels, etc.
+    # 6. Global/Shared resources (no API filter - filtered during transform)
+    # - execution_environments: can be org-specific OR global (organization=null)
+    # - applications: can be org-specific OR global (organization=null)
+    # - credential_types: shared across all orgs (no organization field)
+    # - instance_groups: infrastructure resources (no organization field)
+    # - settings: system-wide settings (no organization field)
+    # - labels: shared across all orgs (no organization field)
+    #
+    # For resources with nullable organization field (execution_environments, applications),
+    # we need: (organization IN org_ids) OR (organization IS NULL)
+    # Since API doesn't support OR queries, we export ALL and filter in transform phase
     else:
-        # No filter - export all
+        # No filter - export all, filter during transform
         pass
 
     return filters
