@@ -37,6 +37,7 @@ class ParallelExportCoordinator:
         output_dir: Path,
         records_per_file: int = 1000,
         export_config: ExportConfig | None = None,
+        organization_filters: dict[str, int] | None = None,
     ):
         """Initialize parallel export coordinator.
 
@@ -44,9 +45,10 @@ class ParallelExportCoordinator:
             source_client: AAP source client
             migration_state: Migration state manager
             performance_config: Performance configuration
-            output_dir: Output directory for exports
+            output_dir: Path output directory for exports
             records_per_file: Maximum records per file
             export_config: Export configuration (for skip_dynamic_hosts, etc.)
+            organization_filters: Organization filters {org_name: org_id} for filtered export
         """
         self.source_client = source_client
         self.migration_state = migration_state
@@ -54,6 +56,7 @@ class ParallelExportCoordinator:
         self.output_dir = output_dir
         self.records_per_file = records_per_file
         self.export_config = export_config or ExportConfig()
+        self.organization_filters = organization_filters
         self.results: dict[str, dict[str, Any]] = {}
 
         # Lock for thread-safe state operations
@@ -156,6 +159,19 @@ class ParallelExportCoordinator:
 
             # Build filters for this resource type
             export_filters: dict[str, Any] = {}
+
+            # Add organization filters if specified
+            if self.organization_filters:
+                from aap_migration.cli.commands.export_import import build_organization_filters
+                org_filters = build_organization_filters(resource_type, self.organization_filters)
+                if org_filters:
+                    export_filters.update(org_filters)
+                    logger.info(
+                        "parallel_export_org_filter_applied",
+                        resource_type=resource_type,
+                        filters=org_filters,
+                    )
+
             if resource_type == "hosts" and self.export_config.skip_dynamic_hosts:
                 # API-level filtering: only export static hosts (not from dynamic inventory sources)
                 export_filters["inventory_sources__isnull"] = "true"
@@ -183,13 +199,28 @@ class ParallelExportCoordinator:
             mapping_batch_size = self.performance_config.mapping_batch_size
 
             iteration_count = 0
-            async for resource in exporter.export_parallel(
-                resource_type=resource_type,
-                endpoint=endpoint,
-                page_size=self.performance_config.batch_sizes.get(resource_type, 200),
-                max_concurrent_pages=self.performance_config.max_concurrent_pages,
-                filters=export_filters if export_filters else None,
-            ):
+
+            # Special handling for credentials with organization filters
+            # Use two-pass export (org credentials + global credentials)
+            if resource_type == "credentials" and self.organization_filters:
+                from aap_migration.cli.commands.export_import import export_credentials_with_globals
+                resource_iterator = export_credentials_with_globals(
+                    exporter,
+                    self.organization_filters,
+                    endpoint,
+                    self.performance_config.batch_sizes.get(resource_type, 200),
+                    self.performance_config.max_concurrent_pages,
+                )
+            else:
+                resource_iterator = exporter.export_parallel(
+                    resource_type=resource_type,
+                    endpoint=endpoint,
+                    page_size=self.performance_config.batch_sizes.get(resource_type, 200),
+                    max_concurrent_pages=self.performance_config.max_concurrent_pages,
+                    filters=export_filters if export_filters else None,
+                )
+
+            async for resource in resource_iterator:
                 # Yield control to event loop to prevent UI starvation
                 await asyncio.sleep(0)
 

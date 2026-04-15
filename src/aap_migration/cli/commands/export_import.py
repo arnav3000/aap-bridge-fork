@@ -682,6 +682,7 @@ def export(
                         output_dir=output,
                         records_per_file=records_per_file,
                         export_config=ctx.config.export,
+                        organization_filters=ctx.organization_filters,
                     )
 
                     # Create progress callback to update display
