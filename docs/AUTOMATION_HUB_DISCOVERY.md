@@ -39,13 +39,15 @@ Automation Hub is the content management system in Ansible Automation Platform t
 
 **AAP 2.4 Automation Hub:**
 ```
-https://<aap-2.4-host>/api/galaxy/pulp/api/v3/
+https://localhost:11443/api/galaxy/pulp/api/v3/
 ```
 
 **AAP 2.6 Automation Hub:**
 ```
-https://<aap-2.6-host>/api/galaxy/pulp/api/v3/
+https://localhost:10443/api/galaxy/pulp/api/v3/
 ```
+
+**Note:** Port 10443 is the actual AAP 2.6 Automation Hub port (verified)
 
 ### Primary API Endpoints (Pulp 3)
 
