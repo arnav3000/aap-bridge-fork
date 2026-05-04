@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 from typing import Optional
 
+from sqlalchemy.orm import Session
+
 from aap_migration.automation_hub.client import GalaxyAPIClient
 from aap_migration.automation_hub.exceptions import AutomationHubError
 from aap_migration.automation_hub.models import (
@@ -17,7 +19,6 @@ from aap_migration.automation_hub.models import (
     Repository,
     RemoteRegistry,
 )
-from aap_migration.db.session import Session
 from aap_migration.models import ExportRun, ResourceStatus
 from aap_migration.utils.logging import get_logger
 
