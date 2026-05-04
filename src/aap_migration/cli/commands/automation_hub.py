@@ -399,7 +399,7 @@ def hub_status(ctx, input: Path | None):
             ["Repositories", counts.get("repositories", 0)],
             ["Remotes", counts.get("remotes", 0)],
         ]
-        print_table(["Resource Type", "Count"], data)
+        print_table("Exported Resources", ["Resource Type", "Count"], data)
         echo_info("")
 
     # Show index files if available
@@ -501,44 +501,40 @@ def _display_import_stats(stats: dict):
     echo_info("=" * 60)
 
     # Namespaces
-    echo_info("Namespaces:")
     data = [
         ["Created", stats["namespaces"]["created"]],
         ["Skipped", stats["namespaces"]["skipped"]],
         ["Failed", stats["namespaces"]["failed"]],
         ["Total", stats["namespaces"]["total"]],
     ]
-    print_table(["Action", "Count"], data)
+    print_table("Namespaces", ["Action", "Count"], data)
     echo_info("")
 
     # Collections
-    echo_info("Collections:")
     data = [
         ["Uploaded", stats["collections"]["uploaded"]],
         ["Skipped", stats["collections"]["skipped"]],
         ["Failed", stats["collections"]["failed"]],
         ["Total", stats["collections"]["total"]],
     ]
-    print_table(["Action", "Count"], data)
+    print_table("Collections", ["Action", "Count"], data)
     echo_info("")
 
     # Repositories
-    echo_info("Repositories:")
     data = [
         ["Created", stats["repositories"]["created"]],
         ["Skipped", stats["repositories"]["skipped"]],
         ["Failed", stats["repositories"]["failed"]],
         ["Total", stats["repositories"]["total"]],
     ]
-    print_table(["Action", "Count"], data)
+    print_table("Repositories", ["Action", "Count"], data)
     echo_info("")
 
     # Remotes
-    echo_info("Remotes:")
     data = [
         ["Created", stats["remotes"]["created"]],
         ["Skipped", stats["remotes"]["skipped"]],
         ["Failed", stats["remotes"]["failed"]],
         ["Total", stats["remotes"]["total"]],
     ]
-    print_table(["Action", "Count"], data)
+    print_table("Remotes", ["Action", "Count"], data)
