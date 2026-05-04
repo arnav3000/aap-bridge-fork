@@ -59,6 +59,18 @@ class AutomationHubTransformer:
         self.transformed_collections = self.transform_collections()
         logger.info("transformed_collections", count=len(self.transformed_collections))
 
+        # Derive namespaces from collections if no explicit namespaces were exported
+        if not self.transformed_namespaces and self.transformed_collections:
+            logger.warning(
+                "no_explicit_namespaces_found",
+                message="Deriving namespaces from collection metadata",
+            )
+            self.transformed_namespaces = self._derive_namespaces_from_collections()
+            logger.info(
+                "namespaces_derived_from_collections",
+                count=len(self.transformed_namespaces),
+            )
+
         # Transform repositories
         self.transformed_repositories = self.transform_repositories()
         logger.info("transformed_repositories", count=len(self.transformed_repositories))
@@ -129,6 +141,39 @@ class AutomationHubTransformer:
         namespace.name = namespace.name.lower().strip()
 
         return namespace
+
+    def _derive_namespaces_from_collections(self) -> list[Namespace]:
+        """Derive namespace objects from collection metadata.
+
+        This is used when the source Hub has no explicit namespace objects
+        (e.g., when collections were synced from external sources like console.redhat.com).
+
+        Returns:
+            List of Namespace objects derived from collections
+        """
+        logger.info("deriving_namespaces_from_collections")
+
+        # Extract unique namespaces from collections
+        namespace_names = set()
+        for cv in self.transformed_collections:
+            if cv.namespace:
+                namespace_names.add(cv.namespace)
+
+        # Create minimal namespace objects
+        namespaces = []
+        for ns_name in sorted(namespace_names):
+            ns = Namespace(
+                name=ns_name,
+                company=None,  # Not available from collection metadata
+                description=f"Namespace for {ns_name} collections",
+                source_id=None,
+                target_id=None,
+            )
+            namespaces.append(ns)
+            logger.debug("namespace_derived", name=ns_name)
+
+        logger.info("namespaces_derived", count=len(namespaces))
+        return namespaces
 
     def transform_collections(self) -> list[CollectionVersion]:
         """Transform collection version data.
