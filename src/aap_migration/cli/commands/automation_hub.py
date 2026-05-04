@@ -79,17 +79,17 @@ def export_hub(ctx, output: Path | None, no_artifacts: bool):
     export_dir = output or Path("exports")
 
     # Validate configuration
-    if not ctx.config.get("automation_hub"):
+    if not ctx.config.automation_hub:
         echo_error("No automation_hub configuration found in config file")
         raise click.Abort()
 
-    hub_config = ctx.config["automation_hub"]
-    source_config = hub_config.get("source", {})
+    hub_config = ctx.config.automation_hub
+    source_config = hub_config.source
 
-    source_url = source_config.get("url")
-    source_token = source_config.get("token")
-    source_username = source_config.get("username")
-    source_password = source_config.get("password")
+    source_url = source_config.url
+    source_token = source_config.token
+    source_username = source_config.username
+    source_password = source_config.password
 
     # Validate authentication credentials
     if not source_url:
@@ -126,7 +126,7 @@ def export_hub(ctx, output: Path | None, no_artifacts: bool):
                 source_password=source_password,
                 export_dir=export_dir,
                 download_artifacts=download_artifacts,
-                verify_ssl=hub_config.get("verify_ssl", True),
+                verify_ssl=hub_config.verify_ssl,
             )
         )
 
@@ -208,17 +208,17 @@ def import_hub(ctx, input: Path | None, skip_existing: bool, no_artifacts: bool)
         raise click.Abort()
 
     # Validate configuration
-    if not ctx.config.get("automation_hub"):
+    if not ctx.config.automation_hub:
         echo_error("No automation_hub configuration found in config file")
         raise click.Abort()
 
-    hub_config = ctx.config["automation_hub"]
-    target_config = hub_config.get("target", {})
+    hub_config = ctx.config.automation_hub
+    target_config = hub_config.target
 
-    target_url = target_config.get("url")
-    target_token = target_config.get("token")
-    target_username = target_config.get("username")
-    target_password = target_config.get("password")
+    target_url = target_config.url
+    target_token = target_config.token
+    target_username = target_config.username
+    target_password = target_config.password
 
     # Validate authentication credentials
     if not target_url:
@@ -257,7 +257,7 @@ def import_hub(ctx, input: Path | None, skip_existing: bool, no_artifacts: bool)
                 export_dir=export_dir,
                 skip_existing=skip_existing,
                 upload_artifacts=upload_artifacts,
-                verify_ssl=hub_config.get("verify_ssl", True),
+                verify_ssl=hub_config.verify_ssl,
             )
         )
 
