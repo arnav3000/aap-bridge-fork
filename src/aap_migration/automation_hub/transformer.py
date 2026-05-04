@@ -160,11 +160,15 @@ class AutomationHubTransformer:
                 namespace_names.add(cv.namespace)
 
         # Create minimal namespace objects
+        # API requires non-null values for company, email, avatar_url, resources
         namespaces = []
         for ns_name in sorted(namespace_names):
             ns = Namespace(
                 name=ns_name,
-                company=None,  # Not available from collection metadata
+                company="",  # Empty string instead of None (API requirement)
+                email="",    # Empty string instead of None (API requirement)
+                avatar_url="",  # Empty string instead of None (API requirement)
+                resources="",   # Empty string instead of None (API requirement)
                 description=f"Namespace for {ns_name} collections",
                 source_id=None,
                 target_id=None,
