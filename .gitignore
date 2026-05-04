@@ -201,6 +201,9 @@ schemas/
 xformed/
 sql/
 tests/
+!tests/component_mapping.py
+!tests/select_tests.py
+!tests/scripts/
 migrations/
 scripts/
 
