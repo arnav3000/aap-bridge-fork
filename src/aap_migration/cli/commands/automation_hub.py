@@ -25,8 +25,6 @@ from aap_migration.cli.utils import (
     echo_warning,
     print_table,
 )
-from aap_migration.migration.database import get_session
-from aap_migration.models import ExportRun, ImportRun
 from aap_migration.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -118,12 +116,6 @@ def export_hub(ctx, output: Path | None, no_artifacts: bool):
     echo_info(f"Download artifacts: {'Yes' if download_artifacts else 'No'}")
     echo_info("")
 
-    # Create database session and export run
-    session = get_session()
-    export_run = ExportRun(status="running")
-    session.add(export_run)
-    session.commit()
-
     try:
         # Run async export
         asyncio.run(
@@ -133,15 +125,10 @@ def export_hub(ctx, output: Path | None, no_artifacts: bool):
                 source_username=source_username,
                 source_password=source_password,
                 export_dir=export_dir,
-                session=session,
-                export_run=export_run,
                 download_artifacts=download_artifacts,
                 verify_ssl=hub_config.get("verify_ssl", True),
             )
         )
-
-        export_run.status = "completed"
-        session.commit()
 
         echo_success("✓ Export completed successfully")
         echo_info(f"  Exported to: {export_dir / 'automation_hub'}")
@@ -161,13 +148,8 @@ def export_hub(ctx, output: Path | None, no_artifacts: bool):
             echo_info(f"  Remotes:      {counts.get('remotes', 0)}")
 
     except Exception as e:
-        export_run.status = "failed"
-        session.commit()
         echo_error(f"Export failed: {e}")
         raise
-
-    finally:
-        session.close()
 
 
 @hub.command(name="import")
@@ -264,12 +246,6 @@ def import_hub(ctx, input: Path | None, skip_existing: bool, no_artifacts: bool)
     echo_info(f"Upload artifacts: {'Yes' if upload_artifacts else 'No'}")
     echo_info("")
 
-    # Create database session and import run
-    session = get_session()
-    import_run = ImportRun(status="running")
-    session.add(import_run)
-    session.commit()
-
     try:
         # Run async import
         stats = asyncio.run(
@@ -279,16 +255,11 @@ def import_hub(ctx, input: Path | None, skip_existing: bool, no_artifacts: bool)
                 target_username=target_username,
                 target_password=target_password,
                 export_dir=export_dir,
-                session=session,
-                import_run=import_run,
                 skip_existing=skip_existing,
                 upload_artifacts=upload_artifacts,
                 verify_ssl=hub_config.get("verify_ssl", True),
             )
         )
-
-        import_run.status = "completed"
-        session.commit()
 
         echo_success("✓ Import completed successfully")
         echo_info("")
@@ -297,13 +268,8 @@ def import_hub(ctx, input: Path | None, skip_existing: bool, no_artifacts: bool)
         _display_import_stats(stats)
 
     except Exception as e:
-        import_run.status = "failed"
-        session.commit()
         echo_error(f"Import failed: {e}")
         raise
-
-    finally:
-        session.close()
 
 
 @hub.command(name="migrate")
@@ -481,8 +447,6 @@ async def _run_export(
     source_username: Optional[str],
     source_password: Optional[str],
     export_dir: Path,
-    session,
-    export_run: ExportRun,
     download_artifacts: bool,
     verify_ssl: bool,
 ):
@@ -490,8 +454,6 @@ async def _run_export(
     exporter = AutomationHubExporter(
         source_url=source_url,
         export_dir=export_dir,
-        session=session,
-        export_run=export_run,
         source_token=source_token,
         source_username=source_username,
         source_password=source_password,
@@ -508,8 +470,6 @@ async def _run_import(
     target_username: Optional[str],
     target_password: Optional[str],
     export_dir: Path,
-    session,
-    import_run: ImportRun,
     skip_existing: bool,
     upload_artifacts: bool,
     verify_ssl: bool,
@@ -522,8 +482,6 @@ async def _run_import(
     importer = AutomationHubImporter(
         target_url=target_url,
         export_dir=export_dir,
-        session=session,
-        import_run=import_run,
         target_token=target_token,
         target_username=target_username,
         target_password=target_password,

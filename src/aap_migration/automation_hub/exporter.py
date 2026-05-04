@@ -9,8 +9,6 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from sqlalchemy.orm import Session
-
 from aap_migration.automation_hub.client import GalaxyAPIClient
 from aap_migration.automation_hub.exceptions import AutomationHubError
 from aap_migration.automation_hub.models import (
@@ -19,7 +17,6 @@ from aap_migration.automation_hub.models import (
     Repository,
     RemoteRegistry,
 )
-from aap_migration.models import ExportRun, ResourceStatus
 from aap_migration.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -32,8 +29,6 @@ class AutomationHubExporter:
         self,
         source_url: str,
         export_dir: Path,
-        session: Session,
-        export_run: ExportRun,
         source_token: Optional[str] = None,
         source_username: Optional[str] = None,
         source_password: Optional[str] = None,
@@ -45,8 +40,6 @@ class AutomationHubExporter:
         Args:
             source_url: Source Automation Hub URL
             export_dir: Directory to save exports
-            session: Database session
-            export_run: Export run tracker
             source_token: Authentication token (AAP 2.6)
             source_username: Username for basic auth (AAP 2.4)
             source_password: Password for basic auth (AAP 2.4)
@@ -58,8 +51,6 @@ class AutomationHubExporter:
         self.source_username = source_username
         self.source_password = source_password
         self.export_dir = export_dir
-        self.session = session
-        self.export_run = export_run
         self.verify_ssl = verify_ssl
         self.download_artifacts = download_artifacts
 

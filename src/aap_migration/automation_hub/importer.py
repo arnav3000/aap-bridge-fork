@@ -8,8 +8,6 @@ import asyncio
 from pathlib import Path
 from typing import Optional
 
-from sqlalchemy.orm import Session
-
 from aap_migration.automation_hub.client import GalaxyAPIClient
 from aap_migration.automation_hub.exceptions import (
     GalaxyAPIError,
@@ -23,7 +21,6 @@ from aap_migration.automation_hub.models import (
     RemoteRegistry,
 )
 from aap_migration.automation_hub.transformer import AutomationHubTransformer
-from aap_migration.models import ImportRun, IDMapping, ResourceStatus
 from aap_migration.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -36,8 +33,6 @@ class AutomationHubImporter:
         self,
         target_url: str,
         export_dir: Path,
-        session: Session,
-        import_run: ImportRun,
         target_token: Optional[str] = None,
         target_username: Optional[str] = None,
         target_password: Optional[str] = None,
@@ -50,8 +45,6 @@ class AutomationHubImporter:
         Args:
             target_url: Target Automation Hub URL
             export_dir: Directory containing exported data
-            session: Database session
-            import_run: Import run tracker
             target_token: Authentication token (AAP 2.6)
             target_username: Username for basic auth (AAP 2.4)
             target_password: Password for basic auth (AAP 2.4)
@@ -64,8 +57,6 @@ class AutomationHubImporter:
         self.target_username = target_username
         self.target_password = target_password
         self.export_dir = export_dir
-        self.session = session
-        self.import_run = import_run
         self.verify_ssl = verify_ssl
         self.skip_existing = skip_existing
         self.upload_artifacts = upload_artifacts
@@ -174,28 +165,11 @@ class AutomationHubImporter:
                     if exists:
                         logger.info("namespace_already_exists", name=ns.name)
                         self.stats["namespaces"]["skipped"] += 1
-
-                        # Still fetch and track the target ID
-                        existing_ns = await self.client.get_namespace(ns.name)
-                        self._save_id_mapping(
-                            resource_type="namespace",
-                            source_id=ns.source_id,
-                            target_id=existing_ns.target_id,
-                            name=ns.name,
-                        )
                         continue
 
                 # Create namespace
                 created = await self.client.create_namespace(ns)
                 self.stats["namespaces"]["created"] += 1
-
-                # Save ID mapping
-                self._save_id_mapping(
-                    resource_type="namespace",
-                    source_id=ns.source_id,
-                    target_id=created.target_id,
-                    name=ns.name,
-                )
 
                 logger.info(
                     "namespace_created",
@@ -275,16 +249,6 @@ class AutomationHubImporter:
 
                 self.stats["collections"]["uploaded"] += 1
 
-                # Save ID mapping if available
-                if "id" in result or "pulp_href" in result:
-                    target_id = result.get("id") or result.get("pulp_href")
-                    self._save_id_mapping(
-                        resource_type="collection_version",
-                        source_id=cv.source_id,
-                        target_id=target_id,
-                        name=cv.full_name,
-                    )
-
                 logger.info(
                     "collection_uploaded",
                     fqn=cv.fqn,
@@ -325,28 +289,11 @@ class AutomationHubImporter:
                     if any(r.name == repo.name for r in existing_repos):
                         logger.info("repository_already_exists", name=repo.name)
                         self.stats["repositories"]["skipped"] += 1
-
-                        # Save ID mapping for existing repo
-                        existing = next(r for r in existing_repos if r.name == repo.name)
-                        self._save_id_mapping(
-                            resource_type="repository",
-                            source_id=repo.source_id,
-                            target_id=existing.pulp_href,
-                            name=repo.name,
-                        )
                         continue
 
                 # Create repository
                 created = await self.client.create_repository(repo)
                 self.stats["repositories"]["created"] += 1
-
-                # Save ID mapping
-                self._save_id_mapping(
-                    resource_type="repository",
-                    source_id=repo.source_id,
-                    target_id=created.pulp_href,
-                    name=repo.name,
-                )
 
                 logger.info(
                     "repository_created",
@@ -385,30 +332,11 @@ class AutomationHubImporter:
                     if any(r.name == remote.name for r in existing_remotes):
                         logger.info("remote_already_exists", name=remote.name)
                         self.stats["remotes"]["skipped"] += 1
-
-                        # Save ID mapping for existing remote
-                        existing = next(
-                            r for r in existing_remotes if r.name == remote.name
-                        )
-                        self._save_id_mapping(
-                            resource_type="remote",
-                            source_id=remote.source_id,
-                            target_id=existing.pulp_href,
-                            name=remote.name,
-                        )
                         continue
 
                 # Create remote
                 created = await self.client.create_remote(remote)
                 self.stats["remotes"]["created"] += 1
-
-                # Save ID mapping
-                self._save_id_mapping(
-                    resource_type="remote",
-                    source_id=remote.source_id,
-                    target_id=created.pulp_href,
-                    name=remote.name,
-                )
 
                 logger.info(
                     "remote_created",
@@ -432,49 +360,6 @@ class AutomationHubImporter:
                     name=remote.name,
                     error=str(e),
                 )
-
-    def _save_id_mapping(
-        self,
-        resource_type: str,
-        source_id: Optional[str],
-        target_id: Optional[str],
-        name: str,
-    ):
-        """Save source-to-target ID mapping.
-
-        Args:
-            resource_type: Type of resource (namespace, collection_version, etc.)
-            source_id: Source resource ID
-            target_id: Target resource ID
-            name: Resource name for reference
-        """
-        if not source_id or not target_id:
-            logger.warning(
-                "incomplete_id_mapping",
-                resource_type=resource_type,
-                name=name,
-                source_id=source_id,
-                target_id=target_id,
-            )
-            return
-
-        mapping = IDMapping(
-            resource_type=resource_type,
-            source_id=str(source_id),
-            target_id=str(target_id),
-            import_run_id=self.import_run.id,
-        )
-
-        self.session.add(mapping)
-        self.session.commit()
-
-        logger.debug(
-            "id_mapping_saved",
-            resource_type=resource_type,
-            name=name,
-            source_id=source_id,
-            target_id=target_id,
-        )
 
     def get_import_stats(self) -> dict:
         """Get import statistics.
