@@ -19,6 +19,9 @@ from aap_migration.automation_hub.models import (
     CollectionVersion,
     Repository,
     RemoteRegistry,
+    ExecutionEnvironment,
+    ContainerRepository,
+    ContainerRemoteRegistry,
 )
 from aap_migration.automation_hub.exporter import AutomationHubExporter
 from aap_migration.automation_hub.transformer import AutomationHubTransformer
@@ -43,4 +46,7 @@ __all__ = [
     "CollectionVersion",
     "Repository",
     "RemoteRegistry",
+    "ExecutionEnvironment",
+    "ContainerRepository",
+    "ContainerRemoteRegistry",
 ]

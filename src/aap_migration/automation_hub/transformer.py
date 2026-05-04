@@ -13,6 +13,9 @@ from aap_migration.automation_hub.models import (
     CollectionVersion,
     Repository,
     RemoteRegistry,
+    ExecutionEnvironment,
+    ContainerRepository,
+    ContainerRemoteRegistry,
 )
 from aap_migration.utils.logging import get_logger
 
@@ -36,12 +39,18 @@ class AutomationHubTransformer:
         self.artifacts_dir = self.hub_dir / "artifacts"
         self.repositories_dir = self.hub_dir / "repositories"
         self.remotes_dir = self.hub_dir / "remotes"
+        self.execution_environments_dir = self.hub_dir / "execution_environments"
+        self.container_repositories_dir = self.hub_dir / "container_repositories"
+        self.container_remotes_dir = self.hub_dir / "container_remotes"
 
         # Transformation results
         self.transformed_namespaces: list[Namespace] = []
         self.transformed_collections: list[CollectionVersion] = []
         self.transformed_repositories: list[Repository] = []
         self.transformed_remotes: list[RemoteRegistry] = []
+        self.transformed_execution_environments: list[ExecutionEnvironment] = []
+        self.transformed_container_repos: list[ContainerRepository] = []
+        self.transformed_container_remotes: list[ContainerRemoteRegistry] = []
 
     def transform_all(self):
         """Transform all exported data.
@@ -79,12 +88,36 @@ class AutomationHubTransformer:
         self.transformed_remotes = self.transform_remotes()
         logger.info("transformed_remotes", count=len(self.transformed_remotes))
 
+        # Transform container infrastructure
+        self.transformed_container_repos = self.transform_container_repositories()
+        logger.info(
+            "transformed_container_repos", count=len(self.transformed_container_repos)
+        )
+
+        self.transformed_container_remotes = self.transform_container_remotes()
+        logger.info(
+            "transformed_container_remotes",
+            count=len(self.transformed_container_remotes),
+        )
+
+        # Transform execution environments
+        self.transformed_execution_environments = (
+            self.transform_execution_environments()
+        )
+        logger.info(
+            "transformed_execution_environments",
+            count=len(self.transformed_execution_environments),
+        )
+
         logger.info(
             "hub_transformation_completed",
             namespaces=len(self.transformed_namespaces),
             collections=len(self.transformed_collections),
             repositories=len(self.transformed_repositories),
             remotes=len(self.transformed_remotes),
+            container_repositories=len(self.transformed_container_repos),
+            container_remotes=len(self.transformed_container_remotes),
+            execution_environments=len(self.transformed_execution_environments),
         )
 
     def transform_namespaces(self) -> list[Namespace]:
@@ -373,6 +406,168 @@ class AutomationHubTransformer:
 
         return remote
 
+    def transform_container_repositories(self) -> list[ContainerRepository]:
+        """Transform container repository data.
+
+        Returns:
+            List of transformed ContainerRepository objects
+        """
+        logger.info("transforming_container_repositories")
+
+        container_repos = []
+
+        # Read all container repository JSON files
+        for repo_file in self.container_repositories_dir.glob("*.json"):
+            if repo_file.name == "_index.json":
+                continue
+
+            with open(repo_file) as f:
+                data = json.load(f)
+
+            repo = ContainerRepository.from_api(data)
+
+            # Apply transformations
+            repo = self._transform_container_repository(repo)
+
+            container_repos.append(repo)
+            logger.debug("container_repository_transformed", name=repo.name)
+
+        logger.info("container_repositories_transformed", count=len(container_repos))
+        return container_repos
+
+    def _transform_container_repository(
+        self, repository: ContainerRepository
+    ) -> ContainerRepository:
+        """Apply container repository transformations.
+
+        Args:
+            repository: Source container repository
+
+        Returns:
+            Transformed container repository
+        """
+        # Clear target_id and pulp_href (will be created fresh)
+        repository.target_id = None
+        repository.pulp_href = None
+        repository.latest_version_href = None
+
+        # Clear remote link (will be relinked after remote creation)
+        repository.remote = None
+
+        # Validate required fields
+        if not repository.name:
+            raise ValueError("Container repository must have a name")
+
+        return repository
+
+    def transform_container_remotes(self) -> list[ContainerRemoteRegistry]:
+        """Transform container remote registry data.
+
+        Returns:
+            List of transformed ContainerRemoteRegistry objects
+        """
+        logger.info("transforming_container_remotes")
+
+        container_remotes = []
+
+        # Read all container remote JSON files
+        for remote_file in self.container_remotes_dir.glob("*.json"):
+            if remote_file.name == "_index.json":
+                continue
+
+            with open(remote_file) as f:
+                data = json.load(f)
+
+            remote = ContainerRemoteRegistry.from_api(data)
+
+            # Apply transformations
+            remote = self._transform_container_remote(remote)
+
+            container_remotes.append(remote)
+            logger.debug("container_remote_transformed", name=remote.name)
+
+        logger.info("container_remotes_transformed", count=len(container_remotes))
+        return container_remotes
+
+    def _transform_container_remote(
+        self, remote: ContainerRemoteRegistry
+    ) -> ContainerRemoteRegistry:
+        """Apply container remote registry transformations.
+
+        Args:
+            remote: Source container remote
+
+        Returns:
+            Transformed container remote
+        """
+        # Clear target_id and pulp_href (will be created fresh)
+        remote.target_id = None
+        remote.pulp_href = None
+
+        # Validate required fields
+        if not remote.name or not remote.url:
+            raise ValueError("Container remote must have name and URL")
+
+        # Warn about credentials (should be handled via Vault)
+        if remote.password:
+            logger.warning(
+                "container_remote_has_credentials",
+                name=remote.name,
+                message="Credentials should be managed via Vault in production",
+            )
+
+        return remote
+
+    def transform_execution_environments(self) -> list[ExecutionEnvironment]:
+        """Transform execution environment data.
+
+        Returns:
+            List of transformed ExecutionEnvironment objects
+        """
+        logger.info("transforming_execution_environments")
+
+        ees = []
+
+        # Read all execution environment JSON files
+        for ee_file in self.execution_environments_dir.glob("*.json"):
+            if ee_file.name == "_index.json":
+                continue
+
+            with open(ee_file) as f:
+                data = json.load(f)
+
+            ee = ExecutionEnvironment.from_api(data)
+
+            # Apply transformations
+            ee = self._transform_execution_environment(ee)
+
+            ees.append(ee)
+            logger.debug("execution_environment_transformed", name=ee.full_name)
+
+        logger.info("execution_environments_transformed", count=len(ees))
+        return ees
+
+    def _transform_execution_environment(
+        self, ee: ExecutionEnvironment
+    ) -> ExecutionEnvironment:
+        """Apply execution environment transformations.
+
+        Args:
+            ee: Source execution environment
+
+        Returns:
+            Transformed execution environment
+        """
+        # Clear target_id and pulp_href (will be created fresh)
+        ee.target_id = None
+        ee.pulp_href = None
+
+        # Validate required fields
+        if not ee.name or not ee.namespace:
+            raise ValueError(f"EE missing required fields: {ee.full_name}")
+
+        return ee
+
     def get_transformation_summary(self) -> dict:
         """Get summary of transformation results.
 
@@ -400,5 +595,17 @@ class AutomationHubTransformer:
             "remotes": {
                 "total": len(self.transformed_remotes),
                 "items": [remote.name for remote in self.transformed_remotes],
+            },
+            "container_repositories": {
+                "total": len(self.transformed_container_repos),
+                "items": [repo.name for repo in self.transformed_container_repos],
+            },
+            "container_remotes": {
+                "total": len(self.transformed_container_remotes),
+                "items": [remote.name for remote in self.transformed_container_remotes],
+            },
+            "execution_environments": {
+                "total": len(self.transformed_execution_environments),
+                "items": [ee.full_name for ee in self.transformed_execution_environments],
             },
         }

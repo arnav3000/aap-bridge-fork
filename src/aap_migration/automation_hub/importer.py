@@ -19,6 +19,9 @@ from aap_migration.automation_hub.models import (
     CollectionVersion,
     Repository,
     RemoteRegistry,
+    ExecutionEnvironment,
+    ContainerRepository,
+    ContainerRemoteRegistry,
 )
 from aap_migration.automation_hub.transformer import AutomationHubTransformer
 from aap_migration.utils.logging import get_logger
@@ -70,6 +73,9 @@ class AutomationHubImporter:
             "collections": {"uploaded": 0, "skipped": 0, "failed": 0},
             "repositories": {"created": 0, "skipped": 0, "failed": 0},
             "remotes": {"created": 0, "skipped": 0, "failed": 0},
+            "container_repositories": {"created": 0, "skipped": 0, "failed": 0},
+            "container_remotes": {"created": 0, "skipped": 0, "failed": 0},
+            "execution_environments": {"created": 0, "skipped": 0, "failed": 0},
         }
 
     async def connect(self):
@@ -134,6 +140,32 @@ class AutomationHubImporter:
                 created=self.stats["remotes"]["created"],
                 skipped=self.stats["remotes"]["skipped"],
                 failed=self.stats["remotes"]["failed"],
+            )
+
+            # Import container infrastructure
+            await self.import_container_repositories()
+            logger.info(
+                "imported_container_repositories",
+                created=self.stats["container_repositories"]["created"],
+                skipped=self.stats["container_repositories"]["skipped"],
+                failed=self.stats["container_repositories"]["failed"],
+            )
+
+            await self.import_container_remotes()
+            logger.info(
+                "imported_container_remotes",
+                created=self.stats["container_remotes"]["created"],
+                skipped=self.stats["container_remotes"]["skipped"],
+                failed=self.stats["container_remotes"]["failed"],
+            )
+
+            # Import execution environments
+            await self.import_execution_environments()
+            logger.info(
+                "imported_execution_environments",
+                created=self.stats["execution_environments"]["created"],
+                skipped=self.stats["execution_environments"]["skipped"],
+                failed=self.stats["execution_environments"]["failed"],
             )
 
             # Import collections last (requires namespaces)
@@ -361,6 +393,149 @@ class AutomationHubImporter:
                     error=str(e),
                 )
 
+    async def import_container_repositories(self):
+        """Import container repositories into target."""
+        logger.info(
+            "importing_container_repositories",
+            count=len(self.transformer.transformed_container_repos),
+        )
+
+        for repo in self.transformer.transformed_container_repos:
+            try:
+                # Check if container repository already exists by name
+                if self.skip_existing:
+                    existing_repos = await self.client.list_container_repositories()
+                    if any(r.name == repo.name for r in existing_repos):
+                        logger.info("container_repository_already_exists", name=repo.name)
+                        self.stats["container_repositories"]["skipped"] += 1
+                        continue
+
+                # Create container repository
+                created = await self.client.create_container_repository(repo)
+                self.stats["container_repositories"]["created"] += 1
+
+                logger.info(
+                    "container_repository_created",
+                    name=repo.name,
+                    href=created.pulp_href,
+                )
+
+            except GalaxyAPIError as e:
+                self.stats["container_repositories"]["failed"] += 1
+                logger.error(
+                    "container_repository_creation_failed",
+                    name=repo.name,
+                    error=str(e),
+                    status_code=e.status_code,
+                )
+
+            except Exception as e:
+                self.stats["container_repositories"]["failed"] += 1
+                logger.error(
+                    "container_repository_import_error",
+                    name=repo.name,
+                    error=str(e),
+                )
+
+    async def import_container_remotes(self):
+        """Import container remote registries into target."""
+        logger.info(
+            "importing_container_remotes",
+            count=len(self.transformer.transformed_container_remotes),
+        )
+
+        for remote in self.transformer.transformed_container_remotes:
+            try:
+                # Check if container remote already exists by name
+                if self.skip_existing:
+                    existing_remotes = await self.client.list_container_remotes()
+                    if any(r.name == remote.name for r in existing_remotes):
+                        logger.info("container_remote_already_exists", name=remote.name)
+                        self.stats["container_remotes"]["skipped"] += 1
+                        continue
+
+                # Create container remote
+                created = await self.client.create_container_remote(remote)
+                self.stats["container_remotes"]["created"] += 1
+
+                logger.info(
+                    "container_remote_created",
+                    name=remote.name,
+                    href=created.pulp_href,
+                )
+
+            except GalaxyAPIError as e:
+                self.stats["container_remotes"]["failed"] += 1
+                logger.error(
+                    "container_remote_creation_failed",
+                    name=remote.name,
+                    error=str(e),
+                    status_code=e.status_code,
+                )
+
+            except Exception as e:
+                self.stats["container_remotes"]["failed"] += 1
+                logger.error(
+                    "container_remote_import_error",
+                    name=remote.name,
+                    error=str(e),
+                )
+
+    async def import_execution_environments(self):
+        """Import execution environments into target.
+
+        Note: This creates the repository structure only. Container image
+        layers must be pushed separately using podman/docker.
+        """
+        logger.info(
+            "importing_execution_environments",
+            count=len(self.transformer.transformed_execution_environments),
+        )
+
+        for ee in self.transformer.transformed_execution_environments:
+            try:
+                # Check if EE already exists by name
+                if self.skip_existing:
+                    existing_ees = await self.client.list_execution_environments()
+                    if any(e.full_name == ee.full_name for e in existing_ees):
+                        logger.info("execution_environment_already_exists", name=ee.full_name)
+                        self.stats["execution_environments"]["skipped"] += 1
+                        continue
+
+                # Create EE (creates repository structure only)
+                created = await self.client.create_execution_environment(ee)
+                self.stats["execution_environments"]["created"] += 1
+
+                logger.info(
+                    "execution_environment_created",
+                    name=ee.full_name,
+                    href=created.pulp_href,
+                )
+
+                # NOTE: Image layers must be pushed separately via podman/docker
+                logger.info(
+                    "ee_image_push_required",
+                    name=ee.full_name,
+                    message=f"Push image with: podman push <image> {self.target_url.rstrip('/')}/{ee.full_name}:<tag>",
+                )
+
+            except GalaxyAPIError as e:
+                self.stats["execution_environments"]["failed"] += 1
+                logger.error(
+                    "execution_environment_creation_failed",
+                    name=ee.full_name,
+                    error=str(e),
+                    status_code=e.status_code,
+                )
+
+            except Exception as e:
+                self.stats["execution_environments"]["failed"] += 1
+                logger.error(
+                    "execution_environment_import_error",
+                    name=ee.full_name,
+                    error=str(e),
+                )
+
     def get_import_stats(self) -> dict:
         """Get import statistics.
 
@@ -391,5 +566,23 @@ class AutomationHubImporter:
                 "skipped": self.stats["remotes"]["skipped"],
                 "failed": self.stats["remotes"]["failed"],
                 "total": sum(self.stats["remotes"].values()),
+            },
+            "container_repositories": {
+                "created": self.stats["container_repositories"]["created"],
+                "skipped": self.stats["container_repositories"]["skipped"],
+                "failed": self.stats["container_repositories"]["failed"],
+                "total": sum(self.stats["container_repositories"].values()),
+            },
+            "container_remotes": {
+                "created": self.stats["container_remotes"]["created"],
+                "skipped": self.stats["container_remotes"]["skipped"],
+                "failed": self.stats["container_remotes"]["failed"],
+                "total": sum(self.stats["container_remotes"].values()),
+            },
+            "execution_environments": {
+                "created": self.stats["execution_environments"]["created"],
+                "skipped": self.stats["execution_environments"]["skipped"],
+                "failed": self.stats["execution_environments"]["failed"],
+                "total": sum(self.stats["execution_environments"].values()),
             },
         }

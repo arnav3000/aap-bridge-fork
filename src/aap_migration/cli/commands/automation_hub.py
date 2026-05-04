@@ -538,3 +538,40 @@ def _display_import_stats(stats: dict):
         ["Total", stats["remotes"]["total"]],
     ]
     print_table("Remotes", ["Action", "Count"], data)
+    echo_info("")
+
+    # Container Repositories
+    data = [
+        ["Created", stats["container_repositories"]["created"]],
+        ["Skipped", stats["container_repositories"]["skipped"]],
+        ["Failed", stats["container_repositories"]["failed"]],
+        ["Total", stats["container_repositories"]["total"]],
+    ]
+    print_table("Container Repositories", ["Action", "Count"], data)
+    echo_info("")
+
+    # Container Remotes
+    data = [
+        ["Created", stats["container_remotes"]["created"]],
+        ["Skipped", stats["container_remotes"]["skipped"]],
+        ["Failed", stats["container_remotes"]["failed"]],
+        ["Total", stats["container_remotes"]["total"]],
+    ]
+    print_table("Container Remotes", ["Action", "Count"], data)
+    echo_info("")
+
+    # Execution Environments
+    data = [
+        ["Created", stats["execution_environments"]["created"]],
+        ["Skipped", stats["execution_environments"]["skipped"]],
+        ["Failed", stats["execution_environments"]["failed"]],
+        ["Total", stats["execution_environments"]["total"]],
+    ]
+    print_table("Execution Environments", ["Action", "Count"], data)
+    echo_info("")
+
+    # Add note about EE image pushing
+    if stats["execution_environments"]["created"] > 0:
+        echo_warning("NOTE: EE repository structures created.")
+        echo_warning("   Image layers must be pushed separately:")
+        echo_warning("   podman push <source-image> <target-hub>/<namespace>/<name>:<tag>")

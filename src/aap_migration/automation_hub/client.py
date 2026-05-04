@@ -515,6 +515,168 @@ class GalaxyAPIClient:
         return created
 
     # =========================================================================
+    # Execution Environment Operations
+    # =========================================================================
+
+    async def list_execution_environments(self) -> list["ExecutionEnvironment"]:
+        """List all execution environments.
+
+        Returns:
+            List of ExecutionEnvironment objects
+
+        Raises:
+            GalaxyAPIError: If request fails
+        """
+        from aap_migration.automation_hub.models import ExecutionEnvironment
+
+        logger.info("listing_execution_environments")
+
+        url = "/api/galaxy/_ui/v1/execution-environments/repositories/"
+        results = await self._paginated_get(url)
+
+        environments = []
+        for data in results:
+            ee = ExecutionEnvironment.from_api(data)
+            environments.append(ee)
+
+        logger.info("execution_environments_listed", count=len(environments))
+        return environments
+
+    async def create_execution_environment(
+        self, ee: "ExecutionEnvironment"
+    ) -> "ExecutionEnvironment":
+        """Create an execution environment.
+
+        Note: This creates the repository structure, but images must be
+        pushed separately using podman/docker push.
+
+        Args:
+            ee: ExecutionEnvironment object to create
+
+        Returns:
+            Created ExecutionEnvironment object
+
+        Raises:
+            GalaxyAPIError: If creation fails
+        """
+        from aap_migration.automation_hub.models import ExecutionEnvironment
+
+        logger.info("creating_execution_environment", name=ee.full_name)
+
+        url = "/api/galaxy/_ui/v1/execution-environments/repositories/"
+        data = await self._post(url, json=ee.to_dict())
+
+        created = ExecutionEnvironment.from_api(data)
+        logger.info("execution_environment_created", name=created.full_name)
+        return created
+
+    # =========================================================================
+    # Container Repository Operations
+    # =========================================================================
+
+    async def list_container_repositories(self) -> list["ContainerRepository"]:
+        """List all container repositories.
+
+        Returns:
+            List of ContainerRepository objects
+
+        Raises:
+            GalaxyAPIError: If request fails
+        """
+        from aap_migration.automation_hub.models import ContainerRepository
+
+        logger.info("listing_container_repositories")
+
+        url = "/api/galaxy/pulp/api/v3/repositories/container/container/"
+        results = await self._paginated_get(url)
+
+        repositories = []
+        for data in results:
+            repo = ContainerRepository.from_api(data)
+            repositories.append(repo)
+
+        logger.info("container_repositories_listed", count=len(repositories))
+        return repositories
+
+    async def create_container_repository(
+        self, repo: "ContainerRepository"
+    ) -> "ContainerRepository":
+        """Create a container repository.
+
+        Args:
+            repo: ContainerRepository object to create
+
+        Returns:
+            Created ContainerRepository object
+
+        Raises:
+            GalaxyAPIError: If creation fails
+        """
+        from aap_migration.automation_hub.models import ContainerRepository
+
+        logger.info("creating_container_repository", name=repo.name)
+
+        url = "/api/galaxy/pulp/api/v3/repositories/container/container/"
+        data = await self._post(url, json=repo.to_dict())
+
+        created = ContainerRepository.from_api(data)
+        logger.info("container_repository_created", name=created.name, href=created.pulp_href)
+        return created
+
+    # =========================================================================
+    # Container Remote Registry Operations
+    # =========================================================================
+
+    async def list_container_remotes(self) -> list["ContainerRemoteRegistry"]:
+        """List all container remote registries.
+
+        Returns:
+            List of ContainerRemoteRegistry objects
+
+        Raises:
+            GalaxyAPIError: If request fails
+        """
+        from aap_migration.automation_hub.models import ContainerRemoteRegistry
+
+        logger.info("listing_container_remotes")
+
+        url = "/api/galaxy/pulp/api/v3/remotes/container/container/"
+        results = await self._paginated_get(url)
+
+        remotes = []
+        for data in results:
+            remote = ContainerRemoteRegistry.from_api(data)
+            remotes.append(remote)
+
+        logger.info("container_remotes_listed", count=len(remotes))
+        return remotes
+
+    async def create_container_remote(
+        self, remote: "ContainerRemoteRegistry"
+    ) -> "ContainerRemoteRegistry":
+        """Create a container remote registry.
+
+        Args:
+            remote: ContainerRemoteRegistry object to create
+
+        Returns:
+            Created ContainerRemoteRegistry object
+
+        Raises:
+            GalaxyAPIError: If creation fails
+        """
+        from aap_migration.automation_hub.models import ContainerRemoteRegistry
+
+        logger.info("creating_container_remote", name=remote.name)
+
+        url = "/api/galaxy/pulp/api/v3/remotes/container/container/"
+        data = await self._post(url, json=remote.to_dict())
+
+        created = ContainerRemoteRegistry.from_api(data)
+        logger.info("container_remote_created", name=created.name, href=created.pulp_href)
+        return created
+
+    # =========================================================================
     # Pulp Task Operations
     # =========================================================================
 

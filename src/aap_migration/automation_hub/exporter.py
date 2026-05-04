@@ -16,6 +16,9 @@ from aap_migration.automation_hub.models import (
     CollectionVersion,
     Repository,
     RemoteRegistry,
+    ExecutionEnvironment,
+    ContainerRepository,
+    ContainerRemoteRegistry,
 )
 from aap_migration.utils.logging import get_logger
 
@@ -61,6 +64,9 @@ class AutomationHubExporter:
         self.artifacts_dir = self.hub_dir / "artifacts"
         self.repositories_dir = self.hub_dir / "repositories"
         self.remotes_dir = self.hub_dir / "remotes"
+        self.execution_environments_dir = self.hub_dir / "execution_environments"
+        self.container_repositories_dir = self.hub_dir / "container_repositories"
+        self.container_remotes_dir = self.hub_dir / "container_remotes"
 
         for d in [
             self.namespaces_dir,
@@ -68,6 +74,9 @@ class AutomationHubExporter:
             self.artifacts_dir,
             self.repositories_dir,
             self.remotes_dir,
+            self.execution_environments_dir,
+            self.container_repositories_dir,
+            self.container_remotes_dir,
         ]:
             d.mkdir(parents=True, exist_ok=True)
 
@@ -127,12 +136,26 @@ class AutomationHubExporter:
             remotes = await self.export_remotes()
             logger.info("exported_remotes", count=len(remotes))
 
+            # Export container infrastructure
+            container_repos = await self.export_container_repositories()
+            logger.info("exported_container_repositories", count=len(container_repos))
+
+            container_remotes = await self.export_container_remotes()
+            logger.info("exported_container_remotes", count=len(container_remotes))
+
+            # Export execution environments
+            ees = await self.export_execution_environments()
+            logger.info("exported_execution_environments", count=len(ees))
+
             # Write summary
             await self._write_summary(
                 namespaces=len(namespaces),
                 collections=len(collections),
                 repositories=len(repositories),
                 remotes=len(remotes),
+                container_repositories=len(container_repos),
+                container_remotes=len(container_remotes),
+                execution_environments=len(ees),
             )
 
             logger.info(
@@ -141,6 +164,9 @@ class AutomationHubExporter:
                 collections=len(collections),
                 repositories=len(repositories),
                 remotes=len(remotes),
+                container_repositories=len(container_repos),
+                container_remotes=len(container_remotes),
+                execution_environments=len(ees),
             )
 
         finally:
@@ -418,12 +444,151 @@ class AutomationHubExporter:
         logger.info("remotes_exported", count=len(remotes))
         return remotes
 
+    async def export_container_repositories(self) -> list[ContainerRepository]:
+        """Export all container repositories.
+
+        Returns:
+            List of exported container repositories
+        """
+        logger.info("exporting_container_repositories")
+
+        container_repos = await self.client.list_container_repositories()
+
+        # Save each container repository
+        for repo in container_repos:
+            # Sanitize name for filename
+            filename = repo.name.replace("/", "_").replace(" ", "_")
+            output_file = self.container_repositories_dir / f"{filename}.json"
+
+            with open(output_file, "w") as f:
+                json.dump(repo.metadata, f, indent=2)
+
+            logger.debug(
+                "container_repository_exported", name=repo.name, file=str(output_file)
+            )
+
+        # Save container repositories index
+        index_file = self.container_repositories_dir / "_index.json"
+        with open(index_file, "w") as f:
+            json.dump(
+                {
+                    "count": len(container_repos),
+                    "container_repositories": [
+                        {
+                            "name": repo.name,
+                            "description": repo.description,
+                            "pulp_href": repo.pulp_href,
+                        }
+                        for repo in container_repos
+                    ],
+                },
+                f,
+                indent=2,
+            )
+
+        logger.info("container_repositories_exported", count=len(container_repos))
+        return container_repos
+
+    async def export_container_remotes(self) -> list[ContainerRemoteRegistry]:
+        """Export all container remote registries.
+
+        Returns:
+            List of exported container remotes
+        """
+        logger.info("exporting_container_remotes")
+
+        container_remotes = await self.client.list_container_remotes()
+
+        # Save each container remote
+        for remote in container_remotes:
+            # Sanitize name for filename
+            filename = remote.name.replace("/", "_").replace(" ", "_")
+            output_file = self.container_remotes_dir / f"{filename}.json"
+
+            with open(output_file, "w") as f:
+                json.dump(remote.metadata, f, indent=2)
+
+            logger.debug(
+                "container_remote_exported", name=remote.name, file=str(output_file)
+            )
+
+        # Save container remotes index
+        index_file = self.container_remotes_dir / "_index.json"
+        with open(index_file, "w") as f:
+            json.dump(
+                {
+                    "count": len(container_remotes),
+                    "container_remotes": [
+                        {
+                            "name": remote.name,
+                            "url": remote.url,
+                            "pulp_href": remote.pulp_href,
+                        }
+                        for remote in container_remotes
+                    ],
+                },
+                f,
+                indent=2,
+            )
+
+        logger.info("container_remotes_exported", count=len(container_remotes))
+        return container_remotes
+
+    async def export_execution_environments(self) -> list[ExecutionEnvironment]:
+        """Export all execution environments.
+
+        Returns:
+            List of exported execution environments
+        """
+        logger.info("exporting_execution_environments")
+
+        ees = await self.client.list_execution_environments()
+
+        # Save each execution environment
+        for ee in ees:
+            # Sanitize name for filename
+            filename = ee.full_name.replace("/", "_").replace(" ", "_")
+            output_file = self.execution_environments_dir / f"{filename}.json"
+
+            with open(output_file, "w") as f:
+                json.dump(ee.metadata, f, indent=2)
+
+            logger.debug(
+                "execution_environment_exported", name=ee.full_name, file=str(output_file)
+            )
+
+        # Save execution environments index
+        index_file = self.execution_environments_dir / "_index.json"
+        with open(index_file, "w") as f:
+            json.dump(
+                {
+                    "count": len(ees),
+                    "execution_environments": [
+                        {
+                            "name": ee.full_name,
+                            "description": ee.description,
+                            "pulp_href": ee.pulp_href,
+                            "tags_count": ee.tags_count,
+                        }
+                        for ee in ees
+                    ],
+                },
+                f,
+                indent=2,
+            )
+
+        logger.info("execution_environments_exported", count=len(ees))
+        return ees
+
     async def _write_summary(
         self,
         namespaces: int,
         collections: int,
         repositories: int,
         remotes: int,
+        container_repositories: int,
+        container_remotes: int,
+        execution_environments: int,
     ):
         """Write export summary file.
 
@@ -432,6 +597,9 @@ class AutomationHubExporter:
             collections: Number of collections exported
             repositories: Number of repositories exported
             remotes: Number of remotes exported
+            container_repositories: Number of container repositories exported
+            container_remotes: Number of container remotes exported
+            execution_environments: Number of execution environments exported
         """
         summary_file = self.hub_dir / "export_summary.json"
 
@@ -444,6 +612,9 @@ class AutomationHubExporter:
                 "collections": collections,
                 "repositories": repositories,
                 "remotes": remotes,
+                "container_repositories": container_repositories,
+                "container_remotes": container_remotes,
+                "execution_environments": execution_environments,
             },
         }
 
