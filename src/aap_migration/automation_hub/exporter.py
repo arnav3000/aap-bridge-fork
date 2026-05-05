@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional
 
 from aap_migration.automation_hub.client import GalaxyAPIClient
-from aap_migration.automation_hub.exceptions import AutomationHubError
+from aap_migration.automation_hub.exceptions import AutomationHubError, GalaxyAPIError
 from aap_migration.automation_hub.models import (
     Namespace,
     CollectionVersion,
@@ -452,7 +452,16 @@ class AutomationHubExporter:
         """
         logger.info("exporting_container_repositories")
 
-        container_repos = await self.client.list_container_repositories()
+        try:
+            container_repos = await self.client.list_container_repositories()
+        except GalaxyAPIError as e:
+            if e.status_code == 404:
+                logger.warning(
+                    "container_repositories_not_supported",
+                    message="Container repositories not available (AAP 2.4.x doesn't support EE)",
+                )
+                return []
+            raise
 
         # Save each container repository
         for repo in container_repos:
@@ -497,7 +506,16 @@ class AutomationHubExporter:
         """
         logger.info("exporting_container_remotes")
 
-        container_remotes = await self.client.list_container_remotes()
+        try:
+            container_remotes = await self.client.list_container_remotes()
+        except GalaxyAPIError as e:
+            if e.status_code == 404:
+                logger.warning(
+                    "container_remotes_not_supported",
+                    message="Container remotes not available (AAP 2.4.x doesn't support EE)",
+                )
+                return []
+            raise
 
         # Save each container remote
         for remote in container_remotes:
@@ -542,7 +560,16 @@ class AutomationHubExporter:
         """
         logger.info("exporting_execution_environments")
 
-        ees = await self.client.list_execution_environments()
+        try:
+            ees = await self.client.list_execution_environments()
+        except GalaxyAPIError as e:
+            if e.status_code == 404:
+                logger.warning(
+                    "execution_environments_not_supported",
+                    message="Execution environments not available (AAP 2.4.x doesn't support EE)",
+                )
+                return []
+            raise
 
         # Save each execution environment
         for ee in ees:
